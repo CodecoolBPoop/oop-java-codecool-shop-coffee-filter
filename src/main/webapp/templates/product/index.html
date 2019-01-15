@@ -34,18 +34,15 @@
     <h1>Codecool Shop</h1>
 </div>
 
-<div class="container">
+<div class="container-fluid">
     <div class="form-group">
         <label for="category-selector">Select Category</label>
-            <select class="form-control" id="category-selector">
-                    <option>All</option>
+            <select class="form-control" id="category-selector" onchange="location = '?category=' + this.value;">
+                    <option value="0">All</option>
                 <th:block th:each="category: ${categories}">
-                    <option th:text="${category.name}">Category Title</option>
+                    <option th:value="${category.getId()}" th:text="${category.getName()}">Category Title</option>
                 </th:block>
             </select>
-            <!--<div class="card">-->
-                <!--<strong th:text="${category.name}">Category Title</strong>-->
-            <!--</div>-->
     </div>
 
     <div id="products" class="row">
