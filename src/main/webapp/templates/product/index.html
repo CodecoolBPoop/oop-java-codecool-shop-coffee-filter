@@ -38,7 +38,10 @@
     <div class="form-group">
         <label for="category-selector">Select Category</label>
             <select class="form-control" id="category-selector">
-                <option th:text="${category.name}">Category Title</option>
+                    <option>All</option>
+                <th:block th:each="category: ${categories}">
+                    <option th:text="${category.name}">Category Title</option>
+                </th:block>
             </select>
             <!--<div class="card">-->
                 <!--<strong th:text="${category.name}">Category Title</strong>-->
