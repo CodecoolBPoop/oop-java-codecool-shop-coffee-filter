@@ -11,10 +11,8 @@ function sumPrice() {
     for (let i = 0; i < allPrice.length; i++) {
         let price = parseInt(allPrice[i].innerText);
         let many = parseInt(howMany[i].innerText);
-        console.log(many);
         total = total + (price * many);
     }
     total = total.toString();
     document.getElementById("total-price").innerHTML = total;
-    console.log(total);
 }
