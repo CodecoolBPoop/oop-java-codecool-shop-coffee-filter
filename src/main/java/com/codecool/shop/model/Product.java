@@ -8,6 +8,9 @@ public class Product extends BaseModel {
     private Currency defaultCurrency;
     private ProductCategory productCategory;
     private Supplier supplier;
+    private boolean visibilityCategory = true;
+    private boolean visibilitySupplier = true;
+    private boolean visibility = true;
 
 
     public Product(String name, float defaultPrice, String currencyString, String description, ProductCategory productCategory, Supplier supplier) {
@@ -74,5 +77,25 @@ public class Product extends BaseModel {
                 this.defaultCurrency.toString(),
                 this.productCategory.getName(),
                 this.supplier.getName());
+    }
+
+    public void setVisibility() {
+        if (visibilityCategory && visibilitySupplier) {
+            this.visibility = true;
+        } else {
+            this.visibility = false;
+        }
+    }
+
+    public boolean getVisibility() {
+        return this.visibility;
+    }
+
+    public void setVisibilityCategory(boolean visibility) {
+        this.visibilityCategory = visibility;
+    }
+
+    public void setVisibilitySupplier(boolean visibility) {
+        this.visibilitySupplier = visibility;
     }
 }

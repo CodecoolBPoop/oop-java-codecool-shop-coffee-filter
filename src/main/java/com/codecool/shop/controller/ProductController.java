@@ -7,6 +7,8 @@ import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.dao.implementation.SupplierDaoMem;
+import com.codecool.shop.model.Product;
+import org.omg.CORBA.INTERNAL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -32,26 +34,64 @@ public class ProductController extends HttpServlet {
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
         Map mainPageFilters = new HashMap<>();
 
-//        Map params = new HashMap<>();
-//        params.put("category", productCategoryDataStore.find(1));
-//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
-
-
         //Filters
         String category = req.getParameter("category");
         String supplier = req.getParameter("supplier");
-        if (category != null) {
-            mainPageFilters.put("filteredCategory", Integer.parseInt(category));
-        }
-        if (supplier != null) {
-            mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
-        }
 
+        //If there are no filters or both are set to All
+        if ((category == null || Integer.parseInt(category) == 0) && (supplier == null || Integer.parseInt(supplier) == 0)) {
+            for (int i = 0; i < productDataStore.getAll().size(); i++) {
+                Product product = productDataStore.getAll().get(i);
+                product.setVisibilityCategory(true);
+                product.setVisibilitySupplier(true);
+                product.setVisibility();
+            }
+        }
+        //If the both filters are set
+        else if ((category != null || Integer.parseInt(category) != 0) && (supplier != null || Integer.parseInt(supplier) != 0)) {
+            mainPageFilters.put("filteredCategory", Integer.parseInt(category));
+            mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
+            for (int i = 0; i < productDataStore.getAll().size(); i++) {
+                Product product = productDataStore.getAll().get(i);
+                if (product.getProductCategory().getId() != Integer.parseInt(category) && product.getSupplier().getId() != Integer.parseInt(supplier)) {
+                    product.setVisibilityCategory(false);
+                    product.setVisibilitySupplier(false);
+                }
+                product.setVisibility();
+            }
+        }
+        //If Category is set but Supplier is not set
+        else if (category != null || Integer.parseInt(category) != 0) {
+            mainPageFilters.put("filteredCategory", Integer.parseInt(category));
+            for (int i = 0; i < productDataStore.getAll().size(); i++) {
+                Product product = productDataStore.getAll().get(i);
+                product.setVisibilitySupplier(true);
+                if (product.getProductCategory().getId() != Integer.parseInt(category)) {
+                    product.setVisibilityCategory(false);
+                } else {
+                    product.setVisibilityCategory(true);
+                }
+                product.setVisibility();
+            }
+        }
+        //If Supplier is set but Category is not set
+        else if (supplier != null || Integer.parseInt(supplier) != 0) {
+            mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
+            for (int i = 0; i < productDataStore.getAll().size(); i++) {
+                Product product = productDataStore.getAll().get(i);
+                product.setVisibilityCategory(true);
+                if (product.getSupplier().getId() != Integer.parseInt(supplier)) {
+                    product.setVisibilitySupplier(false);
+                } else {
+                    product.setVisibilitySupplier(true);
+                }
+                product.setVisibility();
+            }
+        }
 
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
-//        context.setVariables(params);
         context.setVariable("mainPageFilters", mainPageFilters);
         context.setVariable("recipient", "World");
         context.setVariable("categories", productCategoryDataStore.getAll());
