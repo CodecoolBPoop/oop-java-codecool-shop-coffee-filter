@@ -36,6 +36,6 @@ public class LineItem {
 
     @Override
     public String toString() {
-        return getProductName() + " " + getQuantity() + " " + getPrice();
+        return getProductName() + ", " + getQuantity() + ", " + getPrice();
     }
 }

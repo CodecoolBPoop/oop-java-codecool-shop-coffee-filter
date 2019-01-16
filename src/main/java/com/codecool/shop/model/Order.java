@@ -1,23 +1,26 @@
 package com.codecool.shop.model;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Order {
 
     private int id;
     private int userId;
-    private int date; //todo search for a valid date format
+    private LocalDate date;
     private Status status;
-    private HashMap<Integer, LineItem> shoppingCart = new HashMap<Integer, LineItem>();
+    private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
     public Order(int id, int userId) {
         this.id = id;
         this.userId = userId;
+        status = Status.NEW;
     }
 
     public void addProductToCart(Product product) {
         Integer productId = product.getId();
-        LineItem lineItem = null;
+        LineItem lineItem;
         if (shoppingCart.containsKey(productId)) {
             lineItem = shoppingCart.get(productId);
             lineItem.increaseQuantity();
@@ -25,6 +28,7 @@ public class Order {
             lineItem = new LineItem(product);
         }
         shoppingCart.put(productId, lineItem);
+        date = LocalDate.now();
     }
 
     public int getId() {
@@ -43,7 +47,12 @@ public class Order {
         return shoppingCart;
     }
 
-    public int getDate() {
+    public LocalDate getDate() {
         return date;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+        date = LocalDate.now();
     }
 }
