@@ -47,6 +47,8 @@ public class ProductController extends HttpServlet {
             mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
         }
 
+
+
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
 //        context.setVariables(params);
