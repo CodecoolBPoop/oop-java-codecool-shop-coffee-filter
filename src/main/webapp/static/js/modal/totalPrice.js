@@ -1,8 +1,9 @@
-
+// If click cart button on home page
 let cartModalButton = document.getElementById("cart-modal-button");
 cartModalButton.addEventListener('click', function () {
    sumPrice();
 });
+
 
 function sumPrice() {
     let allPrice = document.querySelectorAll("td.price");
