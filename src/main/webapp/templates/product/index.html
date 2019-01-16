@@ -26,15 +26,86 @@
     <!-- End of Bootstrap components -->
 
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css" />
+
+    <script src="/static/js/modal/totalPrice.js" defer></script>
+    <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
 </head>
 
 <body>
 
 <div class="jumbotron text-center">
+    <!-- Trigger the modal with a button -->
+    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#myModal">Cart</button>
+
     <h1>Codecool Shop</h1>
 </div>
 
+<!-- Modal -->
 <div class="container">
+
+    <div class="container">
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Your cart</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Pieces</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--
+                            <tr th:each="cart: ${allProducts}">
+                                <td th:text="${cart.getName()}">MobilPhone</td>
+                                <td th:text="${cart.getPrice()}">$ 99.9</td>
+                            </tr>
+                            -->
+                            <tr>
+                                <td>MobilPhone</td>
+                                <td class="price">99</td>
+                                <td>
+                                    <button type="button" class="plus-button btn-default-xs">+</button>
+                                        <span class="how-many">10</span>
+                                    <button type="button" class="negative-button btn-default-xs">-</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MobilPhone</td>
+                                <td class="price">99</td>
+                                <td>
+                                    <button type="button" class="plus-button btn-default-xs">+</button>
+                                    <span class="how-many">10</span>
+                                    <button type="button" class="negative-button btn-default-xs">-</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total: </td>
+                                <td colspan="2" id="total-price">10</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Buy</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <strong th:text="${category.name}">Category Title</strong>
     </div>
