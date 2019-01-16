@@ -11,6 +11,7 @@ public class OrderDaoMem implements OrderDao {
 
     private List<Order> orders = new ArrayList<>();
     private static OrderDaoMem instance = null;
+    private int lastId = 1;
 
     private OrderDaoMem() {
 
@@ -24,8 +25,9 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
-    public void add(Order order) {
-
+    public void add(int userId, Order order) {
+        order.setId(lastId++);
+        orders.add(order);
     }
 
     @Override

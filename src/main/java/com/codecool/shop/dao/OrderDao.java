@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderDao {
 
-    void add(Order order);
+    void add(int userId, Order order);
 
     Order find(int id);
 

@@ -12,10 +12,10 @@ public class Order {
     private Status status;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
-    public Order(int id, int userId) {
-        this.id = id;
+    public Order(int userId, Product product) {
         this.userId = userId;
         status = Status.NEW;
+        addProductToCart(product);
     }
 
     public void addProductToCart(Product product) {
@@ -33,6 +33,10 @@ public class Order {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getUserId() {
