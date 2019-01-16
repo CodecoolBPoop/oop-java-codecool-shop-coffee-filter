@@ -15,6 +15,8 @@ public class ProductDaoMem implements ProductDao {
     private List<Product> data = new ArrayList<>();
     private static ProductDaoMem instance = null;
 
+    private static int lastProductId = 1;
+
     /* A private Constructor prevents any other class from instantiating.
      */
     private ProductDaoMem() {
@@ -29,7 +31,7 @@ public class ProductDaoMem implements ProductDao {
 
     @Override
     public void add(Product product) {
-        product.setId(data.size() + 1);
+        product.setId(lastProductId++);
         data.add(product);
     }
 
