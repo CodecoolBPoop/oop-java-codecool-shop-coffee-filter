@@ -10,6 +10,7 @@ public class Order {
     private int userId;
     private LocalDate date;
     private Status status;
+    private float amountToPay = 0;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
     public Order(int userId, Product product) {
@@ -29,6 +30,23 @@ public class Order {
         }
         shoppingCart.put(productId, lineItem);
         date = LocalDate.now();
+        amountToPay += product.getDefaultPrice();
+    }
+
+    public void removeProductFromCart(Product product) {
+        Integer productId = product.getId();
+        LineItem lineItem;
+        if (shoppingCart.containsKey(productId)) {
+            lineItem = shoppingCart.get(productId);
+            lineItem.decreaseQuantity();
+            if (lineItem.getQuantity() == 0) {
+                shoppingCart.remove(productId);
+            } else {
+                shoppingCart.put(productId, lineItem);
+            }
+            amountToPay -= product.getDefaultPrice();
+        }
+        date = LocalDate.now();
     }
 
     public int getId() {
@@ -37,6 +55,10 @@ public class Order {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public float getAmountToPay() {
+        return amountToPay;
     }
 
     public int getUserId() {

@@ -36,4 +36,8 @@ public class LineItem {
     public String toString() {
         return getProductName() + ", " + getQuantity() + ", " + getPrice();
     }
+
+    public void decreaseQuantity() {
+        quantity = Math.max(quantity--, 0);
+    }
 }
