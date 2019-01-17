@@ -32,26 +32,28 @@ public class OrderDaoMem implements OrderDao {
 
     @Override
     public Order find(int id) {
-        return null;
+        return orders.get(id);
     }
 
     @Override
     public void remove(int id) {
-
+        if (id < orders.size() && id >= 0) {
+            orders.remove(id);
+        }
     }
 
     @Override
     public List<Order> getAll() {
-        return null;
+        return orders;
     }
 
     @Override
-    public void addNewItemToOrder(Product product) {
-
+    public void addNewItemToOrder(Product product, int orderId) {
+        orders.get(orderId).addProductToCart(product);
     }
 
     @Override
-    public void removeItemFromOrder(Product product) {
-
+    public void removeItemFromOrder(Product product, int orderId) {
+        orders.get(orderId).removeProductFromCart(product);
     }
 }

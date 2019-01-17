@@ -15,7 +15,7 @@ public interface OrderDao {
 
     List<Order> getAll();
 
-    void addNewItemToOrder(Product product);
+    void addNewItemToOrder(Product product, int orderId);
 
-    void removeItemFromOrder(Product product);
+    void removeItemFromOrder(Product product, int orderId);
 }
