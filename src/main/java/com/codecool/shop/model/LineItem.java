@@ -5,11 +5,13 @@ public class LineItem {
     private Product product;
     private int quantity;
     private float price;
+    private String name;
 
     public LineItem(Product product) {
         this.product = product;
         price = product.getDefaultPrice();
         quantity = 0;
+        name = product.getName();
     }
 
     public Product getProduct() {
@@ -28,13 +30,13 @@ public class LineItem {
         return price;
     }
 
-    public String getProductName() {
-        return product.getName();
+    public String getName() {
+        return name;
     }
 
     @Override
     public String toString() {
-        return getProductName() + ", " + getQuantity() + ", " + getPrice();
+        return getName() + ", " + getQuantity() + ", " + getPrice();
     }
 
     public void decreaseQuantity() {

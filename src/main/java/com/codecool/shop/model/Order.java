@@ -1,7 +1,6 @@
 package com.codecool.shop.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 
 public class Order {
