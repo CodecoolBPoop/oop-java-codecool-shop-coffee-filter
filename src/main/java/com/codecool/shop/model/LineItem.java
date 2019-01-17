@@ -3,14 +3,13 @@ package com.codecool.shop.model;
 public class LineItem {
 
     private Product product;
-    private int quantity = 0;
+    private int quantity;
     private float price;
-    private float priceOfOne;
 
     public LineItem(Product product) {
         this.product = product;
-        priceOfOne = product.getDefaultPrice();
-        increaseQuantity();
+        price = product.getDefaultPrice();
+        quantity = 0;
     }
 
     public Product getProduct() {
@@ -19,7 +18,6 @@ public class LineItem {
 
     public void increaseQuantity() {
         quantity ++;
-        price = priceOfOne * quantity;
     }
 
     public int getQuantity() {
