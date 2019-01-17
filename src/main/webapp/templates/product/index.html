@@ -42,7 +42,7 @@
     <!-- Trigger the modal with a button -->
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <span class="badge badge-secondary badge-pill">1</span>
+        <span class="badge badge-secondary badge-pill" th:text="${order.getStatus()}">Amount in cart</span>
     </button>
 
 
