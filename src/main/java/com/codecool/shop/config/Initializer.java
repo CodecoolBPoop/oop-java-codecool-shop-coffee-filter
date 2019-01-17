@@ -52,4 +52,5 @@ public class Initializer implements ServletContextListener {
         productDataStore.add(new Product("Hario Chemex", 25, "USD", "Coolest way to do filter coffee.", accessories, hario));
         productDataStore.add(new Product("Hario Skerton Plus Manual Grinder", 17, "USD", "Fine grinder for your favourite coffee.", accessories, hario));
     }
+
 }
