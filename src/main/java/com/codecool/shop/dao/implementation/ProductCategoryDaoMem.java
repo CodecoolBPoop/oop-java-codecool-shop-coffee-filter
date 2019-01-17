@@ -12,6 +12,8 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
     private List<ProductCategory> data = new ArrayList<>();
     private static ProductCategoryDaoMem instance = null;
 
+    private static int lastProductCategoryId = 1;
+
     /* A private Constructor prevents any other class from instantiating.
      */
     private ProductCategoryDaoMem() {
@@ -26,7 +28,7 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
 
     @Override
     public void add(ProductCategory category) {
-        category.setId(data.size() + 1);
+        category.setId(lastProductCategoryId++);
         data.add(category);
     }
 

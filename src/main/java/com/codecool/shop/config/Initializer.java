@@ -24,18 +24,31 @@ public class Initializer implements ServletContextListener {
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
         //setting up a new supplier
-        Supplier amazon = new Supplier("Amazon", "Digital content and services");
-        supplierDataStore.add(amazon);
-        Supplier lenovo = new Supplier("Lenovo", "Computers");
-        supplierDataStore.add(lenovo);
+        Supplier nespresso = new Supplier("Nespresso", "Coffee Machine");
+        supplierDataStore.add(nespresso);
+        Supplier keepcup = new Supplier("KeepCup", "Portable cups");
+        supplierDataStore.add(keepcup);
+        Supplier bialetti = new Supplier("Bialetti", "");
+        supplierDataStore.add(bialetti);
+        Supplier hario = new Supplier("Hario", "");
 
         //setting up a new product category
-        ProductCategory tablet = new ProductCategory("Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
-        productCategoryDataStore.add(tablet);
+        ProductCategory coffeemachine = new ProductCategory("Coffee Machine", "Hardware", "Machines for making coffee.");
+        productCategoryDataStore.add(coffeemachine);
+
+        ProductCategory cup = new ProductCategory("Cup", "Cups", "");
+        productCategoryDataStore.add(cup);
+
+        ProductCategory accessories = new ProductCategory("Accessories", "Alternative", "Accessories for speciality coffee.");
+        productCategoryDataStore.add(accessories);
+
 
         //setting up products and printing it
-        productDataStore.add(new Product("Amazon Fire", 49.9f, "USD", "Fantastic price. Large content ecosystem. Good parental controls. Helpful technical support.", tablet, amazon));
-        productDataStore.add(new Product("Lenovo IdeaPad Miix 700", 479, "USD", "Keyboard cover is included. Fanless Core m5 processor. Full-size USB ports. Adjustable kickstand.", tablet, lenovo));
-        productDataStore.add(new Product("Amazon Fire HD 8", 89, "USD", "Amazon's latest Fire HD 8 tablet is a great value for media consumption.", tablet, amazon));
+        productDataStore.add(new Product("Nespresso Krups XN740B CitiZ", 120, "USD", "Kapsule coffee machine that's convenient and easy to use.", coffeemachine, nespresso));
+        productDataStore.add(new Product("KeepCup Tall", 10, "USD", "Ideal for take away coffee.", cup, keepcup));
+        productDataStore.add(new Product("KeepCup Medium", 8, "USD", "Ideal for take away coffee.", cup, keepcup));
+        productDataStore.add(new Product("Bialetti Moka pot", 15, "USD", "Old time classic.", accessories, bialetti));
+        productDataStore.add(new Product("Hario Chemex", 25, "USD", "Coolest way to do filter coffee.", accessories, hario));
+        productDataStore.add(new Product("Hario Skerton Plus Manual Grinder", 17, "USD", "Fine grinder for your favourite coffee.", accessories, hario));
     }
 }
