@@ -29,19 +29,19 @@ public class ProductController extends HttpServlet {
         OrderDao orderDataStore = OrderDaoMem.getInstance();
         int userId = 1;
 
-//        Map params = new HashMap<>();
-//        params.put("category", productCategoryDataStore.find(1));
-//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
-
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
-//        context.setVariables(params);
 
-        //context.setVariable("cart", orderDataStore.getLatestUnfinishedOrderByUser(1).getShoppingCart());
+        context.setVariable("cart", orderDataStore.getLatestUnfinishedOrderByUser(1).getShoppingCart());
         context.setVariable("recipient", "World");
         context.setVariable("category", productCategoryDataStore.find(1));
         context.setVariable("products", productDataStore.getBy(productCategoryDataStore.find(1)));
         engine.process("product/index.html", context, resp.getWriter());
+
+//        Map params = new HashMap<>();
+//        params.put("category", productCategoryDataStore.find(1));
+//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
+//        context.setVariables(params);
     }
 
 }
