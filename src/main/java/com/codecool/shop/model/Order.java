@@ -32,6 +32,13 @@ public class Order {
         amountToPay += product.getDefaultPrice();
     }
 
+    public int getNumberOfItemsInCart() {
+        return shoppingCart.entrySet()
+                .stream()
+                .mapToInt(item -> item.getValue().getQuantity())
+                .sum();
+    }
+
     public void removeProductFromCart(Product product) {
         Integer productId = product.getId();
         LineItem lineItem;

@@ -18,6 +18,10 @@ public class LineItem {
         return product;
     }
 
+    public float getTotalPrice() {
+        return price * quantity;
+    }
+
     public void increaseQuantity() {
         quantity ++;
     }
