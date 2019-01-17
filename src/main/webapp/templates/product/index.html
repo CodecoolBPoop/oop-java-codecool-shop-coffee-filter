@@ -72,13 +72,13 @@
 
     <div id="products" class="row">
         <div class="col col-sm-12 col-md-6 col-lg-4"
-             th:each="prod,iterStat : ${products}"
-             th:classappend="${ (mainPageFilters.containsKey('filteredCategory') and
-                                mainPageFilters.get('filteredCategory') > 0 and
-                                mainPageFilters.get('filteredCategory') != prod.getProductCategory().getId()) or
-                                (mainPageFilters.containsKey('filteredSupplier') and
-                                mainPageFilters.get('filteredSupplier') > 0 and
-                                mainPageFilters.get('filteredSupplier') != prod.getSupplier().getId())} ? hidden">
+             th:each="prod,iterStat : ${products}">
+             <!--th:classappend="${ (mainPageFilters.containsKey('filteredCategory') and-->
+                                <!--mainPageFilters.get('filteredCategory') > 0 and-->
+                                <!--mainPageFilters.get('filteredCategory') != prod.getProductCategory().getId()) or-->
+                                <!--(mainPageFilters.containsKey('filteredSupplier') and-->
+                                <!--mainPageFilters.get('filteredSupplier') > 0 and-->
+                                <!--mainPageFilters.get('filteredSupplier') != prod.getSupplier().getId())} ? hidden">-->
             <div class="card">
                 <img class="" src="http://placehold.it/400x250/000/fff"
                      th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
