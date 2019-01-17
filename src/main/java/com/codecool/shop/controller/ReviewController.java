@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/review-order"})
+@WebServlet(urlPatterns = {"/checkout"})
 public class ReviewController extends HttpServlet {
 
     @Override
@@ -19,7 +19,7 @@ public class ReviewController extends HttpServlet {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
 
-        engine.process("review/review.html", context, resp.getWriter());
+        engine.process("checkout/checkout.html", context, resp.getWriter());
 
     }
 }
