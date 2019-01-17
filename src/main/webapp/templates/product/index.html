@@ -66,27 +66,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!--
-                            <tr th:each="cart: ${allProducts}">
-                                <td th:text="${cart.getName()}">MobilPhone</td>
-                                <td th:text="${cart.getPrice()}">$ 99.9</td>
+                            <tr th:each="item : ${cart}">
+                                <td th:text="${item.name}">MobilPhone</td>
+                                <td th:text="${item.price}">$ 99.9</td>
                             </tr>
-                            -->
-                            <tr>
-                                <td>MobilPhone</td>
-                                <td class="price">99</td>
                                 <td>
                                     <button type="button" class="plus-button btn-default-xs">+</button>
                                         <span class="how-many">10</span>
-                                    <button type="button" class="negative-button btn-default-xs">-</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>MobilPhone</td>
-                                <td class="price">99</td>
-                                <td>
-                                    <button type="button" class="plus-button btn-default-xs">+</button>
-                                    <span class="how-many">10</span>
                                     <button type="button" class="negative-button btn-default-xs">-</button>
                                 </td>
                             </tr>

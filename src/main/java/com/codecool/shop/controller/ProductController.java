@@ -7,6 +7,7 @@ import com.codecool.shop.dao.implementation.OrderDaoMem;
 import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.model.Order;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -37,7 +38,11 @@ public class ProductController extends HttpServlet {
         WebContext context = new WebContext(req, resp, req.getServletContext());
 //        context.setVariables(params);
 
-        context.setVariable("cart", orderDataStore.getLatestUnfinishedOrderByUser(1).getShoppingCart());
+        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
+        System.out.println(latestOrder.getShoppingCart().toString());
+        if (latestOrder != null) {
+            context.setVariable("cart", latestOrder.getShoppingCart());
+        }
         context.setVariable("recipient", "World");
         context.setVariable("category", productCategoryDataStore.find(1));
         context.setVariable("products", productDataStore.getBy(productCategoryDataStore.find(1)));
