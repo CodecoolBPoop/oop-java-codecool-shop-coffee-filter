@@ -114,4 +114,21 @@ public class ProductController extends HttpServlet {
         }
     }
 
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int boughtItemId = Integer.parseInt(req.getParameter("boughtItem"));
+        int userId = 1;
+        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
+        ProductDao productDataStore = ProductDaoMem.getInstance();
+
+        Product product = productDataStore.find(boughtItemId);
+        System.out.println("bought: " + product.getName());
+        orderDataStore.addNewItemToOrder(product, latestOrder);
+
+        HttpServletResponse httpResponse = (HttpServletResponse) resp;
+        httpResponse.sendRedirect("/");
+    }
+
 }
