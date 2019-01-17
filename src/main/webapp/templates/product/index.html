@@ -28,7 +28,7 @@
     <!-- End of Bootstrap components -->
 
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
 
     <script src="/static/js/modal/totalPrice.js" defer></script>
     <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
@@ -40,7 +40,9 @@
     <h1>Coffee Webshop</h1>
     <p>.... all things coffee ....</p>
     <!-- Trigger the modal with a button -->
-    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal" data-target="#myModal">Cart</button>
+    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
+            data-target="#myModal">Cart
+    </button>
 
 </div>
 <div class="container">
@@ -49,7 +51,6 @@
 
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
-
 
 
                 <!-- Modal content-->
@@ -93,7 +94,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Total: </td>
+                                <td>Total:</td>
                                 <td colspan="2" id="total-price">10</td>
                             </tr>
                             </tbody>
@@ -107,69 +108,70 @@
             </div>
         </div>
     </div>
-<div class="container">
-    <form method="GET">
-        <div class="form-group">
-            <div class="row">
-                <div class="col col-sm-12 col-md-6">
-                    <label for="category-selector">Select Category</label>
-                    <select name="category" class="form-control" id="category-selector"
-                            onchange="{ this.form.submit() };">
-                        <option value="0">All</option>
-                        <option th:each="category: ${categories}"
-                                th:value="${category.getId()}"
-                                th:text="${category.getName()}"
-                                th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
-                            Category Name
-                        </option>
-                    </select>
-                </div>
-                <div class="col col-sm-12 col-md-6">
-                    <label for="supplier-selector">Select Supplier</label>
-                    <select name="supplier" class="form-control" id="supplier-selector"
-                            onchange="{ this.form.submit() };">
-                        <option value="0">All</option>
-                        <option th:each="supplier: ${suppliers}"
-                                th:value="${supplier.getId()}"
-                                th:text="${supplier.getName()}"
-                                th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
-                            Category Name
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </form>
-    <div id="products" class="row">
-        <div class="col col-sm-12 col-md-6 col-lg-4"
-             th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
-             <!--th:classappend="${ (mainPageFilters.containsKey('filteredCategory') and-->
-                                <!--mainPageFilters.get('filteredCategory') > 0 and-->
-                                <!--mainPageFilters.get('filteredCategory') != prod.getProductCategory().getId()) or-->
-                                <!--(mainPageFilters.containsKey('filteredSupplier') and-->
-                                <!--mainPageFilters.get('filteredSupplier') > 0 and-->
-                                <!--mainPageFilters.get('filteredSupplier') != prod.getSupplier().getId())} ? hidden">-->
-            <div class="card">
-                <img class="" src="http://placehold.it/400x250/000/fff" th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt="" />
-                <div class="card-header">
-                    <h4 class="card-title" th:text="${prod.name}">Product name</h4>
-                    <p class="card-text" th:text="${prod.description}">Product description... </p>
-                </div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
+    <div class="container">
+        <form method="GET">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col col-sm-12 col-md-6">
+                        <label for="category-selector">Select Category</label>
+                        <select name="category" class="form-control" id="category-selector"
+                                onchange="{ this.form.submit() };">
+                            <option value="0">All</option>
+                            <option th:each="category: ${categories}"
+                                    th:value="${category.getId()}"
+                                    th:text="${category.getName()}"
+                                    th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
+                                Category Name
+                            </option>
+                        </select>
                     </div>
-                    <div class="card-text">
-                        <a class="btn btn-success" href="#">Add to cart</a>
+                    <div class="col col-sm-12 col-md-6">
+                        <label for="supplier-selector">Select Supplier</label>
+                        <select name="supplier" class="form-control" id="supplier-selector"
+                                onchange="{ this.form.submit() };">
+                            <option value="0">All</option>
+                            <option th:each="supplier: ${suppliers}"
+                                    th:value="${supplier.getId()}"
+                                    th:text="${supplier.getName()}"
+                                    th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
+                                Category Name
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
+        </form>
+        <div id="products" class="row">
+            <div class="col col-sm-12 col-md-6 col-lg-4"
+                 th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
+                <!--th:classappend="${ (mainPageFilters.containsKey('filteredCategory') and-->
+                <!--mainPageFilters.get('filteredCategory') > 0 and-->
+                <!--mainPageFilters.get('filteredCategory') != prod.getProductCategory().getId()) or-->
+                <!--(mainPageFilters.containsKey('filteredSupplier') and-->
+                <!--mainPageFilters.get('filteredSupplier') > 0 and-->
+                <!--mainPageFilters.get('filteredSupplier') != prod.getSupplier().getId())} ? hidden">-->
+                <div class="card">
+                    <img class="" src="http://placehold.it/400x250/000/fff"
+                         th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
+                    <div class="card-header">
+                        <h4 class="card-title" th:text="${prod.name}">Product name</h4>
+                        <p class="card-text" th:text="${prod.description}">Product description... </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
+                        </div>
+                        <div class="card-text">
+                            <a class="btn btn-success" href="#">Add to cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 
+    <div th:replace="footer.html :: copy"></div>
 </div>
-
-<div th:replace="footer.html :: copy"></div>
-
 </body>
 </html>
