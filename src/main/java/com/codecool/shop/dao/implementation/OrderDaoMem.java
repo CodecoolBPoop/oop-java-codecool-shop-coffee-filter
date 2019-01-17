@@ -64,6 +64,11 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
+    public void removeItemFromOrder(Product product, Order order) {
+        orders.get(orders.indexOf(order)).removeProductFromCart(product);
+    }
+
+    @Override
     public Order getLatestUnfinishedOrderByUser(int userId) {
         return orders.stream()
                 .filter(order -> order.getUserId() == userId)

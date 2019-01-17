@@ -21,5 +21,7 @@ public interface OrderDao {
 
     void removeItemFromOrder(Product product, int orderId);
 
+    void removeItemFromOrder(Product product, Order order);
+
     Order getLatestUnfinishedOrderByUser(int userId);
 }
