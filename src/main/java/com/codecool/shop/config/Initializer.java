@@ -51,7 +51,7 @@ public class Initializer implements ServletContextListener {
 
 
         //setting up products and printing it
-        productDataStore.add(new Product("Nespresso Krups XN740B CitiZ", 120, "USD", "Kapsule coffee machine that's convenient and easy to use.", coffeemachine, nespresso));
+        productDataStore.add(new Product("Nespresso Krups XN740B CitiZ", 120, "USD", "Kapsule coffee machine.", coffeemachine, nespresso));
         productDataStore.add(new Product("KeepCup Tall", 10, "USD", "Ideal for take away coffee.", cup, keepcup));
         productDataStore.add(new Product("KeepCup Medium", 8, "USD", "Ideal for take away coffee.", cup, keepcup));
         productDataStore.add(new Product("Bialetti Moka pot", 15, "USD", "Old time classic.", accessories, bialetti));
