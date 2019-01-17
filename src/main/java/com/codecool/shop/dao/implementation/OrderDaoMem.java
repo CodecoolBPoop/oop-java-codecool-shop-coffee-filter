@@ -54,6 +54,11 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
+    public void addNewItemToOrder(Product product, Order order) {
+        orders.get(orders.indexOf(order)).addProductToCart(product);
+    }
+
+    @Override
     public void removeItemFromOrder(Product product, int orderId) {
         orders.get(orderId).removeProductFromCart(product);
     }

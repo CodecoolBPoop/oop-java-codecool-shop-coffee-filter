@@ -10,7 +10,7 @@ public class LineItem {
     public LineItem(Product product) {
         this.product = product;
         price = product.getDefaultPrice();
-        quantity = 0;
+        quantity = 1;
         name = product.getName();
     }
 

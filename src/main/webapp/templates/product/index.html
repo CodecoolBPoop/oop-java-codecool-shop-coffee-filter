@@ -37,14 +37,17 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>Coffee Webshop</h1>
-    <p>.... all things coffee ....</p>
+    <div class="jumbotron-wrapper">
+        <div class="jumbotron-title">
+            <p>Coffee Webshop</p>
+            <p>.... all things coffee ....</p>
+        </div>
+    </div>
     <!-- Trigger the modal with a button -->
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
         <span class="badge badge-secondary badge-pill" th:text="${order.getStatus()}">Amount in cart</span>
     </button>
-
 
 </div>
 <div class="container">
@@ -73,16 +76,16 @@
                             <tbody>
                             <tr th:each="item : ${cart}">
                                 <td th:text="${item.getValue().getName()}">MobilPhone</td>
-                                <td th:text="${item.getValue().getPrice()}">$ 99.9</td>
+                                <td class="price" th:text="${item.getValue().getPrice()}">$ 99.9</td>
                                 <td>
                                     <button type="button" class="negative-button btn-default-xs">-</button>
-                                    <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
+                                        <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
                                     <button type="button" class="plus-button btn-default-xs">+</button>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Total:</td>
-                                <td colspan="2" id="total-price" th:text="${order.getAmountToPay()}">10</td>
+                                <td>Total: </td>
+                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
                             </tr>
                             </tbody>
                         </table>
