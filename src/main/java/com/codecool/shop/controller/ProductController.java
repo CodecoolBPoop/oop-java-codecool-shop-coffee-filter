@@ -70,7 +70,6 @@ public class ProductController extends HttpServlet {
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
             float amountToPay = latestOrder.getAmountToPay();
-            System.out.println(amountToPay);
             context.setVariable("cart", latestOrder.getShoppingCart());
             context.setVariable("amountToPay", amountToPay);
             context.setVariable("order", latestOrder);

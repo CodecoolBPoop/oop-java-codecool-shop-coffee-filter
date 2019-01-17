@@ -24,6 +24,7 @@ public class CheckoutController extends HttpServlet {
         OrderDao orderDataStore = OrderDaoMem.getInstance();
         Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
+        float amountToPay = order.getAmountToPay();
 
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
@@ -31,6 +32,7 @@ public class CheckoutController extends HttpServlet {
 
         context.setVariable("cart", order);
         context.setVariable("shoppingcart", shoppingCart);
+        context.setVariable("amountToPay", amountToPay);
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
 
