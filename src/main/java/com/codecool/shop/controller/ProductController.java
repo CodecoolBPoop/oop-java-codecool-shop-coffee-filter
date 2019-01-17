@@ -25,7 +25,8 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
 public class ProductController extends HttpServlet {
-
+    boolean isCategorySet = false;
+    boolean isSupplierSet = false;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,57 +39,23 @@ public class ProductController extends HttpServlet {
         String category = req.getParameter("category");
         String supplier = req.getParameter("supplier");
 
-        //If there are no filters or both are set to All
-        if ((category == null || Integer.parseInt(category) == 0) && (supplier == null || Integer.parseInt(supplier) == 0)) {
-            for (int i = 0; i < productDataStore.getAll().size(); i++) {
-                Product product = productDataStore.getAll().get(i);
-                product.setVisibilityCategory(true);
-                product.setVisibilitySupplier(true);
-                product.setVisibility();
-            }
-        }
-        //If the both filters are set
-        else if ((category != null || Integer.parseInt(category) != 0) && (supplier != null || Integer.parseInt(supplier) != 0)) {
-            mainPageFilters.put("filteredCategory", Integer.parseInt(category));
-            mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
-            for (int i = 0; i < productDataStore.getAll().size(); i++) {
-                Product product = productDataStore.getAll().get(i);
-                if (product.getProductCategory().getId() != Integer.parseInt(category) && product.getSupplier().getId() != Integer.parseInt(supplier)) {
-                    product.setVisibilityCategory(false);
-                    product.setVisibilitySupplier(false);
-                }
-                product.setVisibility();
-            }
-        }
-        //If Category is set but Supplier is not set
-        else if (category != null || Integer.parseInt(category) != 0) {
-            mainPageFilters.put("filteredCategory", Integer.parseInt(category));
-            for (int i = 0; i < productDataStore.getAll().size(); i++) {
-                Product product = productDataStore.getAll().get(i);
-                product.setVisibilitySupplier(true);
-                if (product.getProductCategory().getId() != Integer.parseInt(category)) {
-                    product.setVisibilityCategory(false);
-                } else {
-                    product.setVisibilityCategory(true);
-                }
-                product.setVisibility();
-            }
-        }
-        //If Supplier is set but Category is not set
-        else if (supplier != null || Integer.parseInt(supplier) != 0) {
-            mainPageFilters.put("filteredSupplier", Integer.parseInt(supplier));
-            for (int i = 0; i < productDataStore.getAll().size(); i++) {
-                Product product = productDataStore.getAll().get(i);
-                product.setVisibilityCategory(true);
-                if (product.getSupplier().getId() != Integer.parseInt(supplier)) {
-                    product.setVisibilitySupplier(false);
-                } else {
-                    product.setVisibilitySupplier(true);
-                }
-                product.setVisibility();
-            }
+        if (!(category == null || Integer.parseInt(category) == 0)) {
+            isCategorySet = true;
+            mainPageFilters.put("filteredCategory", category);
+        } else {
+            isCategorySet = false;
         }
 
+        if (!(supplier == null || Integer.parseInt(supplier) == 0)) {
+            isSupplierSet = true;
+            mainPageFilters.put("filteredSupplier", supplier);
+        } else {
+            isSupplierSet = false;
+        }
+
+        setAllProductVisible(productDataStore);
+        setProductVisibilityBasedOnCategoryFilter(productDataStore, category);
+        setProductVisibilityBasedOnSupplierFilter(productDataStore, supplier);
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
@@ -98,6 +65,34 @@ public class ProductController extends HttpServlet {
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
         engine.process("product/index.html", context, resp.getWriter());
+    }
+
+    private void setAllProductVisible(ProductDao productDataStore) {
+        for (int i = 0; i < productDataStore.getAll().size(); i++) {
+            Product product = productDataStore.getAll().get(i);
+            product.setVisibility(true);
+        }
+    }
+
+    private void setProductVisibilityBasedOnCategoryFilter(ProductDao productDataStore, String category) {
+        for (int i = 0; i < productDataStore.getAll().size(); i++) {
+            Product product = productDataStore.getAll().get(i);
+            if (isCategorySet) {
+                if (product.getProductCategory().getId() != Integer.parseInt(category)) {
+                    product.setVisibility(false);
+                }
+            }
+        }
+    }
+    private void setProductVisibilityBasedOnSupplierFilter(ProductDao productDataStore, String supplier) {
+        for (int i = 0; i < productDataStore.getAll().size(); i++) {
+            Product product = productDataStore.getAll().get(i);
+            if (isSupplierSet) {
+                if (product.getSupplier().getId() != Integer.parseInt(supplier)) {
+                    product.setVisibility(false);
+                }
+            }
+        }
     }
 
 }
