@@ -39,9 +39,9 @@ public class ProductController extends HttpServlet {
 //        context.setVariables(params);
 
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
-        System.out.println(latestOrder.getShoppingCart().toString());
         if (latestOrder != null) {
             context.setVariable("cart", latestOrder.getShoppingCart());
+            context.setVariable("order", latestOrder);
         }
         context.setVariable("recipient", "World");
         context.setVariable("category", productCategoryDataStore.find(1));

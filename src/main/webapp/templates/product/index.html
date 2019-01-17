@@ -67,18 +67,17 @@
                             </thead>
                             <tbody>
                             <tr th:each="item : ${cart}">
-                                <td th:text="${item.name}">MobilPhone</td>
-                                <td th:text="${item.price}">$ 99.9</td>
-                            </tr>
+                                <td th:text="${item.getValue().getName()}">MobilPhone</td>
+                                <td th:text="${item.getValue().getPrice()}">$ 99.9</td>
                                 <td>
                                     <button type="button" class="plus-button btn-default-xs">+</button>
-                                        <span class="how-many">10</span>
+                                        <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
                                     <button type="button" class="negative-button btn-default-xs">-</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Total: </td>
-                                <td colspan="2" id="total-price">10</td>
+                                <td colspan="2" id="total-price" th:text="${order.getAmountToPay()}">10</td>
                             </tr>
                             </tbody>
                         </table>

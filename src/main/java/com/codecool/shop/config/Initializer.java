@@ -46,6 +46,8 @@ public class Initializer implements ServletContextListener {
 
         //setting up a new order
         Order order = new Order(1, productDataStore.find(1));
+        order.addProductToCart(productDataStore.find(2));
+        order.addProductToCart(productDataStore.find(1));
         orderDataStore.add(1, order );
     }
 }
