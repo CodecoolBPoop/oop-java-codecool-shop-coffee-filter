@@ -18,4 +18,6 @@ public interface OrderDao {
     void addNewItemToOrder(Product product, int orderId);
 
     void removeItemFromOrder(Product product, int orderId);
+
+    Order getLatestUnfinishedOrderByUser(int userId);
 }

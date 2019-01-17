@@ -3,6 +3,7 @@ package com.codecool.shop.dao.implementation;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
+import com.codecool.shop.model.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +56,15 @@ public class OrderDaoMem implements OrderDao {
     @Override
     public void removeItemFromOrder(Product product, int orderId) {
         orders.get(orderId).removeProductFromCart(product);
+    }
+
+    @Override
+    public Order getLatestUnfinishedOrderByUser(int userId) {
+        return orders.stream()
+                .filter(order -> order.getUserId() == userId)
+                .filter(order -> !order.getStatus().equals(Status.PAID))
+                .filter(order -> !order.getStatus().equals(Status.SHIPPED))
+                .findFirst()
+                .orElse(null);
     }
 }
