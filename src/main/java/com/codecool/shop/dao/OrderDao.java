@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface OrderDao {
 
-    void add(int userId, Order order);
+    void add(int userId, Order order); // todo: only for testing purposes, delete after implementing proper data flow
+
+    void add(int userId, Product product);
 
     Order find(int id);
 

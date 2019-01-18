@@ -2,17 +2,18 @@
 let cartModalButton = document.getElementById("cart-modal-button");
 cartModalButton.addEventListener('click', function () {
    sumPrice();
+    $('#shoppingCart').modal('show');
 });
 
 
 function sumPrice() {
-    let allPrice = document.querySelectorAll("td.price");
-    let howMany = document.querySelectorAll("span.how-many");
+    let prices = document.querySelectorAll("td.price");
+    let quantities = document.querySelectorAll("span.quantity");
     let total = 0;
-    for (let i = 0; i < allPrice.length; i++) {
-        let price = parseInt(allPrice[i].innerText);
-        let many = parseInt(howMany[i].innerText);
-        total = total + (price * many);
+    for (let i = 0; i < prices.length; i++) {
+        let price = parseInt(prices[i].innerText);
+        let quantity = parseInt(quantities[i].innerText);
+        total = total + (price * quantity);
     }
     total = total.toString();
     document.getElementById("total-price").innerHTML = total;

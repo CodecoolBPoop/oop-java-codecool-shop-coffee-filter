@@ -6,6 +6,7 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Status;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class OrderDaoMem implements OrderDao {
@@ -32,14 +33,29 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
+    public void add(int userId, Product product) {
+        Order order = new Order(userId, product);
+        add(userId, order);
+    }
+
+    @Override
     public Order find(int id) {
-        return orders.get(id);
+        return orders.stream()
+                .filter(order -> order.getId() == id)
+                .findFirst()
+                .orElseThrow(NullPointerException::new);
     }
 
     @Override
     public void remove(int id) {
-        if (id < orders.size() && id >= 0) {
-            orders.remove(id);
+        if (id > 0) {
+            Iterator<Order> orderIterator = orders.listIterator();
+            while (orderIterator.hasNext()) {
+                if (orderIterator.next().getId() == id) {
+                    orderIterator.remove();
+                    break;
+                }
+            }
         }
     }
 
@@ -50,22 +66,26 @@ public class OrderDaoMem implements OrderDao {
 
     @Override
     public void addNewItemToOrder(Product product, int orderId) {
-        orders.get(orderId).addProductToCart(product);
+        find(orderId).addProductToCart(product);
     }
 
     @Override
     public void addNewItemToOrder(Product product, Order order) {
-        orders.get(orders.indexOf(order)).addProductToCart(product);
+        addNewItemToOrder(product, order.getId());
     }
 
     @Override
     public void removeItemFromOrder(Product product, int orderId) {
-        orders.get(orderId).removeProductFromCart(product);
+        Order order = find(orderId);
+        order.removeProductFromCart(product);
+        if (order.getNumberOfItemsInCart() == 0) {
+            orders.remove(orderId);
+        }
     }
 
     @Override
     public void removeItemFromOrder(Product product, Order order) {
-        orders.get(orders.indexOf(order)).removeProductFromCart(product);
+        removeItemFromOrder(product, order.getId());
     }
 
     @Override

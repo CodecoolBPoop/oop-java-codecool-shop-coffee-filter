@@ -44,19 +44,17 @@
         </div>
     </div>
     <!-- Trigger the modal with a button -->
-    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
+    <button type="button" id="cart-modal-button" class="btn btn-dark btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
     </button>
 
 </div>
-<div class="container">
+<div class="container fluid">
 
     <div class="container">
 
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-
-
+        <div class="modal fade" id="shoppingCart" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-lg" role="document">
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -66,31 +64,42 @@
                     <div class="modal-body">
                         <table class="table">
                             <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Pieces</th>
-                            </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Pieces</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="item : ${cart}">
-                                <td th:text="${item.getValue().getName()}">MobilPhone</td>
-                                <td class="price" th:text="${item.getValue().getPrice()}">$ 99.9</td>
-                                <td>
-                                    <button type="button" class="plus-button btn-default-xs">+</button>
-                                    <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
-                                    <button type="button" class="negative-button btn-default-xs">-</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total:</td>
-                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
-                            </tr>
+                                <tr th:each="item : ${cart}">
+                                    <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
+                                    <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
+                                    <td>
+                                        <form class="remove d-inline" action="/cart" method="post">
+                                            <input type="hidden" name="id" th:value="${item.getValue().getProduct().getId()}">
+                                            <input type="hidden" name="action" value="remove">
+                                            <input type="submit"
+                                                   class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                                   value="-"/>
+                                        </form>
+                                        <span class="quantity mx-2 d-inline" th:text="${item.getValue().getQuantity()}">10</span>
+                                        <form class="add d-inline" action="/cart" method="post">
+                                            <input type="hidden" name="id" th:value="${item.getValue().getProduct().getId()}">
+                                            <input type="hidden" name="action" value="add">
+                                            <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                                   value="+"/>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total:</td>
+                                    <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Buy</button>
+                        <a href="#" class="btn btn-dark" data-dismiss="modal">Buy</a>
                     </div>
                 </div>
 
