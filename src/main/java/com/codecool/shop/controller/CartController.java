@@ -35,6 +35,7 @@ public class CartController extends HttpServlet {
         OrderDao orderDataStore = OrderDaoMem.getInstance();
         int userId = 1;
 
+        System.out.println(req.getParameterMap().toString());
         String id = req.getParameter("id");
         int productId = Integer.getInteger(id);
         String action = req.getParameter("action");
