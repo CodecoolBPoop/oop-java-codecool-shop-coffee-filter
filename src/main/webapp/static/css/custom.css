@@ -76,4 +76,18 @@
     color: #eeeeee;
 }
 
+.footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;}
+
+.sub-title{
+    font-size: 35px;
+}
+
+#payment-button{
+    margin: 0 auto !important;
+    display: block !important;
+}
 
