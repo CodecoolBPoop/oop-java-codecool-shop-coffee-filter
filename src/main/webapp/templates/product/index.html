@@ -33,9 +33,7 @@
     <script src="/static/js/modal/totalPrice.js" defer></script>
     <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
 </head>
-
 <body>
-
 <div class="jumbotron text-center">
     <div class="jumbotron-wrapper">
         <div class="jumbotron-title">
@@ -43,124 +41,114 @@
             <p class="sub-title">.... all things coffee ....</p>
         </div>
     </div>
-    <!-- Trigger the modal with a button -->
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
         <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
     </button>
-
 </div>
 <div class="container">
-
-    <div class="container">
-
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Your cart</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Pieces</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="item : ${cart}">
-                                <td th:text="${item.getValue().getName()}">MobilPhone</td>
-                                <td class="price" th:text="${item.getValue().getPrice()}">$ 99.9</td>
-                                <td>
-                                    <button type="button" class="negative-button btn-default-xs">-</button>
-                                    <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
-                                    <button type="button" class="plus-button btn-default-xs">+</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total:</td>
-                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-default" href="/checkout">Checkout</a>
-                    </div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Your cart</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Pieces</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${cart}">
+                            <td th:text="${item.getValue().getName()}">MobilPhone</td>
+                            <td class="price" th:text="${item.getValue().getPrice()}">$ 99.9</td>
+                            <td>
+                                <button type="button" class="negative-button btn-default-xs">-</button>
+                                <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
+                                <button type="button" class="plus-button btn-default-xs">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total:</td>
+                            <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" href="/checkout">Checkout</a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="container">
-        <form method="GET">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col col-sm-12 col-md-6">
-                        <label for="category-selector">Select Category</label>
-                        <select name="category" class="form-control" id="category-selector"
-                                onchange="{ this.form.submit() };">
-                            <option value="0">All</option>
-                            <option th:each="category: ${categories}"
-                                    th:value="${category.getId()}"
-                                    th:text="${category.getName()}"
-                                    th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
-                                Category Name
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col col-sm-12 col-md-6">
-                        <label for="supplier-selector">Select Supplier</label>
-                        <select name="supplier" class="form-control" id="supplier-selector"
-                                onchange="{ this.form.submit() };">
-                            <option value="0">All</option>
-                            <option th:each="supplier: ${suppliers}"
-                                    th:value="${supplier.getId()}"
-                                    th:text="${supplier.getName()}"
-                                    th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
-                                Category Name
-                            </option>
-                        </select>
-                    </div>
+</div>
+<div class="container">
+    <form method="GET">
+        <div class="form-group">
+            <div class="row">
+                <div class="col col-sm-12 col-md-6">
+                    <label for="category-selector">Select Category</label>
+                    <select name="category" class="form-control" id="category-selector"
+                            onchange="{ this.form.submit() };">
+                        <option value="0">All</option>
+                        <option th:each="category: ${categories}"
+                                th:value="${category.getId()}"
+                                th:text="${category.getName()}"
+                                th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
+                            Category Name
+                        </option>
+                    </select>
+                </div>
+                <div class="col col-sm-12 col-md-6">
+                    <label for="supplier-selector">Select Supplier</label>
+                    <select name="supplier" class="form-control" id="supplier-selector"
+                            onchange="{ this.form.submit() };">
+                        <option value="0">All</option>
+                        <option th:each="supplier: ${suppliers}"
+                                th:value="${supplier.getId()}"
+                                th:text="${supplier.getName()}"
+                                th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
+                            Category Name
+                        </option>
+                    </select>
                 </div>
             </div>
-        </form>
-        <div id="products" class="row">
-            <div class="col col-sm-12 col-md-6 col-lg-4"
-                 th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
-                <form method="POST">
-                    <div class="card">
-                        <img class="" src="http://placehold.it/400x250/000/fff"
-                             th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
-                        <div class="card-header">
-                            <h4 class="card-title" th:text="${prod.name}">Product name</h4>
-                            <p class="card-text" th:text="${prod.description}">Product description... </p>
+        </div>
+    </form>
+    <div id="products" class="row">
+        <div class="col col-sm-12 col-md-6 col-lg-4"
+             th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
+            <form method="POST">
+                <div class="card">
+                    <img class="" src="http://placehold.it/400x250/000/fff"
+                         th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
+                    <div class="card-header">
+                        <h4 class="card-title" th:text="${prod.name}">Product name</h4>
+                        <p class="card-text" th:text="${prod.description}">Product description... </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
                         </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
-                            </div>
-                            <div class="card-text">
-                                <button class="btn btn-success" type="submit">Add to cart</button>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <input type="text" name="boughtItem" th:value="${prod.getId()}" hidden readonly>
+                        <div class="card-text">
+                            <button class="btn btn-success" type="submit">Add to cart</button>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="card-footer">
+                        <input type="text" name="boughtItem" th:value="${prod.getId()}" hidden readonly>
+                    </div>
+                </div>
+            </form>
         </div>
-
     </div>
-
-    <div th:replace="footer.html :: copy"></div>
+    <div th:replace="footer.html :: copy">
+        Footer
+    </div>
 </div>
 </body>
 </html>
