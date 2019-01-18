@@ -33,9 +33,7 @@
     <script src="/static/js/modal/totalPrice.js" defer></script>
     <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
 </head>
-
 <body>
-
 <div class="jumbotron text-center">
     <div class="jumbotron-wrapper">
         <div class="jumbotron-title">
@@ -43,12 +41,10 @@
             <p class="sub-title">.... all things coffee ....</p>
         </div>
     </div>
-    <!-- Trigger the modal with a button -->
-    <button type="button" id="cart-modal-button" class="btn btn-dark btn-md float-right" data-toggle="modal"
+    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
         <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
     </button>
-
 </div>
 <div class="container fluid">
 
@@ -103,7 +99,6 @@
                         <a class="btn btn-default" href="/checkout">Checkout</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -166,10 +161,9 @@
                 </form>
             </div>
         </div>
-
+        <div th:replace="footer.html :: copy">
+            Footer
+        </div>
     </div>
-
-    <div th:replace="footer.html :: copy"></div>
-</div>
 </body>
 </html>
