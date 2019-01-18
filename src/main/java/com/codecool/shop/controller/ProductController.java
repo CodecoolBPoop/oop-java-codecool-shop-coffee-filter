@@ -72,12 +72,18 @@ public class ProductController extends HttpServlet {
             float amountToPay = latestOrder.getAmountToPay();
             context.setVariable("cart", latestOrder.getShoppingCart());
             context.setVariable("amountToPay", amountToPay);
+            context.setVariable("order", latestOrder);
         }
         context.setVariable("recipient", "World");
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
         engine.process("product/index.html", context, resp.getWriter());
+
+//        Map params = new HashMap<>();
+//        params.put("category", productCategoryDataStore.find(1));
+//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
+//        context.setVariables(params);
     }
 
     private void setAllProductVisible(ProductDao productDataStore) {
