@@ -78,6 +78,7 @@ public class ProductController extends HttpServlet {
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
+        context.setVariable("username",null);
         engine.process("product/index.html", context, resp.getWriter());
 
 //        Map params = new HashMap<>();
