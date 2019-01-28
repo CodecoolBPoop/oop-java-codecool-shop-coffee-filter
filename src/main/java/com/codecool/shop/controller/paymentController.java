@@ -20,16 +20,32 @@ import java.util.HashMap;
 public class paymentController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         OrderDao orderDataStore = OrderDaoMem.getInstance();
         Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
         float amountToPay = order.getAmountToPay();
 
+        String billingFirstName = req.getParameter("firstname");
+        String billingLastName = req.getParameter("lastname");
+        String billingEmail = req.getParameter("email");
+        String billingAddress = req.getParameter("address");
+        String billingCity = req.getParameter("city");
+        String billingCountry = req.getParameter("country");
+        String billingZip = req.getParameter("zip");
+
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
+
+        context.setVariable("billingFirstname", billingFirstName);
+        context.setVariable("billingLastname", billingLastName);
+        context.setVariable("billingEmail", billingEmail);
+        context.setVariable("billingAddress", billingAddress);
+        context.setVariable("billingCity", billingCity);
+        context.setVariable("billingCountry", billingCountry);
+        context.setVariable("billingZip", billingZip);
 
         context.setVariable("amountToPay", amountToPay);
 
