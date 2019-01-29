@@ -20,8 +20,6 @@ ALTER TABLE IF EXISTS ONLY public.statuses DROP CONSTRAINT IF EXISTS pk7_statuse
 ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS pk8_orders CASCADE;
 ALTER TABLE IF EXISTS ONLY public.delivery_addresses DROP CONSTRAINT IF EXISTS pk9_delivery_addresses CASCADE;
 
--- DROP FUNCTION IF EXISTS ONLY valid_email(text);
-
 DROP TABLE IF EXISTS order_products;
 DROP TABLE IF EXISTS user_orders;
 DROP TABLE IF EXISTS delivery_addresses;
@@ -34,20 +32,20 @@ DROP TABLE IF EXISTS suppliers;
 DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS users;
 
--- CREATE EXTENSION plperlu;
--- CREATE FUNCTION valid_email(text)
---   RETURNS boolean
---   LANGUAGE plperlu
---   IMMUTABLE LEAKPROOF STRICT AS
--- $$
---   use Email::Valid;
---   my $email = shift;
---   Email::Valid->address($email) or die "Invalid email address: $email\n";
---   return 'true';
--- $$;
---
--- CREATE DOMAIN validemail AS text NOT NULL
---   CONSTRAINT validemail_check CHECK (valid_email(VALUE));
+CREATE EXTENSION plperlu;
+CREATE FUNCTION valid_email(text)
+  RETURNS boolean
+  LANGUAGE plperlu
+  IMMUTABLE LEAKPROOF STRICT AS
+$$
+  use Email::Valid;
+  my $email = shift;
+  Email::Valid->address($email) or die "Invalid email address: $email\n";
+  return 'true';
+$$;
+
+CREATE DOMAIN validemail AS text NOT NULL
+  CONSTRAINT validemail_check CHECK (valid_email(VALUE));
 
 
 CREATE TABLE suppliers (
@@ -81,10 +79,11 @@ CREATE TABLE countries (
 
 CREATE TABLE users (
   id SMALLSERIAL NOT NULL UNIQUE,
+  user_name VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
-  email VARCHAR NOT NULL UNIQUE,
---   email validemail NOT NULL UNIQUE,
+--   email VARCHAR NOT NULL UNIQUE,
+  email validemail NOT NULL UNIQUE,
   password VARCHAR NOT NULL);
 
 CREATE TABLE statuses (
