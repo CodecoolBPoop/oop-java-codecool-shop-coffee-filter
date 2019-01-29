@@ -12,14 +12,21 @@ function setAddRemoveButtonListeners() {
                 method: "post",
                 body: JSON.stringify(getFormFieldsAsObject(form))
             }).then(function (response) {
-                let quantity = parseInt(quantities[i].innerText);
-                quantity += 1;
-                quantity = quantity.toString();
-                document.querySelectorAll("span.quantity")[i].innerHTML = quantity;
-                sumPrice();
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    response.error();
+                }
+            }).then(function (data) {
+                if (data.cart == 1) {
+                    let items = data.items;
+                    console.log(data);
+                    fillAndAppendCartTemplate(items);
+                } else {
+                    $('#shoppingCart').modal('hide');
+                }
             }).catch(function (error) {
-                alert(`Error: ${error}
-                If you see this, our testers did a sloppy job, and our developers an even sloppier`)
+                alert(`Error: ${error}\nIf you see this, our testers did a sloppy job, and our developers an even sloppier`)
             });
         });
     }
@@ -62,19 +69,6 @@ function emptyCart() {
     $('#shoppingCart').modal('dispose');
 }
 
-function clearAddRemoveButtonListeners() {
-    let addItemForms = document.querySelectorAll("form.add");
-    for (let i = 0; i < addItemForms.length; i++) {
-        let form = addItemForms[i];
-        form.removeEventListener('submit', setAddRemoveButtonListeners);
-    }
-    let removeItemForms = document.querySelectorAll("form.remove");
-    for (let i = 0; i < removeItemForms.length; i++) {
-        let form = removeItemForms[i];
-        form.removeEventListener('submit', setAddRemoveButtonListeners);
-    }
-}
-
 setAddRemoveButtonListeners();
 
 function getFormFieldsAsObject(elements) {
@@ -84,4 +78,23 @@ function getFormFieldsAsObject(elements) {
         return data;
 
     }, {});
+}
+
+function fillAndAppendCartTemplate(items) {
+    let cartSource = document.getElementById("cart").innerHTML;
+    let cartTemplate = Handlebars.compile(cartSource);
+    let cartContext = {items: items};
+    let placeToInsertCart = document.getElementById("cart");
+    let toAppendCart = cartTemplate(cartContext);
+    appendToElement(placeToInsertCart, toAppendCart);
+}
+
+function appendToElement(elementToExtend, textToAppend) {
+    // function to append new DOM elements (represented by a string) to an existing DOM element
+    let fakeDiv = document.createElement('div');
+    fakeDiv.innerHTML = textToAppend.trim();
+    for (let childNode of fakeDiv.childNodes) {
+            elementToExtend.appendChild(childNode);
+    }
+    return elementToExtend.lastChild;
 }

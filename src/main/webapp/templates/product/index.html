@@ -22,6 +22,9 @@
             integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"
             defer></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.amd.min.js" defer
+            integrity="sha256-LRZxKfU/uAO/CkyJjJTCMZphrNZ7qyqTkydAhgv3sQ0=" crossorigin="anonymous"></script>
+
     <!-- Latest compiled and minified CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -67,7 +70,7 @@
                                     <th>Pieces</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="cart">
                                 <tr th:each="item : ${cart}">
                                     <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
                                     <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
@@ -164,6 +167,10 @@
         <div th:replace="footer.html :: copy">
             Footer
         </div>
+        <div th:replace="cartTemplateForJS.html :: copy">
+            cartTemplate
+        </div>
     </div>
+</div>
 </body>
 </html>
