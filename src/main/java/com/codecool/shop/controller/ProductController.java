@@ -35,7 +35,7 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
@@ -132,8 +132,7 @@ public class ProductController extends HttpServlet {
         System.out.println("bought: " + product.getName());
         orderDataStore.addNewItemToOrder(product, latestOrder);
 
-        HttpServletResponse httpResponse = (HttpServletResponse) resp;
-        httpResponse.sendRedirect("/");
+        resp.sendRedirect("/");
     }
 
 }

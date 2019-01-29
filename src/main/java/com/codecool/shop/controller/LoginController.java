@@ -29,12 +29,11 @@ public class LoginController extends HttpServlet {
         String username=req.getParameter("username");
         String password=req.getParameter("password");
 
-        // if post username equals the sql username
+        // if post username fint to sql username && post pasword equals to the sql password
         HttpSession session=req.getSession();
         session.setAttribute("username",username);
         // send error-message
 
-        HttpServletResponse httpResponse = (HttpServletResponse) resp;
-        httpResponse.sendRedirect("/");
+        resp.sendRedirect("/");
     }
 }
