@@ -5,7 +5,6 @@ cartModalButton.addEventListener('click', function () {
     $('#shoppingCart').modal('show');
 });
 
-
 function sumPrice() {
     let prices = document.querySelectorAll("td.price");
     let quantities = document.querySelectorAll("span.quantity");
