@@ -45,10 +45,34 @@ public abstract class DataBaseConnect {
     public void closeDataBaseConnection() throws SQLException {
         try {
             this.connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
             this.statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
             this.resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public PreparedStatement getPStatement() {
+        return pstatement;
+    }
+
+    public void setPreparedStatement(PreparedStatement pstatement) {
+        this.pstatement = pstatement;
+    }
+
+    public ResultSet getResultSet() {
+        return resultSet;
+    }
+
+    public void setResultSet(ResultSet resultSet) {
+        this.resultSet = resultSet;
     }
 }
