@@ -35,7 +35,7 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
@@ -82,7 +82,9 @@ public class ProductController extends HttpServlet {
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
-        context.setVariable("username", session);
+        if (session != null) {
+            context.setVariable("username", session.getAttribute("username"));
+        }
         engine.process("product/index.html", context, resp.getWriter());
 
 //        Map params = new HashMap<>();
@@ -108,6 +110,7 @@ public class ProductController extends HttpServlet {
             }
         }
     }
+
     private void setProductVisibilityBasedOnSupplierFilter(ProductDao productDataStore, String supplier) {
         for (int i = 0; i < productDataStore.getAll().size(); i++) {
             Product product = productDataStore.getAll().get(i);

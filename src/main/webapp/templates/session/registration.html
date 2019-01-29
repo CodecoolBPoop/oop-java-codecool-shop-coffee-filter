@@ -10,11 +10,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-<h3>Registration</h3>
+
+<h2 align="center">Registration</h2> <br>
 
 <div class="container">
-    <h3>Input Groups</h3>
     <form action="/">
+        <h4 align="center">Standard data</h4>
+        <br>
+
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
             <input id="username" type="text" class="form-control" name="username" placeholder="User name">
@@ -33,7 +36,25 @@
         </div>
         <br>
 
-        <button type="submit" class="btn btn-default">Login</button>
+        <h4 align="center">Personal data</h4>
+
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input id="firstname" type="text" class="form-control" name="firstname" placeholder="First name">
+            <input id="lastname" type="text" class="form-control" name="lastname" placeholder="Last name">
+        </div>
+        <br>
+
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+            <input id="country" type="text" class="form-control" name="country" placeholder="Hungary">
+            <input id="city" type="text" class="form-control" name="city" placeholder="Budapest">
+            <input id="street" type="text" class="form-control" name="street" placeholder="Nagymezo utca">
+            <input id="house_number" type="text" class="form-control" name="house_number" placeholder="66">
+        </div>
+        <br>
+
+        <button type="submit" class="btn btn-default">Registration</button>
     </form>
 </div>
 

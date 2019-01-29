@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/registration"})
@@ -26,11 +25,16 @@ public class RegistrationController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username=req.getParameter("username");
-        String password=req.getParameter("password");
-        String email=req.getParameter("email");
-
-        // variables save to database user table
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        String email = req.getParameter("email");
+        String firstName = req.getParameter("firstname");
+        String lastName = req.getParameter("lastname");
+        String country = req.getParameter("country");
+        String city = req.getParameter("city");
+        String street = req.getParameter("street");
+        String houseNumber = req.getParameter("house_number");
+        // variables save to database sql
 
         HttpServletResponse httpResponse = (HttpServletResponse) resp;
         httpResponse.sendRedirect("/");
