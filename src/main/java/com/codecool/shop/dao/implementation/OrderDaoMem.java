@@ -94,6 +94,7 @@ public class OrderDaoMem implements OrderDao {
                 .filter(order -> order.getUserId() == userId)
                 .filter(order -> !order.getStatus().equals(Status.PAID))
                 .filter(order -> !order.getStatus().equals(Status.SHIPPED))
+                .filter(order -> !order.getStatus().equals(Status.CONFIRMED))
                 .findFirst()
                 .orElse(null);
     }
