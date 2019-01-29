@@ -13,6 +13,7 @@ public abstract class DataBaseConnect {
     private static final String DB_PASSWORD = System.getenv("PASSWORD");
 
     protected static Connection connection = null;
+    protected static PreparedStatement pstatement = null;
     protected static Statement statement = null;
     protected static ResultSet resultSet = null;
 
