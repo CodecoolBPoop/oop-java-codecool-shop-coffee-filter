@@ -30,15 +30,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             pstatement.setString(2, description);
             pstatement.setString(3, department);
 
-            try (ResultSet resultSet = pstatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String retrievedName = resultSet.getString("name");
-                    String retrieveddescription = resultSet.getString("description");
-                    String retrieveddepartment = resultSet.getString("department");
-                    System.out.println("retrieved id: " + id + ". name:" + retrievedName + ", dep.: " + retrieveddepartment + ", desc.: " + retrieveddescription);
-                }
-            }
+            pstatement.executeUpdate();
 
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
