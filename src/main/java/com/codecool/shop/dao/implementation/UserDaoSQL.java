@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class UserDaoSQL extends DataBaseConnect implements UserDao {
 
@@ -20,15 +21,42 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
     }
 
     @Override
-    public void add(String name, String pswd, String eMail) {
-        String sql = "INSERT INTO users (user_name, password, email)" + "VALUES (?,?,?);";
+    public void add(String name, String pswd, String email) {
+        if (checkNameAndEmail(name, email)) {
+            String sql = "INSERT INTO users (user_name, password, email)" + "VALUES (?,?,?);";
+            try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
+                pstatement.setString(1, name);
+                pstatement.setString(2, pswd);
+                pstatement.setString(3, email);
+
+                pstatement.executeUpdate();
+
+            } catch (SQLException e) {
+                System.err.println("Failed to insert into table due to incorrect SQL String!");
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: JDBC Driver load fail");
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public boolean checkNameAndEmail(String name, String email) {
+        boolean valid = true;
+        String sql = "SELECT user_name, email FROM users";
         try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
-            pstatement.setString(1, name);
-            pstatement.setString(2, pswd);
-            pstatement.setString(3, eMail);
-
-            pstatement.executeUpdate();
-
+            try (ResultSet resultSet = pstatement.executeQuery()){
+                while (resultSet.next()) {
+                    String retrievedName = resultSet.getString("name");
+                    String retrievedEmail = resultSet.getString("email");
+                    if (retrievedName.equals(name) || retrievedEmail.equals(email)) {
+                        valid = false;
+                    }
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
             e.printStackTrace();
@@ -38,20 +66,8 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return valid;
     }
 
-    @Override
-    public boolean checkUserLogin(String name, String pswd) {
-        return false;
-    }
 
-    @Override
-    public void findByID(int id) {
-
-    }
-
-    @Override
-    public void remove(int id) {
-
-    }
 }
