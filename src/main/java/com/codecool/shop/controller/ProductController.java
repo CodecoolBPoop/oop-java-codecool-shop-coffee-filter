@@ -77,13 +77,7 @@ public class ProductController extends HttpServlet {
             context.setVariable("order", latestOrder);
         }
         context.setVariable("recipient", "World");
-        try {
-            context.setVariable("categories", productCategoryDataStore.getAll());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
         if (session != null) {
