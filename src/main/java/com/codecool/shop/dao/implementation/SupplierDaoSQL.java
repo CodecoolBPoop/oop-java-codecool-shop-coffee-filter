@@ -29,15 +29,17 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
 
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ){
+        ) {
             preparedStatement.setInt(1, supplier.getId());
             preparedStatement.setString(2, supplier.getName());
             preparedStatement.setString(3, supplier.getDescription());
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -62,6 +64,9 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
         }
         return null;
     }
@@ -72,9 +77,12 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
 
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ){
+        ) {
             preparedStatement.setInt(1, id);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
             e.printStackTrace();
         }
     }
@@ -96,6 +104,9 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
                 resultList.add(actSupplier);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
             e.printStackTrace();
         }
         return resultList;
