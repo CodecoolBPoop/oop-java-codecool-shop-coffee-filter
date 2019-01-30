@@ -109,7 +109,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
     }
 
     @Override
-    public List<ProductCategory> getAll() throws SQLException {
+    public List<ProductCategory> getAll() throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM product_category";
         List<ProductCategory> data = new ArrayList<>();
 
