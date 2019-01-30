@@ -20,7 +20,7 @@ public abstract class DataBaseConnect {
     protected static ResultSet resultSet = null;
 
 
-    public Connection getDbConnection() throws ClassNotFoundException, SQLException, Exception {
+    public Connection getDbConnection() throws SQLException {
         return DriverManager.getConnection(
                 DB_URL,
                 DB_USER,
@@ -41,5 +41,17 @@ public abstract class DataBaseConnect {
 
     public void setResultSet(ResultSet resultSet) {
         this.resultSet = resultSet;
+    }
+
+
+    public void executeQuery(String query) {
+        try (Connection connection = getDbConnection();
+             Statement statement =connection.createStatement();
+        ){
+            statement.execute(query);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
