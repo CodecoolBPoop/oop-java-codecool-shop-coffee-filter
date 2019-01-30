@@ -20,7 +20,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
     }
 
     @Override
-    public void add(ProductCategory category) throws SQLException {
+    public void add(ProductCategory category) {
         String sql = "INSERT INTO product_category (name, description, department) " + "VALUES (?, ?, ?)";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             String name = category.getName();
@@ -48,16 +48,12 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            resultSet.close();
-            pstatement.close();
-            connection.close();
         }
     }
 
 
     @Override
-    public ProductCategory find(int id) throws SQLException {
+    public ProductCategory find(int id) {
         String sql = "SELECT * FROM product_category WHERE id=?";
 
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
@@ -80,16 +76,12 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            resultSet.close();
-            pstatement.close();
-            connection.close();
         }
         throw new NullPointerException("No such result");
     }
 
     @Override
-    public void remove(int id) throws SQLException {
+    public void remove(int id) {
         String sql = "DELETE FROM product_category WHERE id=?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
@@ -109,15 +101,11 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            resultSet.close();
-            pstatement.close();
-            connection.close();
         }
     }
 
     @Override
-    public List<ProductCategory> getAll() throws SQLException, ClassNotFoundException {
+    public List<ProductCategory> getAll() {
         String sql = "SELECT * FROM product_category";
         List<ProductCategory> data = new ArrayList<>();
 

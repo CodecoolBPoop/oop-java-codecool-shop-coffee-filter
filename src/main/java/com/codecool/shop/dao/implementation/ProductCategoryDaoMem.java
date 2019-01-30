@@ -44,7 +44,7 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
     }
 
     @Override
-    public List<ProductCategory> getAll() throws SQLException, ClassNotFoundException {
+    public List<ProductCategory> getAll() {
         return data;
     }
 }
