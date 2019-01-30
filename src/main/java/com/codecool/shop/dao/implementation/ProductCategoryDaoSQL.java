@@ -111,7 +111,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
 
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
