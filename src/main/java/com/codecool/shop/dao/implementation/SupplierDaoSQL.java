@@ -1,4 +1,4 @@
-package com.codecool.shop.dao.implementationForSQL;
+package com.codecool.shop.dao.implementation;
 
 import com.codecool.shop.dao.DataBaseConnect;
 import com.codecool.shop.dao.SupplierDao;
@@ -10,6 +10,18 @@ import java.util.List;
 
 
 public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
+
+    private static SupplierDaoSQL instance = null;
+
+    private SupplierDaoSQL() {
+    }
+
+    public static SupplierDaoSQL getInstance() {
+        if (instance == null) {
+            instance = new SupplierDaoSQL();
+        }
+        return instance;
+    }
 
     @Override
     public void add(Supplier supplier) {
