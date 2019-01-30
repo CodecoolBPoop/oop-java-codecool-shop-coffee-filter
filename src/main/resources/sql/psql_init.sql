@@ -20,6 +20,11 @@ ALTER TABLE IF EXISTS ONLY public.statuses DROP CONSTRAINT IF EXISTS pk7_statuse
 ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS pk8_orders CASCADE;
 ALTER TABLE IF EXISTS ONLY public.delivery_addresses DROP CONSTRAINT IF EXISTS pk9_delivery_addresses CASCADE;
 
+DROP DOMAIN IF EXISTS validemail CASCADE ;
+DROP FUNCTION IF EXISTS valid_email CASCADE;
+DROP EXTENSION IF EXISTS plperlu CASCADE;
+
+
 DROP TABLE IF EXISTS order_products;
 DROP TABLE IF EXISTS user_orders;
 DROP TABLE IF EXISTS delivery_addresses;
@@ -51,13 +56,15 @@ CREATE DOMAIN validemail AS text NOT NULL
 CREATE TABLE suppliers (
   id SMALLSERIAL NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
-  description VARCHAR(255));
+  description VARCHAR(255),
+  active BOOLEAN DEFAULT TRUE);
 
 CREATE TABLE product_category (
   id SMALLSERIAL NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255),
-  department VARCHAR(255) NOT NULL);
+  department VARCHAR(255) NOT NULL,
+  active BOOLEAN DEFAULT TRUE);
 
 CREATE TABLE currencies (
   id SMALLSERIAL NOT NULL UNIQUE,
@@ -69,6 +76,7 @@ CREATE TABLE products (
   description VARCHAR(255),
   price DECIMAL NOT NULL,
   stock SMALLINT DEFAULT '0',
+  active BOOLEAN DEFAULT TRUE,
   currency SMALLINT NOT NULL,
   supplier_id SMALLINT NOT NULL,
   product_category_id SMALLINT NOT NULL);
@@ -82,7 +90,6 @@ CREATE TABLE users (
   user_name VARCHAR(50) NOT NULL,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
---   email VARCHAR NOT NULL UNIQUE,
   email validemail NOT NULL UNIQUE,
   password VARCHAR NOT NULL);
 
