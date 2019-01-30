@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,13 @@ public class ProductController extends HttpServlet {
             context.setVariable("order", latestOrder);
         }
         context.setVariable("recipient", "World");
-        context.setVariable("categories", productCategoryDataStore.getAll());
+        try {
+            context.setVariable("categories", productCategoryDataStore.getAll());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
         if (session != null) {
