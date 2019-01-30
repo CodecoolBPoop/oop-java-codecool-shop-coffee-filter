@@ -10,6 +10,14 @@ import java.lang.String;
 import java.sql.*;
 
 public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCategoryDao {
+    private static ProductCategoryDaoSQL instance = null;
+
+    public static ProductCategoryDaoSQL getInstance() {
+        if (instance == null) {
+            instance = new ProductCategoryDaoSQL();
+        }
+        return instance;
+    }
 
     @Override
     public void add(ProductCategory category) throws SQLException {
@@ -115,7 +123,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
 
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
-                if (resultSet.next()) {
+                while(resultSet.next()) {
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
@@ -133,11 +141,8 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            resultSet.close();
-            pstatement.close();
-            connection.close();
+            return data;
         }
-        return data;
     }
 }
 
