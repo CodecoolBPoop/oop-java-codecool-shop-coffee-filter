@@ -56,8 +56,15 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
 
     @Override
     public void remove(int id) {
-        String query = "DELETE FROM suppliers WHERE id = '" + id + "';";
-        executeQuery(query);
+        String query = "UPDATE suppliers SET active = false WHERE id = ?";
+
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ){
+            preparedStatement.setInt(1, id);
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -80,7 +87,6 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
             e.printStackTrace();
         }
         return resultList;
-        //executeQuery(query); //returns iterator - create supplier object by going through line by line - create list
     }
 
 }
