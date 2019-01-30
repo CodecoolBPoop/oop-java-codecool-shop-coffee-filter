@@ -4,6 +4,7 @@ import com.codecool.shop.dao.DataBaseConnect;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.model.ProductCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 import java.sql.*;
@@ -80,13 +81,63 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
     }
 
     @Override
-    public void remove(int id) {
+    public void remove(int id) throws SQLException {
+        String sql = "DELETE FROM product_category WHERE id=?";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, id);
 
-
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    String department = resultSet.getString("department");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            resultSet.close();
+            pstatement.close();
+            connection.close();
+        }
     }
 
     @Override
-    public List<ProductCategory> getAll() {
-        return null;
+    public List<ProductCategory> getAll() throws SQLException {
+        String sql = "SELECT * FROM product_category";
+        List<ProductCategory> data = new ArrayList<>();
+
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    String department = resultSet.getString("department");
+
+                    ProductCategory productCategory = new ProductCategory(name, description, department);
+                    data.add(productCategory);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            resultSet.close();
+            pstatement.close();
+            connection.close();
+        }
+        return data;
     }
 }
+
