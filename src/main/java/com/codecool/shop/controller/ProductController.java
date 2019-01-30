@@ -3,13 +3,10 @@ package com.codecool.shop.controller;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import org.omg.CORBA.INTERNAL;
 import org.thymeleaf.TemplateEngine;
@@ -22,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +27,8 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
 public class ProductController extends HttpServlet {
-    boolean isCategorySet = false;
-    boolean isSupplierSet = false;
+    private boolean isCategorySet = false;
+    private boolean isSupplierSet = false;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,7 +36,7 @@ public class ProductController extends HttpServlet {
         HttpSession session = req.getSession(false);
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
         Map mainPageFilters = new HashMap<>();
 
@@ -79,7 +77,13 @@ public class ProductController extends HttpServlet {
             context.setVariable("order", latestOrder);
         }
         context.setVariable("recipient", "World");
-        context.setVariable("categories", productCategoryDataStore.getAll());
+        try {
+            context.setVariable("categories", productCategoryDataStore.getAll());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
         if (session != null) {

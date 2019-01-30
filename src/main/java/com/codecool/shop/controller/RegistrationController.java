@@ -27,11 +27,6 @@ public class RegistrationController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String email = req.getParameter("email");
-        String firstName = req.getParameter("firstname");
-        String lastName = req.getParameter("lastname");
-        String country = req.getParameter("country");
-        String city = req.getParameter("city");
-        String street = req.getParameter("street");
         // variables save to database sql
 
         resp.sendRedirect("/");
