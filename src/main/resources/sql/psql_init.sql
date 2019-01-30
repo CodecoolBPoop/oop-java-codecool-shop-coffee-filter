@@ -88,8 +88,6 @@ CREATE TABLE countries (
 CREATE TABLE users (
   id SMALLSERIAL NOT NULL UNIQUE,
   user_name VARCHAR(50) NOT NULL,
-  first_name VARCHAR(50) NOT NULL,
-  last_name VARCHAR(50) NOT NULL,
   email validemail NOT NULL UNIQUE,
   password VARCHAR NOT NULL);
 
@@ -106,7 +104,9 @@ CREATE TABLE delivery_addresses (
   street VARCHAR NOT NULL,
   house_number SMALLINT NOT NULL,
   story VARCHAR,
-  door VARCHAR);
+  door VARCHAR,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL);
 
 CREATE TABLE orders (
   id SMALLSERIAL NOT NULL UNIQUE,
