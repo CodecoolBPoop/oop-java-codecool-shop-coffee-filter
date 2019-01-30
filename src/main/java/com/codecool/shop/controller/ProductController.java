@@ -3,13 +3,10 @@ package com.codecool.shop.controller;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import org.omg.CORBA.INTERNAL;
 import org.thymeleaf.TemplateEngine;
@@ -20,7 +17,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +27,16 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
 public class ProductController extends HttpServlet {
-    boolean isCategorySet = false;
-    boolean isSupplierSet = false;
+    private boolean isCategorySet = false;
+    private boolean isSupplierSet = false;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Session
+        HttpSession session = req.getSession(false);
+
         ProductDao productDataStore = ProductDaoMem.getInstance();
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
         Map mainPageFilters = new HashMap<>();
 
@@ -78,6 +80,9 @@ public class ProductController extends HttpServlet {
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
+        if (session != null) {
+            context.setVariable("username", session.getAttribute("username"));
+        }
         engine.process("product/index.html", context, resp.getWriter());
 
 //        Map params = new HashMap<>();
@@ -103,6 +108,7 @@ public class ProductController extends HttpServlet {
             }
         }
     }
+
     private void setProductVisibilityBasedOnSupplierFilter(ProductDao productDataStore, String supplier) {
         for (int i = 0; i < productDataStore.getAll().size(); i++) {
             Product product = productDataStore.getAll().get(i);
@@ -127,8 +133,7 @@ public class ProductController extends HttpServlet {
         System.out.println("bought: " + product.getName());
         orderDataStore.addNewItemToOrder(product, latestOrder);
 
-        HttpServletResponse httpResponse = (HttpServletResponse) resp;
-        httpResponse.sendRedirect("/");
+        resp.sendRedirect("/");
     }
 
 }
