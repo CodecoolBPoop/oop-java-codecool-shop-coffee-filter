@@ -11,11 +11,9 @@ import java.sql.*;
 public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCategoryDao {
 
     @Override
-    public void add(ProductCategory category) {
-        try {
-            Connection connection = super.getDbConnection();
-            String sql = "INSERT INTO product_category (name, description, department) " + "VALUES (?, ?, ?)";
-            pstatement = connection.prepareStatement(sql);
+    public void add(ProductCategory category) throws SQLException {
+        String sql = "INSERT INTO product_category (name, description, department) " + "VALUES (?, ?, ?)";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             String name = category.getName();
             String description = category.getDescription();
             String department = category.getDepartment();
@@ -23,59 +21,67 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             pstatement.setString(2, description);
             pstatement.setString(3, department);
 
-            setResultSet(pstatement.executeQuery());
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String retrievedName = resultSet.getString("name");
+                    String retrieveddescription = resultSet.getString("description");
+                    String retrieveddepartment = resultSet.getString("department");
+                    System.out.println("retrieved id: " + id + ". name:" + retrievedName + ", dep.: " + retrieveddepartment + ", desc.: " + retrieveddescription);
+                }
+            }
 
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Failed to insert into table due to non-SQL error");
             e.printStackTrace();
         } finally {
-            try {
-                super.closeDataBaseConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            resultSet.close();
+            pstatement.close();
+            connection.close();
         }
     }
 
+
     @Override
-    public ProductCategory find(int id) {
-        try {
-            Connection connection = super.getDbConnection();
-            String sql = "SELECT * FROM product_category WHERE id=?";
-            pstatement = connection.prepareStatement(sql);
+    public ProductCategory find(int id) throws SQLException {
+        String sql = "SELECT * FROM product_category WHERE id=?";
+
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
 
-            setResultSet(pstatement.executeQuery());
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    String department = resultSet.getString("department");
 
-            if (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
-                String department = resultSet.getString("department");
-
-                return new ProductCategory(name, description, department);
+                    return new ProductCategory(name, description, department);
+                }
             }
-
         } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
             e.printStackTrace();
-            return null;
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         } finally {
-            try {
-                super.closeDataBaseConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            resultSet.close();
+            pstatement.close();
+            connection.close();
         }
-        return null;
+        throw new NullPointerException("No such result");
     }
 
     @Override
     public void remove(int id) {
+
 
     }
 
