@@ -16,28 +16,21 @@ public abstract class DataBaseConnect {
     protected static Statement statement = null;
     protected static ResultSet resultSet = null;
 
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                DB_URL,
+                DB_USER,
+                DB_PASSWORD);
+    }
 
-    public Connection getDbConnection() throws ClassNotFoundException, SQLException, Exception{
-        try {
-            System.out.println("Registering pSQL JDBC driver");
-            Class.forName("org.postgresql.Driver");
+    public static void executeQuery(String query) {
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+        ) {
+            statement.execute(query);
 
-            System.out.println("Creating a connection to pSQL DB");
-            this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            return this.connection;
-
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error: Unable to load pSQL driver");
-            e.printStackTrace();
-            return null;
         } catch (SQLException e) {
-            System.err.println("Error: Unable to execute SQL querry");
             e.printStackTrace();
-            return null;
-        } catch (Exception e) {
-            System.err.println("Error: Unknown error");
-            e.printStackTrace();
-            return null;
         }
     }
 
