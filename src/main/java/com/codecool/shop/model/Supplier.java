@@ -32,4 +32,8 @@ public class Supplier extends BaseModel {
                 this.description
         );
     }
+
+    public String getSupplierName() {
+        return this.name;
+    }
 }
