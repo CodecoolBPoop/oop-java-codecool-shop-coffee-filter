@@ -38,8 +38,6 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <reload>automatic</reload>
-                    <scanIntervalSeconds>1</scanIntervalSeconds>
                     <httpConnector>
                         <port>8888</port>
                     </httpConnector>

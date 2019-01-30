@@ -1,13 +1,15 @@
 package com.codecool.shop.dao.implementation;
 
 import com.codecool.shop.dao.OrderDao;
+import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Status;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderDaoMem implements OrderDao {
 
@@ -97,5 +99,18 @@ public class OrderDaoMem implements OrderDao {
                 .filter(order -> !order.getStatus().equals(Status.CONFIRMED))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public JSONObject getLastShoppingCartByUser(int userId) {
+
+        Order order = getLatestUnfinishedOrderByUser(userId);
+        Map<Integer, LineItem> cart = order.getShoppingCart();
+        List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
+        JSONArray cartItemsAsJSON = new JSONArray(cartItems);
+        JSONObject cartAsJSON = new JSONObject();
+        cartAsJSON.put("items", cartItemsAsJSON);
+        cartAsJSON.put("amount", order.getAmountToPay());
+        return cartAsJSON;
     }
 }

@@ -22,8 +22,8 @@
             integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"
             defer></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.amd.min.js" defer
-            integrity="sha256-LRZxKfU/uAO/CkyJjJTCMZphrNZ7qyqTkydAhgv3sQ0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js" defer
+            integrity="sha256-qlku5J3WO/ehJpgXYoJWC2px3+bZquKChi4oIWrAKoI=" crossorigin="anonymous"></script>
 
     <!-- Latest compiled and minified CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
@@ -33,8 +33,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
 
-    <script src="/static/js/modal/totalPrice.js" defer></script>
-    <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
+    <script src="/static/js/modal/ShoppingCart.js" defer></script>
 </head>
 <body>
 <div class="jumbotron text-center">
@@ -46,7 +45,7 @@
     </div>
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
+        <span id="itemNumber" class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
     </button>
 </div>
 <div class="container fluid">
@@ -64,37 +63,40 @@
                     <div class="modal-body">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Pieces</th>
-                                </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Pieces</th>
+                            </tr>
                             </thead>
                             <tbody id="cart">
-                                <tr th:each="item : ${cart}">
-                                    <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
-                                    <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
-                                    <td>
-                                        <form class="remove d-inline" action="/cart" method="post">
-                                            <input type="hidden" name="id" th:value="${item.getValue().getProduct().getId()}">
-                                            <input type="hidden" name="action" value="remove">
-                                            <input type="submit"
-                                                   class="negative-button btn btn-outline-secondary btn-sm px-3"
-                                                   value="-"/>
-                                        </form>
-                                        <span class="quantity mx-2 d-inline" th:text="${item.getValue().getQuantity()}">10</span>
-                                        <form class="add d-inline" action="/cart" method="post">
-                                            <input type="hidden" name="id" th:value="${item.getValue().getProduct().getId()}">
-                                            <input type="hidden" name="action" value="add">
-                                            <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
-                                                   value="+"/>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total:</td>
-                                    <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
-                                </tr>
+                            <tr th:each="item : ${cart}">
+                                <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
+                                <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
+                                <td>
+                                    <form class="remove d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getValue().getProduct().getId()}">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="submit"
+                                               class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                               value="-"/>
+                                    </form>
+                                    <span class="quantity mx-2 d-inline"
+                                          th:text="${item.getValue().getQuantity()}">10</span>
+                                    <form class="add d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getValue().getProduct().getId()}">
+                                        <input type="hidden" name="action" value="add">
+                                        <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                               value="+"/>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total:</td>
+                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -167,8 +169,35 @@
         <div th:replace="footer.html :: copy">
             Footer
         </div>
-        <div th:replace="cartTemplateForJS.html :: copy">
-            cartTemplate
+        <div>
+            <script id="cartBody" type="text/x-handlebars-template">
+                {{#each items}}
+                <tr>
+                    <td class="name">{{name}}</td>
+                    <td class="price">{{price}}</td>
+                    <td>
+                        <form class="remove d-inline" action="/cart" method="post">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <input type="hidden" name="action" value="remove">
+                            <input type="submit"
+                                   class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                   value="-"/>
+                        </form>
+                        <span class="quantity mx-2 d-inline">{{quantity}}</span>
+                        <form class="add d-inline" action="/cart" method="post">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <input type="hidden" name="action" value="add">
+                            <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                   value="+"/>
+                        </form>
+                    </td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td>Total:</td>
+                    <td colspan="2">{{amount}}</td>
+                </tr>
+            </script>
         </div>
     </div>
 </div>
