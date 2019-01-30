@@ -3,13 +3,10 @@ package com.codecool.shop.controller;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import org.omg.CORBA.INTERNAL;
 import org.thymeleaf.TemplateEngine;
@@ -30,8 +27,8 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
 public class ProductController extends HttpServlet {
-    boolean isCategorySet = false;
-    boolean isSupplierSet = false;
+    private boolean isCategorySet = false;
+    private boolean isSupplierSet = false;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +36,7 @@ public class ProductController extends HttpServlet {
         HttpSession session = req.getSession(false);
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
         Map mainPageFilters = new HashMap<>();
 
