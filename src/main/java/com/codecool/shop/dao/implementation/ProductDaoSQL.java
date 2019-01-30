@@ -19,15 +19,37 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public void add(Product product) {
-        String sql = "INSERT INTO products (name, description, price, stock, " +
-                "currency, supplier_id, product_category_id)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String name = product.getName();
+        String description = product.getDescription();
+        float price = product.getFloatPrice();
+        int stock = 1;
+        String currencyString = product.getCurrency();
+        String supplierString = product.getSupplier().getSupplierName();
+        String productCategoryString = product.getProductCategory().getName();
+
+        String sql =
+                "WITH curid as (SELECT id FROM currencies WHERE currencies.currency = '" + currencyString + "' RETURNING id) "
+                        + "WITH supid as (SELECT id FROM suppliers WHERE suppliers.name = '" + supplierString + "' RETURNING id) "
+                        + "WITH prid as (SELECT id FROM product_category WHERE product_category.name = '" + productCategoryString + "' RETURNING id) "
+                        + "INSERT INTO products (name, description, price, stock, currency, supplier_id, product_category_id)"
+                        + "VALUES (?, ?, ?, ?, (SELECT id FROM curid), (SELECT id FROM supid), (SELECT id FROM prid))";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
-            String name = product.getName();
-            String description = product.getDescription();
+            pstatement.setString(1, name);
+            pstatement.setString(2, description);
+            pstatement.setFloat(3, price);
+            pstatement.setInt(4, stock);
 
+            pstatement.executeUpdate();
 
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     @Override
