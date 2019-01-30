@@ -26,13 +26,13 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username=req.getParameter("username");
-        String password=req.getParameter("password");
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
 
-        // if post username fint to sql username && post pasword equals to the sql password
+        // if post username find to sql username && post password equals to the sql password
         HttpSession session=req.getSession();
         session.setAttribute("username",username);
-        // send error-message
+        // ?? else send error message
 
         resp.sendRedirect("/");
     }

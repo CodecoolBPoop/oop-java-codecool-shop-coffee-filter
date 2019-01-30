@@ -1,6 +1,5 @@
 package com.codecool.shop.controller;
 
-
 import com.codecool.shop.config.TemplateEngineUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -33,10 +32,8 @@ public class RegistrationController extends HttpServlet {
         String country = req.getParameter("country");
         String city = req.getParameter("city");
         String street = req.getParameter("street");
-        String houseNumber = req.getParameter("house_number");
         // variables save to database sql
 
-        HttpServletResponse httpResponse = (HttpServletResponse) resp;
-        httpResponse.sendRedirect("/");
+        resp.sendRedirect("/");
     }
 }
