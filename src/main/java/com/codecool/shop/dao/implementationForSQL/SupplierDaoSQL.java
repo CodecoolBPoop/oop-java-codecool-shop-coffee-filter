@@ -1,28 +1,57 @@
 package com.codecool.shop.dao.implementationForSQL;
 
+import com.codecool.shop.dao.DataBaseConnect;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.model.Supplier;
 
-import static com.codecool.shop.dao.DataBaseConnect.executeQuery;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class SupplierDaoSQL implements SupplierDao {
+public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
 
     @Override
     public void add(Supplier supplier) {
-        String query = "INSERT INTO suppliers (id, name, description) VALUES " +
-                "('" + supplier.getId() + "', '" + supplier.getName() + "','" + supplier.getDescription() + "');";
-        executeQuery(query);
+        String query = "INSERT INTO suppliers (id, name, description, active) VALUES (?, ?, ?, true)";
+
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ){
+            preparedStatement.setInt(1, supplier.getId());
+            preparedStatement.setString(2, supplier.getName());
+            preparedStatement.setString(3, supplier.getDescription());
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public Supplier find(int id) {
-        String query = "SELECT * FROM suppliers WHERE id ='" + id + "';";
-        executeQuery(query);
+        String query = "SELECT * FROM suppliers WHERE id = ?";
 
-        //preparedstatement
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    if (resultSet.getBoolean("active")) {
+                        Supplier result = new Supplier
+                                (resultSet.getString("name"),
+                                        resultSet.getString("description"));
+                        result.setId(id);
+                        return result;
+                    }
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -34,7 +63,24 @@ public class SupplierDaoSQL implements SupplierDao {
     @Override
     public List<Supplier> getAll() {
         String query = "SELECT * FROM suppliers;";
-        executeQuery(query);
+        List<Supplier> resultList = new ArrayList<>();
+
+        try (Connection connection = getDbConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query);
+        ) {
+            while (resultSet.next()) {
+                Supplier actSupplier = new Supplier
+                        (resultSet.getString("name"),
+                                resultSet.getString("description"));
+                actSupplier.setId(resultSet.getInt("id"));
+                resultList.add(actSupplier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+        //executeQuery(query); //returns iterator - create supplier object by going through line by line - create list
     }
 
 }
