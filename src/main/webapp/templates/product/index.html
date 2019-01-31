@@ -78,7 +78,7 @@
     </div>
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <span id="itemNumber" class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
+        <span id="itemNumber" class="badge badge-secondary badge-pill" th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
     </button>
 </div>
 <div class="container fluid">
@@ -102,7 +102,7 @@
                                 <th>Pieces</th>
                             </tr>
                             </thead>
-                            <tbody id="cart">
+                            <tbody id="cart" th:if="${cart != null}">
                             <tr th:each="item : ${cart}">
                                 <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
                                 <td class="price" th:text="${item.getValue().getPrice()}">Price</td>

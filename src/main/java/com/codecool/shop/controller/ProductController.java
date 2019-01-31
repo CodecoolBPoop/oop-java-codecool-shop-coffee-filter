@@ -6,6 +6,7 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import org.omg.CORBA.INTERNAL;
@@ -71,10 +72,13 @@ public class ProductController extends HttpServlet {
 
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
-            float amountToPay = latestOrder.getAmountToPay();
-            context.setVariable("cart", latestOrder.getShoppingCart());
-            context.setVariable("amountToPay", amountToPay);
-            context.setVariable("order", latestOrder);
+            Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
+            if (cart != null) {
+                float amountToPay = latestOrder.getAmountToPay();
+                context.setVariable("cart", cart);
+                context.setVariable("amountToPay", amountToPay);
+                context.setVariable("order", latestOrder);
+            }
         }
         context.setVariable("recipient", "World");
         context.setVariable("categories", productCategoryDataStore.getAll());
