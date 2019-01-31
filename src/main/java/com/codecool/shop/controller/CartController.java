@@ -8,6 +8,7 @@ import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
@@ -20,6 +21,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/cart"})
 public class CartController extends HttpServlet {
@@ -79,8 +82,16 @@ public class CartController extends HttpServlet {
                         latestOrder.removeProductFromCart(product);
                         status = 200;
                     }
-                    resp.setStatus(status);
                 }
+                resp.setStatus(status);
+                JSONObject cartAsJSON = orderDataStore.getLastShoppingCartByUser(userId);
+                cartAsJSON.put("itemNumber", orderDataStore.getLatestUnfinishedOrderByUser(userId).getNumberOfItemsInCart());
+
+                resp.setContentType("application/json;charset=UTF-8");
+
+                ServletOutputStream out = resp.getOutputStream();
+
+                out.print(cartAsJSON.toString());
             } else {
                 resp.sendError(412, "Invalid data\nNo such product");
             }

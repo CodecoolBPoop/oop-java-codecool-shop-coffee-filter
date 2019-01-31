@@ -2,8 +2,10 @@ package com.codecool.shop.dao;
 
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
+import org.json.JSONObject;
 
 import java.util.List;
+
 
 public interface OrderDao {
 
@@ -26,4 +28,6 @@ public interface OrderDao {
     void removeItemFromOrder(Product product, Order order);
 
     Order getLatestUnfinishedOrderByUser(int userId);
+
+    JSONObject getLastShoppingCartByUser(int userId);
 }
