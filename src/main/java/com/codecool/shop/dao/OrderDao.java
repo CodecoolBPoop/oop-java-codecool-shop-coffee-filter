@@ -2,12 +2,16 @@ package com.codecool.shop.dao;
 
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
+import org.json.JSONObject;
 
 import java.util.List;
 
+
 public interface OrderDao {
 
-    void add(int userId, Order order);
+    void add(int userId, Order order); // todo: only for testing purposes, delete after implementing proper data flow
+
+    void add(int userId, Product product);
 
     Order find(int id);
 
@@ -21,5 +25,9 @@ public interface OrderDao {
 
     void removeItemFromOrder(Product product, int orderId);
 
+    void removeItemFromOrder(Product product, Order order);
+
     Order getLatestUnfinishedOrderByUser(int userId);
+
+    JSONObject getLastShoppingCartByUser(int userId);
 }
