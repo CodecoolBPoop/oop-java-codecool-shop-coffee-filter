@@ -30,15 +30,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
             pstatement.setString(2, description);
             pstatement.setString(3, department);
 
-            try (ResultSet resultSet = pstatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String retrievedName = resultSet.getString("name");
-                    String retrieveddescription = resultSet.getString("description");
-                    String retrieveddepartment = resultSet.getString("department");
-                    System.out.println("retrieved id: " + id + ". name:" + retrievedName + ", dep.: " + retrieveddepartment + ", desc.: " + retrieveddescription);
-                }
-            }
+            pstatement.executeUpdate();
 
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
@@ -65,7 +57,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
 
-                    return new ProductCategory(name, description, department);
+                    return new ProductCategory(id, name, description, department);
                 }
             }
         } catch (SQLException e) {
@@ -82,17 +74,11 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
 
     @Override
     public void remove(int id) {
-        String sql = "DELETE FROM product_category WHERE id=?";
+        String sql = "UPDATE TABLE product_category SET active = false WHERE id = ?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
+            pstatement.executeUpdate();
 
-            try (ResultSet resultSet = pstatement.executeQuery()) {
-                if (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String description = resultSet.getString("description");
-                    String department = resultSet.getString("department");
-                }
-            }
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
             e.printStackTrace();
@@ -112,11 +98,12 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
+                    int productCategoryId = resultSet.getInt("id");
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
 
-                    ProductCategory productCategory = new ProductCategory(name, description, department);
+                    ProductCategory productCategory = new ProductCategory(productCategoryId, name, description, department);
                     data.add(productCategory);
                 }
             }

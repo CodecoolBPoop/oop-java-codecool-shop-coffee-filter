@@ -74,7 +74,7 @@ CREATE TABLE products (
   id SMALLSERIAL NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255),
-  price DECIMAL NOT NULL,
+  price REAL NOT NULL,
   stock SMALLINT DEFAULT '0',
   active BOOLEAN DEFAULT TRUE,
   currency SMALLINT NOT NULL,
@@ -88,8 +88,6 @@ CREATE TABLE countries (
 CREATE TABLE users (
   id SMALLSERIAL NOT NULL UNIQUE,
   user_name VARCHAR(50) NOT NULL,
-  first_name VARCHAR(50) NOT NULL,
-  last_name VARCHAR(50) NOT NULL,
   email validemail NOT NULL UNIQUE,
   password VARCHAR NOT NULL);
 
@@ -100,12 +98,15 @@ CREATE TABLE statuses (
 CREATE TABLE delivery_addresses (
   id SMALLSERIAL NOT NULL UNIQUE,
   country SMALLINT NOT NULL,
+  state VARCHAR NOT NULL,
   postal_code VARCHAR NOT NULL,
   city VARCHAR NOT NULL,
   street VARCHAR NOT NULL,
   house_number VARCHAR NOT NULL,
-  storey VARCHAR,
-  door VARCHAR);
+  story VARCHAR,
+  door VARCHAR,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL);
 
 CREATE TABLE orders (
   id SMALLSERIAL NOT NULL UNIQUE,

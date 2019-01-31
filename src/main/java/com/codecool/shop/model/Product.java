@@ -11,8 +11,8 @@ public class Product extends BaseModel {
     private boolean visibility = true;
 
 
-    public Product(String name, float defaultPrice, String currencyString, String description, ProductCategory productCategory, Supplier supplier) {
-        super(name, description);
+    public Product(int id, String name, float defaultPrice, String currencyString, String description, ProductCategory productCategory, Supplier supplier) {
+        super(id, name, description);
         this.setPrice(defaultPrice, currencyString);
         this.setSupplier(supplier);
         this.setProductCategory(productCategory);
@@ -38,6 +38,14 @@ public class Product extends BaseModel {
         return String.valueOf(this.defaultPrice) + " " + this.defaultCurrency.toString();
     }
 
+    public float getFloatPrice() {
+        return this.defaultPrice;
+    }
+
+    public String getCurrency() {
+        return this.defaultCurrency.toString();
+    }
+
     public void setPrice(float price, String currency) {
         this.defaultPrice = price;
         this.defaultCurrency = Currency.getInstance(currency);
@@ -49,7 +57,7 @@ public class Product extends BaseModel {
 
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
-        this.productCategory.addProduct(this);
+//        this.productCategory.addProduct(this);
     }
 
     public Supplier getSupplier() {
@@ -58,7 +66,7 @@ public class Product extends BaseModel {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
-        this.supplier.addProduct(this);
+//        this.supplier.addProduct(this);
     }
 
     @Override
@@ -85,4 +93,16 @@ public class Product extends BaseModel {
         return this.visibility;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final Product s = (Product) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
