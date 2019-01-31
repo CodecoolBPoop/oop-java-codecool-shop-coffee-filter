@@ -71,15 +71,27 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="address">Street and house number, floor:</label>
-                                    <input type="text" class="form-control" id="address" name="address"
-                                           placeholder="Enter address" required>
+                                    <label for="street">Street:</label>
+                                    <input type="text" class="form-control" id="street" name="street"
+                                           placeholder="Enter street" required>
                                 </div>
                                 <div class="col">
-                                    <label for="city">City:</label>
-                                    <input type="text" class="form-control" id="city" name="city"
-                                           placeholder="Enter city name" required>
+                                    <label for="house-number">House number:</label>
+                                    <input type="text" class="form-control" id="house-number" name="house-number"
+                                           placeholder="Enter house number" required>
                                 </div>
+                                <div class="col">
+                                    <label for="story">Story:</label>
+                                    <input type="text" class="form-control" id="story" name="story"
+                                           placeholder="Enter story (if there is)">
+                                </div>
+                                <div class="col">
+                                    <label for="door">Door:</label>
+                                    <input type="text" class="form-control" id="door" name="door"
+                                           placeholder="Enter door (if there is)">
+                                </div>
+
+
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
@@ -92,6 +104,11 @@
                                     <div class="invalid-feedback">
                                         Please select a valid country.
                                     </div>
+                                </div>
+                                <div class="col">
+                                    <label for="city">City:</label>
+                                    <input type="text" class="form-control" id="city" name="city"
+                                           placeholder="Enter city name" required>
                                 </div>
                                 <div class="col">
                                     <label for="zip">Zip code:</label>
