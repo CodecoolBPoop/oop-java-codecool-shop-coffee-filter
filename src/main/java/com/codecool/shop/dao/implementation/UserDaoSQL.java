@@ -68,4 +68,30 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
     }
 
 
+    public boolean checkNameAndPassword(String name, String email) {
+        boolean valid = false;
+        String sql = "SELECT user_name, password FROM users";
+        try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String retrievedName = resultSet.getString("user_name");
+                    String retrievedEmail = resultSet.getString("password");
+                    if (retrievedName.equals(name) && retrievedEmail.equals(email)) {
+                        valid = true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return valid;
+    }
+
+
 }
