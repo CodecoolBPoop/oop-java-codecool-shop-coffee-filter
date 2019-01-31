@@ -30,7 +30,10 @@ public class paymentController extends HttpServlet {
         String billingFirstName = req.getParameter("firstname");
         String billingLastName = req.getParameter("lastname");
         String billingEmail = req.getParameter("email");
-        String billingAddress = req.getParameter("address");
+        String billingStreet = req.getParameter("street");
+        String billingHouseNumber = req.getParameter("house-number");
+        String billingStory = req.getParameter("story");
+        String billingDoor = req.getParameter("door");
         String billingCity = req.getParameter("city");
         String billingCountry = req.getParameter("country");
         String billingZip = req.getParameter("zip");
@@ -42,7 +45,10 @@ public class paymentController extends HttpServlet {
         context.setVariable("billingFirstname", billingFirstName);
         context.setVariable("billingLastname", billingLastName);
         context.setVariable("billingEmail", billingEmail);
-        context.setVariable("billingAddress", billingAddress);
+        context.setVariable("billingStreet", billingStreet);
+        context.setVariable("billingHouseNumber", billingHouseNumber);
+        context.setVariable("billingStory", billingStory);
+        context.setVariable("billingDoor", billingDoor);
         context.setVariable("billingCity", billingCity);
         context.setVariable("billingCountry", billingCountry);
         context.setVariable("billingZip", billingZip);
