@@ -111,7 +111,8 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
                 "c.currency FROM products " +
                 "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
                 "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
-                "LEFT JOIN currencies c ON products.currency = c.id ";
+                "LEFT JOIN currencies c ON products.currency = c.id " +
+                "WHERE products.active = TRUE";
 
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
@@ -134,15 +135,102 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public List<Product> getBy(Supplier supplier) {
+        int supId = supplier.getId();
+        List<Product> data = new ArrayList<>();
+        String sql = "SELECT name, description, price, stock, active, " +
+                "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
+                "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
+                "c.currency FROM products " +
+                "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
+                "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
+                "LEFT JOIN currencies c ON products.currency = c.id " +
+                "WHERE s.id = ? AND products.active = TRUE";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, supId);
+
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    data.add(getProductFromResultSet(resultSet));
+                }
+                return data;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
-}
+    }
+
 
     @Override
     public List<Product> getBy(ProductCategory productCategory) {
+        int pcID = productCategory.getId();
+        List<Product> data = new ArrayList<>();
+        String sql = "SELECT name, description, price, stock, active, " +
+                "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
+                "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
+                "c.currency FROM products " +
+                "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
+                "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
+                "LEFT JOIN currencies c ON products.currency = c.id " +
+                "WHERE pc.id = ? AND products.active = TRUE";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, pcID);
+
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    data.add(getProductFromResultSet(resultSet));
+                }
+                return data;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     public List<Product> getBy(Supplier supplier, ProductCategory productCategory) {
+        int pcID = productCategory.getId();
+        int supId = supplier.getId();
+        List<Product> data = new ArrayList<>();
+        String sql = "SELECT name, description, price, stock, active, " +
+                "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
+                "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
+                "c.currency FROM products " +
+                "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
+                "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
+                "LEFT JOIN currencies c ON products.currency = c.id " +
+                "WHERE s.id = ? AND pc.id = ? AND products.active = TRUE";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, supId);
+            pstatement.setInt(1, pcID);
+
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    data.add(getProductFromResultSet(resultSet));
+                }
+                return data;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
