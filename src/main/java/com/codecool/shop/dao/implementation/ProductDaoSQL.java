@@ -7,6 +7,7 @@ import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
@@ -69,24 +70,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String description = resultSet.getString("description");
-                    float price = resultSet.getFloat("price");
-                    int stock = resultSet.getInt("stock");
-                    boolean active = resultSet.getBoolean("active");
-                    int supplierId = resultSet.getInt("supplier_id");
-                    String supplierName = resultSet.getString("supplier_name");
-                    String supplierDesc = resultSet.getString("supplier_desc");
-                    int productCategoryId = resultSet.getInt("pc_id");
-                    String productCategoryName = resultSet.getString("pc_name");
-                    String productCategoryDesc = resultSet.getString("pc_desc");
-                    String productCategoryDept = resultSet.getString("pc_dept");
-                    String currencyName = resultSet.getString("currency");
-
-                    Supplier givenSupp = new Supplier(supplierName, supplierDesc);
-                    ProductCategory givenPC = new ProductCategory(productCategoryName, productCategoryDesc, productCategoryDept);
-
-                    return new Product(name, price, currencyName, description, givenPC, givenSupp);
+                    return getProductFromResultSet(resultSet);
                 }
             }
         } catch (SQLException e) {
@@ -103,21 +87,83 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public void remove(int id) {
-
+        String sql = "UPDATE TABLE products SET active false WHERE id = ?";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, id);
+            pstatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<Product> getAll() {
+        List<Product> data = new ArrayList<>();
+        String sql = "SELECT name, description, price, stock, active, " +
+                "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
+                "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
+                "c.currency FROM products " +
+                "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
+                "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
+                "LEFT JOIN currencies c ON products.currency = c.id ";
+
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                while (resultSet.next()) {
+                    data.add(getProductFromResultSet(resultSet));
+                }
+                return data;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public List<Product> getBy(Supplier supplier) {
         return null;
-    }
+}
 
     @Override
     public List<Product> getBy(ProductCategory productCategory) {
         return null;
+    }
+
+    public List<Product> getBy(Supplier supplier, ProductCategory productCategory) {
+        return null;
+    }
+
+    private Product getProductFromResultSet(ResultSet resultSet) throws SQLException {
+        String name = resultSet.getString("name");
+        String description = resultSet.getString("description");
+        float price = resultSet.getFloat("price");
+        int stock = resultSet.getInt("stock");
+        boolean active = resultSet.getBoolean("active");
+        int supplierId = resultSet.getInt("supplier_id");
+        String supplierName = resultSet.getString("supplier_name");
+        String supplierDesc = resultSet.getString("supplier_desc");
+        int productCategoryId = resultSet.getInt("pc_id");
+        String productCategoryName = resultSet.getString("pc_name");
+        String productCategoryDesc = resultSet.getString("pc_desc");
+        String productCategoryDept = resultSet.getString("pc_dept");
+        String currencyName = resultSet.getString("currency");
+
+        Supplier givenSupp = new Supplier(supplierName, supplierDesc);
+        ProductCategory givenPC = new ProductCategory(productCategoryName, productCategoryDesc, productCategoryDept);
+
+        return new Product(name, price, currencyName, description, givenPC, givenSupp);
     }
 }
