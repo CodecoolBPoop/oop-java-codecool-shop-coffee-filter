@@ -87,7 +87,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public void remove(int id) {
-        String sql = "UPDATE TABLE products SET active false WHERE id = ?";
+        String sql = "UPDATE TABLE products SET active = false WHERE id = ?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
             pstatement.executeUpdate();
@@ -105,7 +105,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     @Override
     public List<Product> getAll() {
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
+        String sql = "SELECT products.id, products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -117,26 +117,8 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String description = resultSet.getString("description");
-                    float price = resultSet.getFloat("price");
-                    int stock = resultSet.getInt("stock");
-                    boolean active = resultSet.getBoolean("active");
-                    int supplierId = resultSet.getInt("supplier_id");
-                    String supplierName = resultSet.getString("supplier_name");
-                    String supplierDesc = resultSet.getString("supplier_desc");
-                    int productCategoryId = resultSet.getInt("pc_id");
-                    String productCategoryName = resultSet.getString("pc_name");
-                    String productCategoryDesc = resultSet.getString("pc_desc");
-                    String productCategoryDept = resultSet.getString("pc_dept");
-                    String currencyName = resultSet.getString("currency");
-
-                    Supplier givenSupp = new Supplier(supplierName, supplierDesc);
-                    ProductCategory givenPC = new ProductCategory(productCategoryName, productCategoryDesc, productCategoryDept);
-
-                    data.add(new Product(name, price, currencyName, description, givenPC, givenSupp));
+                    data.add(getProductFromResultSet(resultSet));
                 }
-                System.out.println(data.get(0));
                 return data;
             }
         } catch (SQLException e) {
@@ -155,7 +137,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     public List<Product> getBy(Supplier supplier) {
         int supId = supplier.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
+        String sql = "SELECT products.id, products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -189,7 +171,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     public List<Product> getBy(ProductCategory productCategory) {
         int pcID = productCategory.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
+        String sql = "SELECT products.id, products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -222,7 +204,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         int pcID = productCategory.getId();
         int supId = supplier.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
+        String sql = "SELECT products.id, products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -254,6 +236,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     private Product getProductFromResultSet(ResultSet resultSet) throws SQLException {
 
+        int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         String description = resultSet.getString("description");
         float price = resultSet.getFloat("price");
@@ -268,9 +251,9 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         String productCategoryDept = resultSet.getString("pc_dept");
         String currencyName = resultSet.getString("currency");
 
-        Supplier givenSupp = new Supplier(supplierName, supplierDesc);
-        ProductCategory givenPC = new ProductCategory(productCategoryName, productCategoryDesc, productCategoryDept);
+        Supplier givenSupp = new Supplier(supplierId, supplierName, supplierDesc);
+        ProductCategory givenPC = new ProductCategory(productCategoryId, productCategoryName, productCategoryDesc, productCategoryDept);
 
-        return new Product(name, price, currencyName, description, givenPC, givenSupp);
+        return new Product(id, name, price, currencyName, description, givenPC, givenSupp);
     }
 }

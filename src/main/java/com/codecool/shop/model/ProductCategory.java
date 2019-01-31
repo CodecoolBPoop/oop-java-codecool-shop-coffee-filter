@@ -7,8 +7,8 @@ public class ProductCategory extends BaseModel {
     private String department;
     private List<Product> products;
 
-    public ProductCategory(String name, String description, String department) {
-        super(name, description);
+    public ProductCategory(int id, String name, String description, String department) {
+        super(id, name, description);
         setDepartment(department);
     }
 

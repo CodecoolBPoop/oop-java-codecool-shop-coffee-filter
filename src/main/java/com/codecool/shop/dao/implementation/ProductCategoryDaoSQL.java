@@ -36,7 +36,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
                     String retrievedName = resultSet.getString("name");
                     String retrieveddescription = resultSet.getString("description");
                     String retrieveddepartment = resultSet.getString("department");
-                    System.out.println("retrieved id: " + id + ". name:" + retrievedName + ", dep.: " + retrieveddepartment + ", desc.: " + retrieveddescription);
+//                    System.out.println("retrieved id: " + id + ". name:" + retrievedName + ", dep.: " + retrieveddepartment + ", desc.: " + retrieveddescription);
                 }
             }
 
@@ -65,7 +65,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
 
-                    return new ProductCategory(name, description, department);
+                    return new ProductCategory(id, name, description, department);
                 }
             }
         } catch (SQLException e) {
@@ -112,11 +112,12 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
+                    int productCategoryId = resultSet.getInt("id");
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     String department = resultSet.getString("department");
 
-                    ProductCategory productCategory = new ProductCategory(name, description, department);
+                    ProductCategory productCategory = new ProductCategory(productCategoryId, name, description, department);
                     data.add(productCategory);
                 }
             }

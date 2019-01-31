@@ -54,9 +54,8 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
                 if (resultSet.next()) {
                     if (resultSet.getBoolean("active")) {
                         Supplier result = new Supplier
-                                (resultSet.getString("name"),
+                                (id, resultSet.getString("name"),
                                         resultSet.getString("description"));
-                        result.setId(id);
                         return result;
                     }
                 }
@@ -98,9 +97,8 @@ public class SupplierDaoSQL extends DataBaseConnect implements SupplierDao {
         ) {
             while (resultSet.next()) {
                 Supplier actSupplier = new Supplier
-                        (resultSet.getString("name"),
+                        (resultSet.getInt("id"), resultSet.getString("name"),
                                 resultSet.getString("description"));
-                actSupplier.setId(resultSet.getInt("id"));
                 resultList.add(actSupplier);
             }
         } catch (SQLException e) {
