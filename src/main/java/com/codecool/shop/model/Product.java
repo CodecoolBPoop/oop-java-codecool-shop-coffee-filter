@@ -93,4 +93,16 @@ public class Product extends BaseModel {
         return this.visibility;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final Product s = (Product) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

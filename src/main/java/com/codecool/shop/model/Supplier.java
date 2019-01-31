@@ -34,6 +34,19 @@ public class Supplier extends BaseModel {
         );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final Supplier s = (Supplier) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     public String getSupplierName() {
         return this.name;
     }

@@ -44,4 +44,17 @@ public class ProductCategory extends BaseModel {
                 this.department,
                 this.description);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final ProductCategory s = (ProductCategory) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

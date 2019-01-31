@@ -212,7 +212,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
                 "WHERE s.id = ? AND pc.id = ? AND products.active = TRUE";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, supplierID);
-            pstatement.setInt(1, productCategoryID);
+            pstatement.setInt(2, productCategoryID);
 
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
