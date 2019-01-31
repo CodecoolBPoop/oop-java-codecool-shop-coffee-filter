@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -155,7 +156,52 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
     @Override
     public void removeItemFromOrder(Product product, int userId) {
+        Order order = getLatestUnfinishedOrderByUser(userId);
+        int orderId = order.getId();
+        int productId = product.getId();
+        HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
+        int typesInCart = shoppingCart.size();
+        if (shoppingCart.get(productId).getQuantity() > 1) {
+            decreaseQuantityOfItemInOrder(order, productId);
+        } else {
+            removeItemTypeFromOrder(orderId, productId);
+            if (typesInCart == 1) {
+                remove(orderId);
+            }
+        }
 
+    }
+
+    private void decreaseQuantityOfItemInOrder(Order order, int productId) {
+        String query = "UPDATE order_products SET quantity = quantity - 1 WHERE order_id = ? AND product_id = ?";
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setInt(1, order.getId());
+            preparedStatement.setInt(2, productId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        }
+    }
+
+    private void removeItemTypeFromOrder(int orderId, int productId) {
+        String query = "DELETE FROM order_products WHERE product_id = ? AND order_id = ?";
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setInt(1, productId);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -211,12 +257,17 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     @Override
     public JSONObject getLastShoppingCartByUser(int userId) {
         Order order = getLatestUnfinishedOrderByUser(userId);
-        Map<Integer, LineItem> cart = order.getShoppingCart();
-        List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
-        JSONArray cartItemsAsJSON = new JSONArray(cartItems);
         JSONObject cartAsJSON = new JSONObject();
-        cartAsJSON.put("items", cartItemsAsJSON);
-        cartAsJSON.put("amount", order.getAmountToPay());
+        if (order != null) {
+            Map<Integer, LineItem> cart = order.getShoppingCart();
+            List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
+            JSONArray cartItemsAsJSON = new JSONArray(cartItems);
+            cartAsJSON.put("items", cartItemsAsJSON);
+            cartAsJSON.put("amount", order.getAmountToPay());
+            cartAsJSON.put("itemNumber", order.getNumberOfItemsInCart());
+        } else {
+            cartAsJSON.put("items", "");
+        }
         return cartAsJSON;
     }
 }

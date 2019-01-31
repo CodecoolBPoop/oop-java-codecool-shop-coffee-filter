@@ -73,12 +73,8 @@ public class CartController extends HttpServlet {
                 }
                 resp.setStatus(status);
                 JSONObject cartAsJSON = orderDataStore.getLastShoppingCartByUser(userId);
-                cartAsJSON.put("itemNumber", orderDataStore.getLatestUnfinishedOrderByUser(userId).getNumberOfItemsInCart());
-
                 resp.setContentType("application/json;charset=UTF-8");
-
                 ServletOutputStream out = resp.getOutputStream();
-
                 out.print(cartAsJSON.toString());
             } else {
                 resp.sendError(412, "Invalid data\nNo such product");
