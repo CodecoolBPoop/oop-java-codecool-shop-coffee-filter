@@ -20,7 +20,8 @@ public class Supplier extends BaseModel {
     }
 
     public void addProduct(Product product) {
-        this.products.add(product);
+        System.out.println("Supplier ADD PRODUCT CALLED");
+//        this.products.add(product);
     }
 
     public String toString() {
@@ -31,5 +32,9 @@ public class Supplier extends BaseModel {
                 this.name,
                 this.description
         );
+    }
+
+    public String getSupplierName() {
+        return this.name;
     }
 }
