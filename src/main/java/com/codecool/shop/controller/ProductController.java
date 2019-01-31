@@ -74,7 +74,7 @@ public class ProductController extends HttpServlet {
             } else {
                 suppliers.clear();
                 products = productDataStore.getByProductCategory(Integer.parseInt(category));
-                for (Product product: products) {
+                for (Product product : products) {
                     int supplierID = product.getSupplier().getId();
                     Supplier s = supplierDataStore.find(supplierID);
                     if (suppliers.contains(s)) {
@@ -87,7 +87,7 @@ public class ProductController extends HttpServlet {
         } else if (!(supplier == null || Integer.parseInt(supplier) == 0)) {
             categories.clear();
             products = productDataStore.getBySupplier(Integer.parseInt(supplier));
-            for (Product product: products) {
+            for (Product product : products) {
                 int productCategoryId = product.getProductCategory().getId();
                 ProductCategory pc = productCategoryDataStore.find(productCategoryId);
                 if (categories.contains(pc)) {
@@ -117,7 +117,6 @@ public class ProductController extends HttpServlet {
             }
         }
         context.setVariable("recipient", "World");
-//        TODO rework context setVariable calls -- to make sure that context is set only for filtered values
         context.setVariable("categories", categories);
         context.setVariable("suppliers", suppliers);
         context.setVariable("products", products);

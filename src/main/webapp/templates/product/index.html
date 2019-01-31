@@ -78,8 +78,8 @@
     </div>
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <!-- <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span> -->
-        <span id="itemNumber" class="badge badge-secondary badge-pill" th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
+        <span id="itemNumber" class="badge badge-secondary badge-pill"
+              th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
     </button>
 </div>
 <div class="container fluid">
