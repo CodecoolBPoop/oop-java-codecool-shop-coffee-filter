@@ -22,24 +22,22 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
 
     @Override
     public void add(String name, String pswd, String email) {
-        if (checkNameAndEmail(name, email)) {
-            String sql = "INSERT INTO users (user_name, password, email)" + "VALUES (?,?,?);";
-            try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
-                pstatement.setString(1, name);
-                pstatement.setString(2, pswd);
-                pstatement.setString(3, email);
+        String sql = "INSERT INTO users (user_name, password, email)" + "VALUES (?,?,?);";
+        try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
+            pstatement.setString(1, name);
+            pstatement.setString(2, pswd);
+            pstatement.setString(3, email);
 
-                pstatement.executeUpdate();
+            pstatement.executeUpdate();
 
-            } catch (SQLException e) {
-                System.err.println("Failed to insert into table due to incorrect SQL String!");
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                System.err.println("Error: JDBC Driver load fail");
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -48,9 +46,9 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
         boolean valid = true;
         String sql = "SELECT user_name, email FROM users";
         try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
-            try (ResultSet resultSet = pstatement.executeQuery()){
+            try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
-                    String retrievedName = resultSet.getString("name");
+                    String retrievedName = resultSet.getString("user_name");
                     String retrievedEmail = resultSet.getString("email");
                     if (retrievedName.equals(name) || retrievedEmail.equals(email)) {
                         valid = false;

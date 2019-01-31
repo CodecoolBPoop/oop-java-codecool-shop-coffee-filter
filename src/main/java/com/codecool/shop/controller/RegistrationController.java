@@ -31,11 +31,16 @@ public class RegistrationController extends HttpServlet {
         String email = req.getParameter("email");
 
         UserDaoSQL uds = UserDaoSQL.getInstance();
-        uds.add(username,password,email);
+        if (uds.checkNameAndEmail(username, email)) {
+            uds.add(username, password, email);
 
-        HttpSession session = req.getSession();
-        session.setAttribute("username", username);
+            HttpSession session = req.getSession();
+            session.setAttribute("username", username);
 
-        resp.sendRedirect("/");
+            resp.sendRedirect("/");
+        } else {
+            resp.sendRedirect("/invalid_registration");
+        }
+
     }
 }
