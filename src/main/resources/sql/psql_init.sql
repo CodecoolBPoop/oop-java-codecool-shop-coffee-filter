@@ -100,11 +100,10 @@ CREATE TABLE statuses (
 CREATE TABLE delivery_addresses (
   id SMALLSERIAL NOT NULL UNIQUE,
   country SMALLINT NOT NULL,
-  state VARCHAR NOT NULL,
   postal_code VARCHAR NOT NULL,
   city VARCHAR NOT NULL,
   street VARCHAR NOT NULL,
-  house_number SMALLINT NOT NULL,
+  house_number VARCHAR NOT NULL,
   story VARCHAR,
   door VARCHAR);
 
@@ -114,7 +113,7 @@ CREATE TABLE orders (
   latest_update TIMESTAMP NOT NULL DEFAULT now(),
   status SMALLINT NOT NULL,
   user_id SMALLINT NOT NULL,
-  delivery_address SMALLINT NOT NULL);
+  delivery_address SMALLINT);
 
 CREATE TABLE user_orders (
   user_id SMALLINT NOT NULL,
