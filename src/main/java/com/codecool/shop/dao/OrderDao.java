@@ -9,9 +9,7 @@ import java.util.List;
 
 public interface OrderDao {
 
-    void add(int userId, Order order); // todo: only for testing purposes, delete after implementing proper data flow
-
-    void add(int userId, Product product);
+    void add(Product product, int userId);
 
     Order find(int id);
 
@@ -19,13 +17,9 @@ public interface OrderDao {
 
     List<Order> getAll();
 
-    void addNewItemToOrder(Product product, int orderId);
+    void addNewItemToOrder(Product product, int userId);
 
-    void addNewItemToOrder(Product product, Order order);
-
-    void removeItemFromOrder(Product product, int orderId);
-
-    void removeItemFromOrder(Product product, Order order);
+    void removeItemFromOrder(Product product, int userId);
 
     Order getLatestUnfinishedOrderByUser(int userId);
 

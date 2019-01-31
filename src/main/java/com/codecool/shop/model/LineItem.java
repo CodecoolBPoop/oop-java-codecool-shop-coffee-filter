@@ -16,6 +16,12 @@ public class LineItem {
         name = product.getName();
     }
 
+    public LineItem(int quantity, float price, String name) {
+        this.quantity = quantity;
+        this.price = price;
+        this.name = name;
+    }
+
     public Product getProduct() {
         return product;
     }

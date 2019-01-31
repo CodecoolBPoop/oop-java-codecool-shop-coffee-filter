@@ -28,14 +28,13 @@ public class OrderDaoMem implements OrderDao {
         return instance;
     }
 
-    @Override
-    public void add(int userId, Order order) {
-        order.setId(lastId++);
+    private void add(int userId, Order order) {
+        order.setId(++lastId);
         orders.add(order);
     }
 
     @Override
-    public void add(int userId, Product product) {
+    public void add(Product product, int userId) {
         Order order = new Order(userId, product);
         add(userId, order);
     }
@@ -72,22 +71,12 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
-    public void addNewItemToOrder(Product product, Order order) {
-        addNewItemToOrder(product, order.getId());
-    }
-
-    @Override
-    public void removeItemFromOrder(Product product, int orderId) {
-        Order order = find(orderId);
+    public void removeItemFromOrder(Product product, int userId) {
+        Order order = getLatestUnfinishedOrderByUser(userId);
         order.removeProductFromCart(product);
         if (order.getNumberOfItemsInCart() == 0) {
-            orders.remove(orderId);
+            orders.remove(order);
         }
-    }
-
-    @Override
-    public void removeItemFromOrder(Product product, Order order) {
-        removeItemFromOrder(product, order.getId());
     }
 
     @Override

@@ -3,14 +3,11 @@ package com.codecool.shop.controller;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import org.json.HTTP;
 import org.json.JSONArray;
@@ -40,7 +37,7 @@ public class CartController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductDao productDataStore = ProductDaoMem.getInstance();
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
         int userId = 1;
 
         StringBuilder sb = new StringBuilder();
@@ -70,16 +67,16 @@ public class CartController extends HttpServlet {
                 int status = 201;
                 if (latestOrder == null) {
                     if (action.equals("add")) {
-                        orderDataStore.add(userId, product);
+                        orderDataStore.add(product, userId);
                         resp.setStatus(status);
                     } else {
                         resp.sendError(412, "Invalid data");
                     }
                 } else {
                     if (action.equals("add")) {
-                        latestOrder.addProductToCart(product);
+                        orderDataStore.addNewItemToOrder(product, userId);
                     } else if (action.equals("remove")) {
-                        latestOrder.removeProductFromCart(product);
+                        orderDataStore.removeItemFromOrder(product, userId);
                         status = 200;
                     }
                 }

@@ -111,7 +111,7 @@ CREATE TABLE orders (
   id SMALLSERIAL NOT NULL UNIQUE,
   order_date TIMESTAMP NOT NULL DEFAULT now(),
   latest_update TIMESTAMP NOT NULL DEFAULT now(),
-  status SMALLINT NOT NULL,
+  status SMALLINT NOT NULL DEFAULT 1,
   user_id SMALLINT NOT NULL,
   delivery_address SMALLINT);
 
@@ -146,3 +146,9 @@ ALTER TABLE ONLY user_orders ADD CONSTRAINT fk8_user_orders FOREIGN KEY (order_i
 ALTER TABLE ONLY delivery_addresses ADD CONSTRAINT fk9_delivery_addresses FOREIGN KEY (country) REFERENCES countries(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk10_order_products FOREIGN KEY (order_id) REFERENCES orders(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk11_order_products FOREIGN KEY (product_id) REFERENCES products(id);
+
+INSERT INTO statuses (status) VALUES ('new');
+INSERT INTO statuses (status) VALUES ('checked');
+INSERT INTO statuses (status) VALUES ('paid');
+INSERT INTO statuses (status) VALUES ('confirmed');
+INSERT INTO statuses (status) VALUES ('shipped');

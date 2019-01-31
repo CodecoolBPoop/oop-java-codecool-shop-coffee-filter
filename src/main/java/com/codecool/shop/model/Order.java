@@ -18,6 +18,11 @@ public class Order {
         addProductToCart(product);
     }
 
+    public Order(int userId) {
+        this.userId = userId;
+        status = Status.NEW;
+    }
+
     public void addProductToCart(Product product) {
         Integer productId = product.getId();
         LineItem lineItem;
@@ -86,5 +91,10 @@ public class Order {
     public void setStatus(Status status) {
         this.status = status;
         date = LocalDate.now();
+    }
+
+    public void addToCArt(int productId, int quantity, float price, String name) {
+        LineItem item = new LineItem(quantity, price, name);
+        shoppingCart.put(productId, item);
     }
 }
