@@ -67,8 +67,8 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
         return valid;
     }
 
-
-    public boolean checkNameAndPassword(String name, String email) {
+    @Override
+    public boolean checkNameAndPassword(String name, String password) {
         boolean valid = false;
         String sql = "SELECT user_name, password FROM users";
         try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
                 while (resultSet.next()) {
                     String retrievedName = resultSet.getString("user_name");
                     String retrievedEmail = resultSet.getString("password");
-                    if (retrievedName.equals(name) && retrievedEmail.equals(email)) {
+                    if (retrievedName.equals(name) && retrievedEmail.equals(password)) {
                         valid = true;
                     }
                 }
