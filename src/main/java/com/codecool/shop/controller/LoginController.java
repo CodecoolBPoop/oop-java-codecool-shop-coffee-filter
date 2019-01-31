@@ -32,12 +32,8 @@ public class LoginController extends HttpServlet {
 
         UserDaoSQL uds = UserDaoSQL.getInstance();
         if (uds.checkNameAndPassword(username, password)) {
-
-            // if post username find to sql username && post password equals to the sql password
             HttpSession session = req.getSession();
             session.setAttribute("username", username);
-            // ?? else send error message
-
             resp.sendRedirect("/");
         } else {
             resp.sendRedirect("/invalid_login");
