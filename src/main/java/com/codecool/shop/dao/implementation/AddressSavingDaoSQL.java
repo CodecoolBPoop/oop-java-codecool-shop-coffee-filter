@@ -14,7 +14,7 @@ public class AddressSavingDaoSQL extends DataBaseConnect implements AddressSavin
     private AddressSavingDaoSQL() {
     }
 
-    public static AddressSavingDao getInstance() {
+    public static AddressSavingDaoSQL getInstance() {
         if (instance == null) {
             instance = new AddressSavingDaoSQL();
         }
@@ -23,13 +23,13 @@ public class AddressSavingDaoSQL extends DataBaseConnect implements AddressSavin
 
 
     @Override
-    public void add(int country, String state, String postalCode, String city, String street, String houseNumber, String story, String door, String firstName, String lastName) {
-        String query = "INSERT INTO public.delivery_addresses (country, state, postal_code, city, street, house_number, story, door, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void add(String country, String state, String postalCode, String city, String street, String houseNumber, String story, String door, String firstName, String lastName) {
+        String query = "INSERT INTO public.delivery_addresses (country, state, postal_code, city, street, house_number, story, door, first_name, last_name) VALUES ((SELECT id FROM public.countries WHERE name = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
-            preparedStatement.setInt(1, country);
+            preparedStatement.setString(1, country);
             preparedStatement.setString(2, state);
             preparedStatement.setString(3, postalCode);
             preparedStatement.setString(4, city);
