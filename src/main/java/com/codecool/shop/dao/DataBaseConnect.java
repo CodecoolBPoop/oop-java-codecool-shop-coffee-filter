@@ -20,7 +20,7 @@ public abstract class DataBaseConnect {
     protected static ResultSet resultSet = null;
 
 
-    public Connection getDbConnection() throws ClassNotFoundException, SQLException, Exception {
+    public Connection getDbConnection() throws ClassNotFoundException, SQLException {
         return DriverManager.getConnection(
                 DB_URL,
                 DB_USER,

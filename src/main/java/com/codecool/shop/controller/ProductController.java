@@ -6,9 +6,10 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.model.LineItem;
+import com.codecool.shop.dao.implementation.SupplierDaoSQL;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
-import org.omg.CORBA.INTERNAL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -20,9 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
@@ -35,9 +34,9 @@ public class ProductController extends HttpServlet {
         // Session
         HttpSession session = req.getSession(false);
 
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
-        SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
+        SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
         Map mainPageFilters = new HashMap<>();
 
         //Filters
@@ -60,23 +59,22 @@ public class ProductController extends HttpServlet {
             isSupplierSet = false;
         }
 
-        setAllProductVisible(productDataStore);
-        setProductVisibilityBasedOnCategoryFilter(productDataStore, category);
-        setProductVisibilityBasedOnSupplierFilter(productDataStore, supplier);
-
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
         context.setVariable("mainPageFilters", mainPageFilters);
-//        context.setVariables(params);
 
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
-            float amountToPay = latestOrder.getAmountToPay();
-            context.setVariable("cart", latestOrder.getShoppingCart());
-            context.setVariable("amountToPay", amountToPay);
-            context.setVariable("order", latestOrder);
+            Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
+            if (cart != null) {
+                float amountToPay = latestOrder.getAmountToPay();
+                context.setVariable("cart", cart);
+                context.setVariable("amountToPay", amountToPay);
+                context.setVariable("order", latestOrder);
+            }
         }
         context.setVariable("recipient", "World");
+//        TODO rework context setVariable calls -- to make sure that context is set only for filtered values
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
@@ -85,10 +83,6 @@ public class ProductController extends HttpServlet {
         }
         engine.process("product/index.html", context, resp.getWriter());
 
-//        Map params = new HashMap<>();
-//        params.put("category", productCategoryDataStore.find(1));
-//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
-//        context.setVariables(params);
     }
 
     private void setAllProductVisible(ProductDao productDataStore) {

@@ -22,6 +22,9 @@
             integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"
             defer></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js" defer
+            integrity="sha256-qlku5J3WO/ehJpgXYoJWC2px3+bZquKChi4oIWrAKoI=" crossorigin="anonymous"></script>
+
     <!-- Latest compiled and minified CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -30,8 +33,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
 
-    <script src="/static/js/modal/totalPrice.js" defer></script>
-    <script src="/static/js/modal/plusOrMinusButton.js" defer></script>
+    <script src="/static/js/modal/ShoppingCart.js" defer></script>
 </head>
 <body>
 
@@ -76,111 +78,161 @@
     </div>
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span>
+        <!-- <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span> -->
+        <span id="itemNumber" class="badge badge-secondary badge-pill" th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
     </button>
 </div>
-<div class="container">
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Your cart</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Pieces</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="item : ${cart}">
-                            <td th:text="${item.getValue().getName()}">MobilPhone</td>
-                            <td class="price" th:text="${item.getValue().getPrice()}">$ 99.9</td>
-                            <td>
-                                <button type="button" class="negative-button btn-default-xs">-</button>
-                                <span class="how-many" th:text="${item.getValue().getQuantity()}">10</span>
-                                <button type="button" class="plus-button btn-default-xs">+</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Total:</td>
-                            <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-default" href="/checkout">Checkout</a>
+<div class="container fluid">
+
+    <div class="container">
+
+        <div class="modal fade" id="shoppingCart" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-lg" role="document">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Your cart</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Pieces</th>
+                            </tr>
+                            </thead>
+                            <tbody id="cart" th:if="${cart != null}">
+                            <tr th:each="item : ${cart}">
+                                <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
+                                <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
+                                <td>
+                                    <form class="remove d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getValue().getProduct().getId()}">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="submit"
+                                               class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                               value="-"/>
+                                    </form>
+                                    <span class="quantity mx-2 d-inline"
+                                          th:text="${item.getValue().getQuantity()}">10</span>
+                                    <form class="add d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getValue().getProduct().getId()}">
+                                        <input type="hidden" name="action" value="add">
+                                        <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                               value="+"/>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total:</td>
+                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" href="/checkout">Checkout</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container">
-    <form method="GET">
-        <div class="form-group">
-            <div class="row">
-                <div class="col col-sm-12 col-md-6">
-                    <label for="category-selector">Select Category</label>
-                    <select name="category" class="form-control" id="category-selector"
-                            onchange="{ this.form.submit() };">
-                        <option value="0">All</option>
-                        <option th:each="category: ${categories}"
-                                th:value="${category.getId()}"
-                                th:text="${category.getName()}"
-                                th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
-                            Category Name
-                        </option>
-                    </select>
-                </div>
-                <div class="col col-sm-12 col-md-6">
-                    <label for="supplier-selector">Select Supplier</label>
-                    <select name="supplier" class="form-control" id="supplier-selector"
-                            onchange="{ this.form.submit() };">
-                        <option value="0">All</option>
-                        <option th:each="supplier: ${suppliers}"
-                                th:value="${supplier.getId()}"
-                                th:text="${supplier.getName()}"
-                                th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
-                            Category Name
-                        </option>
-                    </select>
+    <div class="container">
+        <form method="GET">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col col-sm-12 col-md-6">
+                        <label for="category-selector">Select Category</label>
+                        <select name="category" class="form-control" id="category-selector"
+                                onchange="{ this.form.submit() };">
+                            <option value="0">All</option>
+                            <option th:each="category: ${categories}"
+                                    th:value="${category.getId()}"
+                                    th:text="${category.getName()}"
+                                    th:selected="${mainPageFilters.containsKey('filteredCategory') and mainPageFilters.get('filteredCategory') == category.getId()}">
+                                Category Name
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col col-sm-12 col-md-6">
+                        <label for="supplier-selector">Select Supplier</label>
+                        <select name="supplier" class="form-control" id="supplier-selector"
+                                onchange="{ this.form.submit() };">
+                            <option value="0">All</option>
+                            <option th:each="supplier: ${suppliers}"
+                                    th:value="${supplier.getId()}"
+                                    th:text="${supplier.getName()}"
+                                    th:selected="${mainPageFilters.containsKey('filteredSupplier') and mainPageFilters.get('filteredSupplier') == supplier.getId()}">
+                                Category Name
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-    <div id="products" class="row">
-        <div class="col col-sm-12 col-md-6 col-lg-4"
-             th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
-            <form method="POST">
-                <div class="card">
-                    <img class="" src="http://placehold.it/400x250/000/fff"
-                         th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
-                    <div class="card-header">
-                        <h4 class="card-title" th:text="${prod.name}">Product name</h4>
-                        <p class="card-text" th:text="${prod.description}">Product description... </p>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-text">
-                            <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
+        </form>
+        <div id="products" class="row">
+            <div class="col col-sm-12 col-md-6 col-lg-4"
+                 th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
+                <form method="POST">
+                    <div class="card">
+                        <img class="" src="http://placehold.it/400x250/000/fff"
+                             th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
+                        <div class="card-header">
+                            <h4 class="card-title" th:text="${prod.name}">Product name</h4>
+                            <p class="card-text" th:text="${prod.description}">Product description... </p>
                         </div>
-                        <div class="card-text">
-                            <button class="btn btn-success" type="submit">Add to cart</button>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
+                            </div>
+                            <div class="card-text">
+                                <button class="btn btn-success" type="submit">Add to cart</button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <input type="text" name="boughtItem" th:value="${prod.getId()}" hidden readonly>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <input type="text" name="boughtItem" th:value="${prod.getId()}" hidden readonly>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-    <div th:replace="footer.html :: copy">
-        Footer
+        <div th:replace="footer.html :: copy">
+            Footer
+        </div>
+        <div>
+            <script id="cartBody" type="text/x-handlebars-template">
+                {{#each items}}
+                <tr>
+                    <td class="name">{{name}}</td>
+                    <td class="price">{{price}}</td>
+                    <td>
+                        <form class="remove d-inline" action="/cart" method="post">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <input type="hidden" name="action" value="remove">
+                            <input type="submit"
+                                   class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                   value="-"/>
+                        </form>
+                        <span class="quantity mx-2 d-inline">{{quantity}}</span>
+                        <form class="add d-inline" action="/cart" method="post">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <input type="hidden" name="action" value="add">
+                            <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                   value="+"/>
+                        </form>
+                    </td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td>Total:</td>
+                    <td colspan="2">{{amount}}</td>
+                </tr>
+            </script>
+        </div>
     </div>
 </div>
 </body>

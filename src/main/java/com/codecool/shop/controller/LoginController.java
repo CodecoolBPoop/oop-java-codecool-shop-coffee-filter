@@ -2,6 +2,7 @@ package com.codecool.shop.controller;
 
 
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.dao.implementation.UserDaoSQL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -29,11 +30,13 @@ public class LoginController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        // if post username find to sql username && post password equals to the sql password
-        HttpSession session=req.getSession();
-        session.setAttribute("username",username);
-        // ?? else send error message
-
-        resp.sendRedirect("/");
+        UserDaoSQL uds = UserDaoSQL.getInstance();
+        if (uds.checkNameAndPassword(username, password)) {
+            HttpSession session = req.getSession();
+            session.setAttribute("username", username);
+            resp.sendRedirect("/");
+        } else {
+            resp.sendRedirect("/invalid_login");
+        }
     }
 }

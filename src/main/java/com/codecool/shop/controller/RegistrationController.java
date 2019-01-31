@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.dao.implementation.UserDaoSQL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/registration"})
@@ -27,8 +29,18 @@ public class RegistrationController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String email = req.getParameter("email");
-        // variables save to database sql
 
-        resp.sendRedirect("/");
+        UserDaoSQL uds = UserDaoSQL.getInstance();
+        if (uds.checkNameAndEmail(username, email)) {
+            uds.add(username, password, email);
+
+            HttpSession session = req.getSession();
+            session.setAttribute("username", username);
+
+            resp.sendRedirect("/");
+        } else {
+            resp.sendRedirect("/invalid_registration");
+        }
+
     }
 }

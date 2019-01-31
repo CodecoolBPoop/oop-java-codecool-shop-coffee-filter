@@ -38,7 +38,7 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <!-- Remove this rows and Jetty doesn't froze -->
+                    <!-- Remove these rows and Jetty won't froze -->
                     <httpConnector>
                         <port>8888</port>
                     </httpConnector>
@@ -63,6 +63,11 @@
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
             <version>3.0.9.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
