@@ -47,38 +47,53 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <form action="/payment" novalidate>
+                        <form action="/payment" method="POST">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="firstName">First name</label>
+                                    <label for="firstName">First name:</label>
                                     <input type="text" class="form-control" id="firstName" name="firstname"
-                                           placeholder="First name" value=""
+                                           placeholder="First name" value="" pattern=".{2,20}"
                                            required>
                                 </div>
                                 <div class="col">
-                                    <label for="lastName">Last name</label>
+                                    <label for="lastName">Last name:</label>
                                     <input type="text" class="form-control" id="lastName" name="lastname"
-                                           placeholder="Last name" value=""
+                                           placeholder="Last name" value="" pattern=".{2,20}"
                                            required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="email">e-mail</label>
+                                    <label for="email">e-mail:</label>
                                     <input type="email" class="form-control" id="email" name="email"
-                                           placeholder="you@example.com">
+                                           placeholder="you@example.com" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="street">Street</label>
+                                    <label for="street">Street:</label>
                                     <input type="text" class="form-control" id="street" name="street"
-                                           placeholder="Nagymezo u. 44." required>
+                                           placeholder="Enter street" required>
+                                </div>
+                                <div class="col">
+                                    <label for="house-number">House number:</label>
+                                    <input type="text" class="form-control" id="house-number" name="house-number"
+                                           placeholder="Enter house number" required>
+                                </div>
+                                <div class="col">
+                                    <label for="story">Story:</label>
+                                    <input type="text" class="form-control" id="story" name="story"
+                                           placeholder="Enter story (if there is)">
+                                </div>
+                                <div class="col">
+                                    <label for="door">Door:</label>
+                                    <input type="text" class="form-control" id="door" name="door"
+                                           placeholder="Enter door (if there is)">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="country">Country</label>
+                                    <label for="country">Country:</label>
                                     <select class="custom-select d-block w-100" id="country" name="country" required>
                                         <option value="">Choose...</option>
                                         <option>Hungary</option>
@@ -89,9 +104,14 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <label for="zip">Zip code</label>
+                                    <label for="city">City:</label>
+                                    <input type="text" class="form-control" id="city" name="city"
+                                           placeholder="Enter city name" required>
+                                </div>
+                                <div class="col">
+                                    <label for="zip">Zip code:</label>
                                     <input type="number" class="form-control" id="zip" name="zip"
-                                           placeholder="1065"
+                                           placeholder="ZIP"
                                            value=""
                                            required>
                                 </div>
@@ -99,9 +119,7 @@
                             <div class="row my-3">
                                 <div class="col">
                                     <hr class="h4">
-                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Continue
-                                        to
-                                        payment
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to payment
                                     </button>
                                 </div>
                             </div>
@@ -123,10 +141,10 @@
                     Product name
                 </div>
                 <div class="col font-weight-bold">
-                    Qty
+                    Quantity
                 </div>
                 <div class="col font-weight-bold">
-                    price/pc
+                    Price per item
                 </div>
                 <div class="col font-weight-bold">
                     Total
