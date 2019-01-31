@@ -110,7 +110,7 @@
                                 <td>
                                     <form class="remove d-inline" action="/cart" method="post">
                                         <input type="hidden" name="id"
-                                               th:value="${item.getValue().getProduct().getId()}">
+                                               th:value="${item.getKey()}">
                                         <input type="hidden" name="action" value="remove">
                                         <input type="submit"
                                                class="negative-button btn btn-outline-secondary btn-sm px-3"
@@ -120,7 +120,7 @@
                                           th:text="${item.getValue().getQuantity()}">10</span>
                                     <form class="add d-inline" action="/cart" method="post">
                                         <input type="hidden" name="id"
-                                               th:value="${item.getValue().getProduct().getId()}">
+                                               th:value="${item.getKey()}">
                                         <input type="hidden" name="action" value="add">
                                         <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
                                                value="+"/>

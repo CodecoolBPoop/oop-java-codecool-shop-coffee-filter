@@ -39,6 +39,7 @@ public class AddressSavingDaoSQL extends DataBaseConnect implements AddressSavin
             preparedStatement.setString(8, door);
             preparedStatement.setString(9, firstName);
             preparedStatement.setString(10, lastName);
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();

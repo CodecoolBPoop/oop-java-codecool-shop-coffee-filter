@@ -36,7 +36,7 @@ public class CartController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
         int userId = 1;
 
@@ -59,26 +59,17 @@ public class CartController extends HttpServlet {
             resp.sendError(412, "Invalid data\nError parsing JSON request string");
         }
 
-        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(userId);
-
         if (null != action || productId != 0) {
             Product product = productDataStore.find(productId);
             if (product != null) {
                 int status = 201;
-                if (latestOrder == null) {
-                    if (action.equals("add")) {
-                        orderDataStore.add(product, userId);
-                        resp.setStatus(status);
-                    } else {
-                        resp.sendError(412, "Invalid data");
-                    }
+                if (action.equals("add")) {
+                    orderDataStore.addNewItemToOrder(product, userId);
+                    resp.setStatus(status);
+
                 } else {
-                    if (action.equals("add")) {
-                        orderDataStore.addNewItemToOrder(product, userId);
-                    } else if (action.equals("remove")) {
-                        orderDataStore.removeItemFromOrder(product, userId);
-                        status = 200;
-                    }
+                    orderDataStore.removeItemFromOrder(product, userId);
+                    status = 200;
                 }
                 resp.setStatus(status);
                 JSONObject cartAsJSON = orderDataStore.getLastShoppingCartByUser(userId);

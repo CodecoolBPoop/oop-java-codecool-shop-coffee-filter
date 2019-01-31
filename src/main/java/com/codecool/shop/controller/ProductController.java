@@ -35,7 +35,7 @@ public class ProductController extends HttpServlet {
         ProductDao productDataStore = ProductDaoSQL.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
         int userId = 1;
 
         //Filters
@@ -140,8 +140,8 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int boughtItemId = Integer.parseInt(req.getParameter("boughtItem"));
         int userId = 1;
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
 
         Product product = productDataStore.find(boughtItemId);
         System.out.println("bought: " + product.getName());

@@ -20,6 +20,10 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
     private static OrderDaoSQL instance = null;
 
+    private OrderDaoSQL() {
+
+    }
+
     public static OrderDaoSQL getInstance() {
         if (instance == null) {
             instance = new OrderDaoSQL();
@@ -39,6 +43,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, product.getId());
             preparedStatement.setFloat(3, product.getDefaultPrice());
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,6 +87,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
         ) {
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -97,6 +103,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
     @Override
     public void addNewItemToOrder(Product product, int userId) {
+        System.out.println(userId);
         Order order = getLatestUnfinishedOrderByUser(userId);
         int productId = product.getId();
         if (order != null) {
@@ -118,6 +125,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
         ) {
             preparedStatement.setInt(1, order.getId());
             preparedStatement.setInt(2, productId);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -136,7 +144,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
             preparedStatement.setInt(1, order.getId());
             preparedStatement.setInt(2, productId);
             preparedStatement.setFloat(3, product.getDefaultPrice());
-
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

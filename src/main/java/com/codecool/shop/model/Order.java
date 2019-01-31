@@ -2,6 +2,9 @@ package com.codecool.shop.model;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Order {
 
@@ -9,7 +12,6 @@ public class Order {
     private int userId;
     private LocalDate date;
     private Status status;
-    private float amountToPay = 0;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
     public Order(int userId, Product product) {
@@ -34,7 +36,6 @@ public class Order {
         }
         shoppingCart.put(productId, lineItem);
         date = LocalDate.now();
-        amountToPay += product.getDefaultPrice();
     }
 
     public int getNumberOfItemsInCart() {
@@ -55,7 +56,6 @@ public class Order {
             } else {
                 shoppingCart.put(productId, lineItem);
             }
-            amountToPay -= product.getDefaultPrice();
         }
         date = LocalDate.now();
     }
@@ -69,7 +69,13 @@ public class Order {
     }
 
     public float getAmountToPay() {
-        return amountToPay;
+        List<Float> sums = shoppingCart.entrySet().stream().map(x -> x.getValue().getQuantity() * x.getValue().getPrice()).collect(Collectors.toList());
+        float amount = 0;
+        for (Float sum : sums
+             ) {
+            amount += sum;
+        }
+        return amount;
     }
 
     public int getUserId() {
