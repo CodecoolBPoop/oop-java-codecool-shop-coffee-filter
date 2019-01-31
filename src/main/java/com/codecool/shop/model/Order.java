@@ -100,7 +100,7 @@ public class Order {
     }
 
     public void addToCArt(int productId, int quantity, float price, String name) {
-        LineItem item = new LineItem(quantity, price, name);
+        LineItem item = new LineItem(quantity, price, name, productId);
         shoppingCart.put(productId, item);
     }
 }
