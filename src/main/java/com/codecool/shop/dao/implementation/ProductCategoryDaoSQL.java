@@ -74,6 +74,7 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
 
     @Override
     public void remove(int id) {
+//        TODO: update the method to change the ACTIVE flag instead of DELETE
         String sql = "DELETE FROM product_category WHERE id=?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
