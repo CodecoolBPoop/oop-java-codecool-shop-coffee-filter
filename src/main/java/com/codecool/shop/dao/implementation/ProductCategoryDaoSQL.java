@@ -74,18 +74,11 @@ public class ProductCategoryDaoSQL extends DataBaseConnect implements ProductCat
 
     @Override
     public void remove(int id) {
-//        TODO: update the method to change the ACTIVE flag instead of DELETE
-        String sql = "DELETE FROM product_category WHERE id=?";
+        String sql = "UPDATE TABLE product_category SET active = false WHERE id = ?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
+            pstatement.executeUpdate();
 
-            try (ResultSet resultSet = pstatement.executeQuery()) {
-                if (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String description = resultSet.getString("description");
-                    String department = resultSet.getString("department");
-                }
-            }
         } catch (SQLException e) {
             System.err.println("Failed to insert into table due to incorrect SQL String!");
             e.printStackTrace();
