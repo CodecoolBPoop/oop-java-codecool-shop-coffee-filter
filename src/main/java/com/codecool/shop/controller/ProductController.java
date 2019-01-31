@@ -34,7 +34,7 @@ public class ProductController extends HttpServlet {
         // Session
         HttpSession session = req.getSession(false);
 
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
         Map mainPageFilters = new HashMap<>();
@@ -59,14 +59,9 @@ public class ProductController extends HttpServlet {
             isSupplierSet = false;
         }
 
-        setAllProductVisible(productDataStore);
-        setProductVisibilityBasedOnCategoryFilter(productDataStore, category);
-        setProductVisibilityBasedOnSupplierFilter(productDataStore, supplier);
-
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
         context.setVariable("mainPageFilters", mainPageFilters);
-//        context.setVariables(params);
 
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
@@ -79,6 +74,7 @@ public class ProductController extends HttpServlet {
             }
         }
         context.setVariable("recipient", "World");
+//        TODO rework context setVariable calls -- to make sure that context is set only for filtered values
         context.setVariable("categories", productCategoryDataStore.getAll());
         context.setVariable("suppliers", supplierDataStore.getAll());
         context.setVariable("products", productDataStore.getAll());
@@ -87,10 +83,6 @@ public class ProductController extends HttpServlet {
         }
         engine.process("product/index.html", context, resp.getWriter());
 
-//        Map params = new HashMap<>();
-//        params.put("category", productCategoryDataStore.find(1));
-//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
-//        context.setVariables(params);
     }
 
     private void setAllProductVisible(ProductDao productDataStore) {

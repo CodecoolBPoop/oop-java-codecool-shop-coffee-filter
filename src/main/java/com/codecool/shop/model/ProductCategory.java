@@ -29,7 +29,8 @@ public class ProductCategory extends BaseModel {
     }
 
     public void addProduct(Product product) {
-        this.products.add(product);
+//        this.products.add(product);
+        System.out.println("PRODUCT CATEGORY == ADD PRODUCT CALLED");
     }
 
     public String toString() {

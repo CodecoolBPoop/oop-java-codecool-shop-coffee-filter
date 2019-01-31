@@ -57,7 +57,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public Product find(int id) {
-        String sql = "SELECT name, description, price, stock, active, " +
+        String sql = "SELECT product.name, product.description, product.price, product.stock, product.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -105,7 +105,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     @Override
     public List<Product> getAll() {
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT name, description, price, stock, active, " +
+        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -117,8 +117,26 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 while (resultSet.next()) {
-                    data.add(getProductFromResultSet(resultSet));
+                    String name = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    float price = resultSet.getFloat("price");
+                    int stock = resultSet.getInt("stock");
+                    boolean active = resultSet.getBoolean("active");
+                    int supplierId = resultSet.getInt("supplier_id");
+                    String supplierName = resultSet.getString("supplier_name");
+                    String supplierDesc = resultSet.getString("supplier_desc");
+                    int productCategoryId = resultSet.getInt("pc_id");
+                    String productCategoryName = resultSet.getString("pc_name");
+                    String productCategoryDesc = resultSet.getString("pc_desc");
+                    String productCategoryDept = resultSet.getString("pc_dept");
+                    String currencyName = resultSet.getString("currency");
+
+                    Supplier givenSupp = new Supplier(supplierName, supplierDesc);
+                    ProductCategory givenPC = new ProductCategory(productCategoryName, productCategoryDesc, productCategoryDept);
+
+                    data.add(new Product(name, price, currencyName, description, givenPC, givenSupp));
                 }
+                System.out.println(data.get(0));
                 return data;
             }
         } catch (SQLException e) {
@@ -137,7 +155,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     public List<Product> getBy(Supplier supplier) {
         int supId = supplier.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT name, description, price, stock, active, " +
+        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -171,7 +189,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     public List<Product> getBy(ProductCategory productCategory) {
         int pcID = productCategory.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT name, description, price, stock, active, " +
+        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -204,7 +222,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         int pcID = productCategory.getId();
         int supId = supplier.getId();
         List<Product> data = new ArrayList<>();
-        String sql = "SELECT name, description, price, stock, active, " +
+        String sql = "SELECT products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
@@ -235,6 +253,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
     }
 
     private Product getProductFromResultSet(ResultSet resultSet) throws SQLException {
+
         String name = resultSet.getString("name");
         String description = resultSet.getString("description");
         float price = resultSet.getFloat("price");
