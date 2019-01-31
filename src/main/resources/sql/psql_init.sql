@@ -98,7 +98,7 @@ CREATE TABLE statuses (
 CREATE TABLE delivery_addresses (
   id SMALLSERIAL NOT NULL UNIQUE,
   country SMALLINT NOT NULL,
-  state VARCHAR NOT NULL,
+  state VARCHAR,
   postal_code VARCHAR NOT NULL,
   city VARCHAR NOT NULL,
   street VARCHAR NOT NULL,

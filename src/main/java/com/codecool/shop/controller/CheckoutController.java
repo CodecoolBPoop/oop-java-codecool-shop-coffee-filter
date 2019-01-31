@@ -2,6 +2,7 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.dao.OrderDao;
+import com.codecool.shop.dao.implementation.AddressSavingDaoSQL;
 import com.codecool.shop.dao.implementation.OrderDaoMem;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
@@ -35,6 +36,21 @@ public class CheckoutController extends HttpServlet {
         context.setVariable("amountToPay", amountToPay);
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
+
+        AddressSavingDaoSQL addressSavingDaoSQL = AddressSavingDaoSQL.getInstance();
+
+        String country = req.getParameter("country");
+        String state = req.getParameter("state");
+        String postalCode = req.getParameter("zip");
+        String city = req.getParameter("city");
+        String street = req.getParameter("street");
+        String houseNumber = req.getParameter("house-number");
+        String story = req.getParameter("story");
+        String door = req.getParameter("door");
+        String firstName = req.getParameter("firstname");
+        String lastName = req.getParameter("lastname");
+
+        addressSavingDaoSQL.add(country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
 
     }
 }
