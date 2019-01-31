@@ -1,12 +1,15 @@
 package com.codecool.shop.dao.implementation;
 
 import com.codecool.shop.dao.OrderDao;
+import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Status;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderDaoMem implements OrderDao {
 
@@ -32,14 +35,29 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
+    public void add(int userId, Product product) {
+        Order order = new Order(userId, product);
+        add(userId, order);
+    }
+
+    @Override
     public Order find(int id) {
-        return orders.get(id);
+        return orders.stream()
+                .filter(order -> order.getId() == id)
+                .findFirst()
+                .orElseThrow(NullPointerException::new);
     }
 
     @Override
     public void remove(int id) {
-        if (id < orders.size() && id >= 0) {
-            orders.remove(id);
+        if (id > 0) {
+            Iterator<Order> orderIterator = orders.listIterator();
+            while (orderIterator.hasNext()) {
+                if (orderIterator.next().getId() == id) {
+                    orderIterator.remove();
+                    break;
+                }
+            }
         }
     }
 
@@ -50,17 +68,26 @@ public class OrderDaoMem implements OrderDao {
 
     @Override
     public void addNewItemToOrder(Product product, int orderId) {
-        orders.get(orderId).addProductToCart(product);
+        find(orderId).addProductToCart(product);
     }
 
     @Override
     public void addNewItemToOrder(Product product, Order order) {
-        orders.get(orders.indexOf(order)).addProductToCart(product);
+        addNewItemToOrder(product, order.getId());
     }
 
     @Override
     public void removeItemFromOrder(Product product, int orderId) {
-        orders.get(orderId).removeProductFromCart(product);
+        Order order = find(orderId);
+        order.removeProductFromCart(product);
+        if (order.getNumberOfItemsInCart() == 0) {
+            orders.remove(orderId);
+        }
+    }
+
+    @Override
+    public void removeItemFromOrder(Product product, Order order) {
+        removeItemFromOrder(product, order.getId());
     }
 
     @Override
@@ -69,7 +96,21 @@ public class OrderDaoMem implements OrderDao {
                 .filter(order -> order.getUserId() == userId)
                 .filter(order -> !order.getStatus().equals(Status.PAID))
                 .filter(order -> !order.getStatus().equals(Status.SHIPPED))
+                .filter(order -> !order.getStatus().equals(Status.CONFIRMED))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public JSONObject getLastShoppingCartByUser(int userId) {
+
+        Order order = getLatestUnfinishedOrderByUser(userId);
+        Map<Integer, LineItem> cart = order.getShoppingCart();
+        List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
+        JSONArray cartItemsAsJSON = new JSONArray(cartItems);
+        JSONObject cartAsJSON = new JSONObject();
+        cartAsJSON.put("items", cartItemsAsJSON);
+        cartAsJSON.put("amount", order.getAmountToPay());
+        return cartAsJSON;
     }
 }
