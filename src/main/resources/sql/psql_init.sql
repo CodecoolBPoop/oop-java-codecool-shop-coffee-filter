@@ -102,7 +102,7 @@ CREATE TABLE delivery_addresses (
   postal_code VARCHAR NOT NULL,
   city VARCHAR NOT NULL,
   street VARCHAR NOT NULL,
-  house_number SMALLINT NOT NULL,
+  house_number VARCHAR NOT NULL,
   story VARCHAR,
   door VARCHAR,
   first_name VARCHAR(50) NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE orders (
   latest_update TIMESTAMP NOT NULL DEFAULT now(),
   status SMALLINT NOT NULL,
   user_id SMALLINT NOT NULL,
-  delivery_address SMALLINT NOT NULL);
+  delivery_address SMALLINT);
 
 CREATE TABLE user_orders (
   user_id SMALLINT NOT NULL,
