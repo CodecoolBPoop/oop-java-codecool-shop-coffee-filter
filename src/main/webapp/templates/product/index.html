@@ -78,7 +78,6 @@
     </div>
     <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
-        <!-- <span class="badge badge-secondary badge-pill" th:text="${order.getNumberOfItemsInCart()}">Amount in cart</span> -->
         <span id="itemNumber" class="badge badge-secondary badge-pill"
               th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
     </button>
@@ -105,33 +104,33 @@
                             </tr>
                             </thead>
                             <tbody id="cart" th:if="${cart != null}">
-                                <tr th:each="item : ${cart}">
-                                    <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
-                                    <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
-                                    <td>
-                                        <form class="remove d-inline" action="/cart" method="post">
-                                            <input type="hidden" name="id"
-                                                   th:value="${item.getValue().getProduct().getId()}">
-                                            <input type="hidden" name="action" value="remove">
-                                            <input type="submit"
-                                                   class="negative-button btn btn-outline-secondary btn-sm px-3"
-                                                   value="-"/>
-                                        </form>
-                                        <span class="quantity mx-2 d-inline"
-                                              th:text="${item.getValue().getQuantity()}">10</span>
-                                        <form class="add d-inline" action="/cart" method="post">
-                                            <input type="hidden" name="id"
-                                                   th:value="${item.getValue().getProduct().getId()}">
-                                            <input type="hidden" name="action" value="add">
-                                            <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
-                                                   value="+"/>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total:</td>
-                                    <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
-                                </tr>
+                            <tr th:each="item : ${cart}">
+                                <td class="name" th:text="${item.getValue().getName()}">Product Name</td>
+                                <td class="price" th:text="${item.getValue().getPrice()}">Price</td>
+                                <td>
+                                    <form class="remove d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getKey()}">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="submit"
+                                               class="negative-button btn btn-outline-secondary btn-sm px-3"
+                                               value="-"/>
+                                    </form>
+                                    <span class="quantity mx-2 d-inline"
+                                          th:text="${item.getValue().getQuantity()}">10</span>
+                                    <form class="add d-inline" action="/cart" method="post">
+                                        <input type="hidden" name="id"
+                                               th:value="${item.getKey()}">
+                                        <input type="hidden" name="action" value="add">
+                                        <input type="submit" class="plus-button btn btn-dark btn-sm px-3"
+                                               value="+"/>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total:</td>
+                                <td colspan="2" id="total-price" th:text="${amountToPay}">Total</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

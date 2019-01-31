@@ -57,19 +57,20 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
     @Override
     public Product find(int id) {
-        String sql = "SELECT product.name, product.description, product.price, product.stock, product.active, " +
+        String sql = "SELECT products.id, products.name, products.description, products.price, products.stock, products.active, " +
                 "s.id as supplier_id, s.name as supplier_name, s.description as supplier_desc, " +
                 "pc.id as pc_id, pc.name as pc_name, pc.description as pc_desc, pc.department as pc_dept, " +
                 "c.currency FROM products " +
                 "LEFT JOIN suppliers s ON products.supplier_id = s.id " +
                 "LEFT JOIN product_category pc ON products.product_category_id = pc.id " +
                 "LEFT JOIN currencies c ON products.currency = c.id " +
-                "WHERE id=?";
+                "WHERE products.id=?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
             pstatement.setInt(1, id);
 
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 if (resultSet.next()) {
+                    System.out.println(id);
                     return getProductFromResultSet(resultSet);
                 }
             }
@@ -82,7 +83,7 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new NullPointerException("No such result");
+        return null;
     }
 
     @Override

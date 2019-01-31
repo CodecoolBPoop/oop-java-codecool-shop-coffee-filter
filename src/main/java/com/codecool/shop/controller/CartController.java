@@ -3,14 +3,11 @@ package com.codecool.shop.controller;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import org.json.HTTP;
 import org.json.JSONArray;
@@ -39,8 +36,8 @@ public class CartController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ProductDao productDataStore = ProductDaoMem.getInstance();
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
         int userId = 1;
 
         StringBuilder sb = new StringBuilder();
@@ -62,35 +59,22 @@ public class CartController extends HttpServlet {
             resp.sendError(412, "Invalid data\nError parsing JSON request string");
         }
 
-        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(userId);
-
         if (null != action || productId != 0) {
             Product product = productDataStore.find(productId);
             if (product != null) {
                 int status = 201;
-                if (latestOrder == null) {
-                    if (action.equals("add")) {
-                        orderDataStore.add(userId, product);
-                        resp.setStatus(status);
-                    } else {
-                        resp.sendError(412, "Invalid data");
-                    }
+                if (action.equals("add")) {
+                    orderDataStore.addNewItemToOrder(product, userId);
+                    resp.setStatus(status);
+
                 } else {
-                    if (action.equals("add")) {
-                        latestOrder.addProductToCart(product);
-                    } else if (action.equals("remove")) {
-                        latestOrder.removeProductFromCart(product);
-                        status = 200;
-                    }
+                    orderDataStore.removeItemFromOrder(product, userId);
+                    status = 200;
                 }
                 resp.setStatus(status);
                 JSONObject cartAsJSON = orderDataStore.getLastShoppingCartByUser(userId);
-                cartAsJSON.put("itemNumber", orderDataStore.getLatestUnfinishedOrderByUser(userId).getNumberOfItemsInCart());
-
                 resp.setContentType("application/json;charset=UTF-8");
-
                 ServletOutputStream out = resp.getOutputStream();
-
                 out.print(cartAsJSON.toString());
             } else {
                 resp.sendError(412, "Invalid data\nNo such product");
