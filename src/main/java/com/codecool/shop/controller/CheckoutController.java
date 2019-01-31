@@ -3,7 +3,7 @@ package com.codecool.shop.controller;
 import com.codecool.shop.config.TemplateEngineUtil;
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.dao.implementation.AddressSavingDaoSQL;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.OrderDaoSQL;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import org.thymeleaf.TemplateEngine;
@@ -22,7 +22,7 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
         Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
         float amountToPay = order.getAmountToPay();
@@ -37,6 +37,11 @@ public class CheckoutController extends HttpServlet {
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
 
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AddressSavingDaoSQL addressSavingDaoSQL = AddressSavingDaoSQL.getInstance();
 
         String country = req.getParameter("country");
@@ -52,5 +57,6 @@ public class CheckoutController extends HttpServlet {
 
         addressSavingDaoSQL.add(country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
 
+        resp.sendRedirect("/payment");
     }
 }
