@@ -1,10 +1,15 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.dao.AddressHandler;
 import com.codecool.shop.dao.OrderDao;
-import com.codecool.shop.dao.implementation.OrderDaoMem;
-import com.codecool.shop.model.LineItem;
+import com.codecool.shop.dao.UserDao;
+import com.codecool.shop.dao.implementation.AddressHandlerSQL;
+import com.codecool.shop.dao.implementation.OrderDaoSQL;
+import com.codecool.shop.dao.implementation.UserDaoSQL;
+import com.codecool.shop.model.Address;
 import com.codecool.shop.model.Order;
+import com.codecool.shop.model.User;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -13,48 +18,55 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
 
 @WebServlet(urlPatterns = {"/payment"})
 public class paymentController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Session
+        HttpSession session = req.getSession(false);
 
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
-        Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
-        HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
-        float amountToPay = order.getAmountToPay();
+        AddressHandler addressDataStore = AddressHandlerSQL.getInstance();
+        UserDao userDataStore = UserDaoSQL.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
 
-        String billingFirstName = req.getParameter("firstname");
-        String billingLastName = req.getParameter("lastname");
-        String billingEmail = req.getParameter("email");
-        String billingStreet = req.getParameter("street");
-        String billingHouseNumber = req.getParameter("house-number");
-        String billingStory = req.getParameter("story");
-        String billingDoor = req.getParameter("door");
-        String billingCity = req.getParameter("city");
-        String billingCountry = req.getParameter("country");
-        String billingZip = req.getParameter("zip");
 
+        String userEmail = session.getAttribute("email").toString();
+
+        int userID = userDataStore.getUserIDbyEmail("email");
+        User user = userDataStore.getUserById(userID);
+
+        Order order = ((OrderDaoSQL) orderDataStore).getLatestOrderByUserID(userID);
+        int deliveryAddressId = order.getDeliveryAddressId();
+
+        Address address = addressDataStore.getAddressById(deliveryAddressId);
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
 
-        context.setVariable("billingFirstname", billingFirstName);
-        context.setVariable("billingLastname", billingLastName);
-        context.setVariable("billingEmail", billingEmail);
-        context.setVariable("billingStreet", billingStreet);
-        context.setVariable("billingHouseNumber", billingHouseNumber);
-        context.setVariable("billingStory", billingStory);
-        context.setVariable("billingDoor", billingDoor);
-        context.setVariable("billingCity", billingCity);
-        context.setVariable("billingCountry", billingCountry);
-        context.setVariable("billingZip", billingZip);
+        float amountToPay = order.getAmountToPay();
+        String name = address.getFirstName() + " " + address.getLastName();
+        String addressLine1 = address.getCountry() + " "
+                + address.getPostalCode() + "-"
+                + address.getState();
+        String addressLine2 = address.getCity() + " "
+                + address.getStreet() + " "
+                + address.getHouseNumber() + " "
+                + address.getStory() + "/"
+                + address.getDoor();
 
         context.setVariable("amountToPay", amountToPay);
-
+        context.setVariable("email", userEmail);
+        context.setVariable("name", name);
+        context.setVariable("address1", addressLine1);
+        context.setVariable("address2", addressLine2);
+        if (session != null) {
+            context.setVariable("username", session.getAttribute("username"));
+            context.setVariable("email", session.getAttribute("email"));
+        }
 
         engine.process("payment/payment.html", context, resp.getWriter());
 

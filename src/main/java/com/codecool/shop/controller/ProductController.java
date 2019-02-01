@@ -106,6 +106,8 @@ public class ProductController extends HttpServlet {
         WebContext context = new WebContext(req, resp, req.getServletContext());
         context.setVariable("mainPageFilters", mainPageFilters);
 
+        System.out.println(categories);
+        System.out.println(suppliers);
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
             Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
@@ -122,6 +124,7 @@ public class ProductController extends HttpServlet {
         context.setVariable("products", products);
         if (session != null) {
             context.setVariable("username", session.getAttribute("username"));
+            context.setVariable("email", session.getAttribute("email"));
         }
         engine.process("product/index.html", context, resp.getWriter());
 

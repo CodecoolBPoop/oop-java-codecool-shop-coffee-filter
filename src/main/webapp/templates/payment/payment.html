@@ -29,71 +29,97 @@
 </head>
 <body class="bg-light">
 
+<nav class="navbar navbar-expand-sm bg-dark text-light">
+    <div th:if="${username == null}">
+        <ul class="navbar-nav">
+            <span class="navbar-text">
+                You are not logged in!
+            </span>
+            <li class="nav-item">
+                <a class="nav-link" href="/registration">
+                    Registration
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">
+                    Login
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${username != null}">
+        <ul class="navbar-nav">
+            <span class="navbar-text" th:text="'Signed in '+${username}">
+                Hi, User
+            </span>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Log out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 <div class="container">
-    <div class="py-5 text-center">
-        <h2>Payment</h2>
-        <div>
-            <div class="d-inline">Total amount (USD):</div>
-            <div class="d-inline" th:text="${amountToPay}"></div>
+    <div class="row">
+        <div class="col col-sm-12">
+            <div class="py-5 text-center">
+                <div class="h2">
+                    Payment
+                </div>
+                <div>
+                    <div class="d-inline">Total amount (USD):</div>
+                    <div class="d-inline" th:text="${amountToPay}"></div>
+                </div>
+            </div>
 
-        </div>
-    </div>
-
-    <div class="container">
-        Billing address:
-    </div>
-    <div class="container">
-
-        <div class="d-inline">Name:</div>
-        <div class="d-inline" th:text="${billingFirstname}"></div>
-        <div class="d-inline" th:text="${billingLastname}"></div>
-    </div>
-    <div class="container">
-        <div class="d-inline">E-mail:</div>
-        <div class="d-inline" th:text="${billingEmail}"></div>
-    </div>
-    <div class="container">
-        <div class="d-inline">Address:</div>
-        <div class="d-inline" th:text="${billingZip}"></div>
-        <div class="d-inline" th:text="${billingStreet}"></div>
-        <div class="d-inline" th:text="${billingHouseNumber}"></div>
-        <div class="d-inline" th:text="${billingStory}"></div>
-        <div class="d-inline" th:text="${billingDoor}"></div>
-        <div class="d-inline" th:text="${billingCity}"></div>
-        <div class="d-inline" th:text="${billingCountry}"></div>
-    </div>
-
-</div>
-<div class="row">
-    <div class="d-block col-md-3">
-        <div class="custom-control custom-radio">
-            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked
-                   required>
-            <label class="custom-control-label" for="credit">Credit card</label>
-        </div>
-        <div class="custom-control custom-radio">
-            <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-            <label class="custom-control-label" for="paypal">Paypal</label>
+            <div class="container">
+                <div class="d-inline">Name:</div>
+                <div class="d-inline" th:text="${name}">First Name, Last Name</div>
+            </div>
+            <div class="container">
+                <div class="d-inline">E-mail:</div>
+                <div class="d-inline" th:text="${email}">email@domain.com</div>
+            </div>
+            <div class="container">
+                <div class="d-inline">Address:</div>
+                <div class="d-inline" th:text="${address1}">Country, City, ZIP-Code</div>
+                <div class="d-inline" th:text="${address2}">Street, nr., etc.</div>
+            </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-3">
-        <label for="cc-name">Name on card</label>
-        <input type="text" class="form-control" id="cc-name" placeholder="Name on card" required>
-        <small class="text-muted">Full name as displayed on card</small>
+<div class="container">
+    <div class="row">
+        <div class="d-block col-md-3">
+            <div class="custom-control custom-radio">
+                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked
+                       required>
+                <label class="custom-control-label" for="credit">Credit card</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="paypal">Paypal</label>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <label for="cc-number">Credit card number</label>
-        <input type="text" class="form-control" id="cc-number" placeholder="1234-5678-1234-5678" required>
-    </div>
-    <div class="col-md-4">
-        <label for="cc-expiration">Expiration</label>
-        <input type="text" class="form-control" id="cc-expiration" placeholder="Expiration" required>
-    </div>
-    <div class="col-md-3 mb-3">
-        <label for="cc-expiration">CVV</label>
-        <input type="text" class="form-control" id="cc-cvv" placeholder="CVV" required>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="cc-name">Name on card</label>
+            <input type="text" class="form-control" id="cc-name" placeholder="Name on card" required>
+            <small class="text-muted">Full name as displayed on card</small>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="cc-number">Credit card number</label>
+            <input type="text" class="form-control" id="cc-number" placeholder="1234-5678-1234-5678" required>
+        </div>
+        <div class="col-md-4">
+            <label for="cc-expiration">Expiration</label>
+            <input type="text" class="form-control" id="cc-expiration" placeholder="Expiration" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="cc-expiration">CVV</label>
+            <input type="text" class="form-control" id="cc-cvv" placeholder="CVV" required>
+        </div>
     </div>
 </div>
 <div class="container">
@@ -103,7 +129,6 @@
             </button>
         </div>
     </div>
-</div>
 </div>
 
 <div class="footer" th:replace="footer.html :: copy"></div>

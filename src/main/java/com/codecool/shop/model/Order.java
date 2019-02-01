@@ -1,6 +1,7 @@
 package com.codecool.shop.model;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collector;
@@ -10,7 +11,11 @@ public class Order {
 
     private int id;
     private int userId;
-    private LocalDate date;
+    private LocalDateTime date;
+    private Timestamp orderDate;
+    private Timestamp latestUpdate;
+    private String statusSQL;
+    private int deliveryAddressId;
     private Status status;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
@@ -18,6 +23,15 @@ public class Order {
         this.userId = userId;
         status = Status.NEW;
         addProductToCart(product);
+    }
+    /**Constructor for SQL**/
+    public Order(int id, Timestamp orderDate, Timestamp latestUpdate, String status, int userId, int deliveryAddress) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.latestUpdate = latestUpdate;
+        this.statusSQL = status;
+        this.userId = userId;
+        this.deliveryAddressId = deliveryAddress;
     }
 
     public Order(int userId) {
@@ -35,7 +49,7 @@ public class Order {
             lineItem = new LineItem(product);
         }
         shoppingCart.put(productId, lineItem);
-        date = LocalDate.now();
+        date = LocalDateTime.now();
     }
 
     public int getNumberOfItemsInCart() {
@@ -57,7 +71,7 @@ public class Order {
                 shoppingCart.put(productId, lineItem);
             }
         }
-        date = LocalDate.now();
+        date = LocalDateTime.now();
     }
 
     public int getId() {
@@ -90,17 +104,33 @@ public class Order {
         return shoppingCart;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-        date = LocalDate.now();
+        date = LocalDateTime.now();
     }
 
     public void addToCArt(int productId, int quantity, float price, String name) {
         LineItem item = new LineItem(quantity, price, name, productId);
         shoppingCart.put(productId, item);
+    }
+
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public Timestamp getLatestUpdate() {
+        return latestUpdate;
+    }
+
+    public String getStatusSQL() {
+        return statusSQL;
+    }
+
+    public int getDeliveryAddressId() {
+        return deliveryAddressId;
     }
 }

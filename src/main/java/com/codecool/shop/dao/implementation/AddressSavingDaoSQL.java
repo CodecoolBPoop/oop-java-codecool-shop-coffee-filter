@@ -1,13 +1,14 @@
 package com.codecool.shop.dao.implementation;
 
-import com.codecool.shop.dao.AddressSavingDao;
+import com.codecool.shop.dao.AddressHandler;
 import com.codecool.shop.dao.DataBaseConnect;
+import com.codecool.shop.model.Address;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class AddressSavingDaoSQL extends DataBaseConnect implements AddressSavingDao {
+public class AddressSavingDaoSQL extends DataBaseConnect implements AddressHandler {
 
     private static AddressSavingDaoSQL instance = null;
 
@@ -47,5 +48,10 @@ public class AddressSavingDaoSQL extends DataBaseConnect implements AddressSavin
             System.err.println("Error: JDBC Driver load fail");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Address getAddressById(int id) {
+        return null;
     }
 }

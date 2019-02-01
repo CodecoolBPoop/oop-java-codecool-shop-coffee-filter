@@ -18,6 +18,10 @@ public class RegistrationController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Session
+        HttpSession session = req.getSession(false);
+
+
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
 
@@ -26,6 +30,9 @@ public class RegistrationController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Session
+        HttpSession session = req.getSession(false);
+
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String email = req.getParameter("email");
@@ -34,8 +41,8 @@ public class RegistrationController extends HttpServlet {
         if (uds.checkNameAndEmail(username, email)) {
             uds.add(username, password, email);
 
-            HttpSession session = req.getSession();
             session.setAttribute("username", username);
+            session.setAttribute("email", email);
 
             resp.sendRedirect("/");
         } else {

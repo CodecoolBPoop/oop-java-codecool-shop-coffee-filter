@@ -70,7 +70,6 @@ public class ProductDaoSQL extends DataBaseConnect implements ProductDao {
 
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 if (resultSet.next()) {
-                    System.out.println(id);
                     return getProductFromResultSet(resultSet);
                 }
             }

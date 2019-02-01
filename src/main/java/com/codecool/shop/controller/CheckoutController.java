@@ -1,8 +1,9 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.dao.AddressHandler;
 import com.codecool.shop.dao.OrderDao;
-import com.codecool.shop.dao.implementation.AddressSavingDaoSQL;
+import com.codecool.shop.dao.implementation.AddressHandlerSQL;
 import com.codecool.shop.dao.implementation.OrderDaoSQL;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
@@ -14,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -22,6 +24,9 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Session
+        HttpSession session = req.getSession(false);
+
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
         Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
@@ -34,6 +39,10 @@ public class CheckoutController extends HttpServlet {
         context.setVariable("cart", order);
         context.setVariable("shoppingcart", shoppingCart);
         context.setVariable("amountToPay", amountToPay);
+        if (session != null) {
+            context.setVariable("username", session.getAttribute("username"));
+            context.setVariable("email", session.getAttribute("email"));
+        }
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
 
@@ -42,7 +51,7 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        AddressSavingDaoSQL addressSavingDaoSQL = AddressSavingDaoSQL.getInstance();
+        AddressHandler addressDataStore = AddressHandlerSQL.getInstance();
 
         String country = req.getParameter("country");
         String state = req.getParameter("state");
@@ -55,7 +64,7 @@ public class CheckoutController extends HttpServlet {
         String firstName = req.getParameter("firstname");
         String lastName = req.getParameter("lastname");
 
-        addressSavingDaoSQL.add(country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
+        addressDataStore.add(country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
 
         resp.sendRedirect("/payment");
     }

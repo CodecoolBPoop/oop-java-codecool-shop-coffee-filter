@@ -8,10 +8,8 @@ import com.codecool.shop.model.Product;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -269,5 +267,38 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
             cartAsJSON.put("items", "");
         }
         return cartAsJSON;
+    }
+
+    public Order getLatestOrderByUserID(int userId) {
+        String sql = "SELECT orders.id, orders.order_date, orders.latest_update, s.status, orders.user_id, orders.delivery_address" +
+                " FROM orders " +
+                "LEFT JOIN statuses s ON s.id = orders.status " +
+                "WHERE orders.user_id = ? AND orders.status = 1";
+
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, userId);
+
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int orderId = resultSet.getInt("id");
+                    Timestamp orderDate = resultSet.getTimestamp("order_date");
+                    Timestamp latestUpdate = resultSet.getTimestamp("latest_update");
+                    String status = resultSet.getString("status");
+                    int deliveryAddressId = resultSet.getInt("delivery_address");
+
+                    return new Order(orderId, orderDate, latestUpdate, status, userId, deliveryAddressId);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
