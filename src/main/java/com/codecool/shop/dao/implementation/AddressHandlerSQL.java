@@ -41,6 +41,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
             preparedStatement.setString(8, door);
             preparedStatement.setString(9, firstName);
             preparedStatement.setString(10, lastName);
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,7 +67,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
                     String postalCode = resultSet.getString("postal_code");
                     String city = resultSet.getString("city");
                     String street = resultSet.getString("street");
-                    int houseNumber = resultSet.getInt("house_number");
+                    String houseNumber = resultSet.getString("house_number");
                     String story = resultSet.getString("story");
                     String door = resultSet.getString("door");
                     String firstName = resultSet.getString("first_name");
