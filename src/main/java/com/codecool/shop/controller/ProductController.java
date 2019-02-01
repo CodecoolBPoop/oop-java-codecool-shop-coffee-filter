@@ -95,7 +95,6 @@ public class ProductController extends HttpServlet {
                 }
                 categories.add(pc);
             }
-
         } else {
             suppliers = supplierDataStore.getAll();
             categories = productCategoryDataStore.getAll();
@@ -129,14 +128,6 @@ public class ProductController extends HttpServlet {
         engine.process("product/index.html", context, resp.getWriter());
 
     }
-
-    private void setAllProductVisible(ProductDao productDataStore) {
-        for (int i = 0; i < productDataStore.getAll().size(); i++) {
-            Product product = productDataStore.getAll().get(i);
-            product.setVisibility(true);
-        }
-    }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

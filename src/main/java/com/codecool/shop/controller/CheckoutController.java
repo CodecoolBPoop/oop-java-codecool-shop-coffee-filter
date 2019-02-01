@@ -32,7 +32,6 @@ public class CheckoutController extends HttpServlet {
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
         float amountToPay = order.getAmountToPay();
 
-
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
 
@@ -45,9 +44,8 @@ public class CheckoutController extends HttpServlet {
         }
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
-
-
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
