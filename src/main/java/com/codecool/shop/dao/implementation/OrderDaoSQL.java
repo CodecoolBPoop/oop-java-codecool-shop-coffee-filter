@@ -5,6 +5,7 @@ import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
+import com.codecool.shop.model.Status;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,7 +81,8 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
     @Override
     public void remove(int id) {
-        String query = "DELETE FROM order_products WHERE order_id = ?; DELETE FROM orders WHERE id = ?";
+        String query = "DELETE FROM order_products WHERE order_id = ?; " +
+                "DELETE FROM orders WHERE id = ?";
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
@@ -213,7 +215,15 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
                 if (resultSet.next()) {
                     Order order = new Order(userId);
                     order.setId(resultSet.getInt("id"));
+                    LocalDateTime orderDate = resultSet.getTimestamp("order_date").toLocalDateTime();
+                    order.setOrderDate(orderDate);
+                    LocalDateTime latestUpdate = resultSet.getTimestamp("latest_update").toLocalDateTime();
                     addCartItems(order);
+                    order.setLatestUpdate(latestUpdate);
+                    int status = resultSet.getInt("status");
+                    order.setStatus(Status.getStatusByIntValue(status));
+                    int deliveryAddressId = resultSet.getInt("delivery_address");
+                    order.setDeliveryAddressId(deliveryAddressId);
                     return order;
                 }
             } catch (SQLException e) {
@@ -267,38 +277,5 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
             cartAsJSON.put("items", "");
         }
         return cartAsJSON;
-    }
-
-    public Order getLatestOrderByUserID(int userId) {
-        String sql = "SELECT orders.id, orders.order_date, orders.latest_update, s.status, orders.user_id, orders.delivery_address" +
-                " FROM orders " +
-                "LEFT JOIN statuses s ON s.id = orders.status " +
-                "WHERE orders.user_id = ? AND orders.status = 1";
-
-        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
-            pstatement.setInt(1, userId);
-
-            try (ResultSet resultSet = pstatement.executeQuery()) {
-                if (resultSet.next()) {
-                    int orderId = resultSet.getInt("id");
-                    Timestamp orderDate = resultSet.getTimestamp("order_date");
-                    Timestamp latestUpdate = resultSet.getTimestamp("latest_update");
-                    String status = resultSet.getString("status");
-                    int deliveryAddressId = resultSet.getInt("delivery_address");
-
-                    return new Order(orderId, orderDate, latestUpdate, status, userId, deliveryAddressId);
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Failed to insert into table due to incorrect SQL String!");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error: JDBC Driver load fail");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

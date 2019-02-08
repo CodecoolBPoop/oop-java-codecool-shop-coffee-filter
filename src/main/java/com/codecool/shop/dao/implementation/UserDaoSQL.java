@@ -94,10 +94,10 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
     }
 
     @Override
-    public int getUserIDbyEmail(String email) {
-        String sql = "SELECT users.id FROM users WHERE users.email = ?";
+    public int getUserIdByUsername(String username) {
+        String sql = "SELECT id FROM users WHERE user_name = ?";
         try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
-            pstatement.setString(1, email);
+            pstatement.setString(1, username);
             try (ResultSet resultSet = pstatement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");
