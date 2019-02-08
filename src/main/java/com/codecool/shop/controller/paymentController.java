@@ -34,12 +34,10 @@ public class paymentController extends HttpServlet {
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
 
 
-        String userEmail = session.getAttribute("email").toString();
+        int userId = Integer.valueOf(session.getAttribute("userId").toString());
+        User user = userDataStore.getUserById(userId);
 
-        int userID = userDataStore.getUserIDbyEmail("email");
-        User user = userDataStore.getUserById(userID);
-
-        Order order = ((OrderDaoSQL) orderDataStore).getLatestOrderByUserID(userID);
+        Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
         int deliveryAddressId = order.getDeliveryAddressId();
 
         Address address = addressDataStore.getAddressById(deliveryAddressId);
@@ -59,13 +57,13 @@ public class paymentController extends HttpServlet {
                 + address.getDoor();
 
         context.setVariable("amountToPay", amountToPay);
-        context.setVariable("email", userEmail);
+        context.setVariable("email", userId);
         context.setVariable("name", name);
         context.setVariable("address1", addressLine1);
         context.setVariable("address2", addressLine2);
         if (session != null) {
             context.setVariable("username", session.getAttribute("username"));
-            context.setVariable("email", session.getAttribute("email"));
+            context.setVariable("email", user.getEmail());
         }
 
         engine.process("payment/payment.html", context, resp.getWriter());
