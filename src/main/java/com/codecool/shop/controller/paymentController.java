@@ -25,7 +25,7 @@ import java.io.IOException;
 public class paymentController extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
         HttpSession session = req.getSession(false);
 
@@ -47,13 +47,14 @@ public class paymentController extends HttpServlet {
 
         float amountToPay = order.getAmountToPay();
         String name = address.getFirstName() + " " + address.getLastName();
+        // todo: use string builder, check if state, storey, door are not null and format accordingly
         String addressLine1 = address.getCountry() + " "
-                + address.getPostalCode() + "-"
+                + address.getPostalCode() + ", "
                 + address.getState();
         String addressLine2 = address.getCity() + " "
                 + address.getStreet() + " "
                 + address.getHouseNumber() + " "
-                + address.getStorey() + "/"
+                + address.getStorey() + " "
                 + address.getDoor();
 
         context.setVariable("amountToPay", amountToPay);

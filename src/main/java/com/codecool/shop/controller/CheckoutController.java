@@ -50,7 +50,9 @@ public class CheckoutController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AddressHandler addressDataStore = AddressHandlerSQL.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
 
+        int userId = Integer.valueOf(req.getSession().getAttribute("userId").toString());
         String country = req.getParameter("country");
         String state = req.getParameter("state");
         String postalCode = req.getParameter("zip");
@@ -61,8 +63,9 @@ public class CheckoutController extends HttpServlet {
         String door = req.getParameter("door");
         String firstName = req.getParameter("firstname");
         String lastName = req.getParameter("lastname");
+        int orderId = orderDataStore.getLatestUnfinishedOrderIdByUser(userId);
 
-        addressDataStore.add(country, state, postalCode, city, street, houseNumber, storey, door, firstName, lastName);
+        addressDataStore.add(country, state, postalCode, city, street, houseNumber, storey, door, firstName, lastName, orderId);
 
         resp.sendRedirect("/payment");
     }

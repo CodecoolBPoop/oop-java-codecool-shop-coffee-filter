@@ -278,4 +278,27 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
         }
         return cartAsJSON;
     }
+
+    @Override
+    public int getLatestUnfinishedOrderIdByUser(int userId) {
+        String query = "SELECT id FROM orders WHERE user_id = ? AND status IN (1, 2)";
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setInt(1, userId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

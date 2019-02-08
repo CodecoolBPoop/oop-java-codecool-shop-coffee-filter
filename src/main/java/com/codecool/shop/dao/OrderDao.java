@@ -24,4 +24,6 @@ public interface OrderDao {
     Order getLatestUnfinishedOrderByUser(int userId);
 
     JSONObject getLastShoppingCartByUser(int userId);
+
+    int getLatestUnfinishedOrderIdByUser(int userId);
 }

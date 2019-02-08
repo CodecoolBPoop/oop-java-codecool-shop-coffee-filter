@@ -102,4 +102,13 @@ public class OrderDaoMem implements OrderDao {
         cartAsJSON.put("amount", order.getAmountToPay());
         return cartAsJSON;
     }
+
+    @Override
+    public int getLatestUnfinishedOrderIdByUser(int userId) {
+        Order order = getLatestUnfinishedOrderByUser(userId);
+        if (order != null) {
+            return order.getId();
+        }
+        return 0;
+    }
 }

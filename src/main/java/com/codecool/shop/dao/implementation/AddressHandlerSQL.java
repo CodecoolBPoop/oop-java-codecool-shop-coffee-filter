@@ -25,8 +25,10 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
 
 
     @Override
-    public void add(String country, String state, String postalCode, String city, String street, String houseNumber, String storey, String door, String firstName, String lastName) {
-        String query = "INSERT INTO delivery_addresses (country, state, postal_code, city, street, house_number, storey, door, first_name, last_name) VALUES ((SELECT id FROM public.countries WHERE name = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void add(String country, String state, String postalCode, String city, String street, String houseNumber, String storey, String door, String firstName, String lastName, int orderId) {
+        String query = "WITH address AS (INSERT INTO delivery_addresses (country, state, postal_code, city, street, house_number, storey, door, first_name, last_name)" +
+                "VALUES ((SELECT id FROM public.countries WHERE name = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id)" +
+                "UPDATE orders SET delivery_address = (SELECT address.id FROM address) WHERE id = ?";
 
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -41,6 +43,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
             preparedStatement.setString(8, door);
             preparedStatement.setString(9, firstName);
             preparedStatement.setString(10, lastName);
+            preparedStatement.setInt(11, orderId);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -53,7 +56,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
 
     @Override
     public Address getAddressById(int id) {
-        String sql = "SELECT id, c.name AS country, state, postal_code, city, street, house_number, storey, door, first_name, last_name " +
+        String sql = "SELECT delivery_addresses.id, c.name AS country, state, postal_code, city, street, house_number, storey, door, first_name, last_name " +
                 "FROM delivery_addresses " +
                 "LEFT JOIN countries c ON c.id = delivery_addresses.country " +
                 "WHERE delivery_addresses.id = ?";
