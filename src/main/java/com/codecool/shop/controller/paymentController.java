@@ -53,7 +53,7 @@ public class paymentController extends HttpServlet {
         String addressLine2 = address.getCity() + " "
                 + address.getStreet() + " "
                 + address.getHouseNumber() + " "
-                + address.getStory() + "/"
+                + address.getStorey() + "/"
                 + address.getDoor();
 
         context.setVariable("amountToPay", amountToPay);

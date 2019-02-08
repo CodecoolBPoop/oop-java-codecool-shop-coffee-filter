@@ -103,7 +103,7 @@ CREATE TABLE delivery_addresses (
   city VARCHAR NOT NULL,
   street VARCHAR NOT NULL,
   house_number VARCHAR NOT NULL,
-  story VARCHAR,
+  storey VARCHAR,
   door VARCHAR,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL);

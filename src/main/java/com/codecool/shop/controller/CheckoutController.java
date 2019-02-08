@@ -57,12 +57,12 @@ public class CheckoutController extends HttpServlet {
         String city = req.getParameter("city");
         String street = req.getParameter("street");
         String houseNumber = req.getParameter("house-number");
-        String story = req.getParameter("story");
+        String storey = req.getParameter("storey");
         String door = req.getParameter("door");
         String firstName = req.getParameter("firstname");
         String lastName = req.getParameter("lastname");
 
-        addressDataStore.add(country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
+        addressDataStore.add(country, state, postalCode, city, street, houseNumber, storey, door, firstName, lastName);
 
         resp.sendRedirect("/payment");
     }

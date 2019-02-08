@@ -25,8 +25,8 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
 
 
     @Override
-    public void add(String country, String state, String postalCode, String city, String street, String houseNumber, String story, String door, String firstName, String lastName) {
-        String query = "INSERT INTO public.delivery_addresses (country, state, postal_code, city, street, house_number, story, door, first_name, last_name) VALUES ((SELECT id FROM public.countries WHERE name = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void add(String country, String state, String postalCode, String city, String street, String houseNumber, String storey, String door, String firstName, String lastName) {
+        String query = "INSERT INTO delivery_addresses (country, state, postal_code, city, street, house_number, storey, door, first_name, last_name) VALUES ((SELECT id FROM public.countries WHERE name = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -37,7 +37,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
             preparedStatement.setString(4, city);
             preparedStatement.setString(5, street);
             preparedStatement.setString(6, houseNumber);
-            preparedStatement.setString(7, story);
+            preparedStatement.setString(7, storey);
             preparedStatement.setString(8, door);
             preparedStatement.setString(9, firstName);
             preparedStatement.setString(10, lastName);
@@ -53,7 +53,7 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
 
     @Override
     public Address getAddressById(int id) {
-        String sql = "SELECT id, c.name AS country, state, postal_code, city, street, house_number, story, door, first_name, last_name " +
+        String sql = "SELECT id, c.name AS country, state, postal_code, city, street, house_number, storey, door, first_name, last_name " +
                 "FROM delivery_addresses " +
                 "LEFT JOIN countries c ON c.id = delivery_addresses.country " +
                 "WHERE delivery_addresses.id = ?";
@@ -68,12 +68,12 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
                     String city = resultSet.getString("city");
                     String street = resultSet.getString("street");
                     String houseNumber = resultSet.getString("house_number");
-                    String story = resultSet.getString("story");
+                    String storey = resultSet.getString("storey");
                     String door = resultSet.getString("door");
                     String firstName = resultSet.getString("first_name");
                     String lastName = resultSet.getString("last_name");
 
-                    return new Address(addressId, country, state, postalCode, city, street, houseNumber, story, door, firstName, lastName);
+                    return new Address(addressId, country, state, postalCode, city, street, houseNumber, storey, door, firstName, lastName);
                 }
             }
         } catch (SQLException e) {
