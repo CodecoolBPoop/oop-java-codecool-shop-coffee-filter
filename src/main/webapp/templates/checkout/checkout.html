@@ -28,35 +28,9 @@
     <!-- End of Bootstrap components -->
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-expand-sm bg-dark text-light">
-    <div th:if="${username == null}">
-        <ul class="navbar-nav">
-            <span class="navbar-text">
-                You are not logged in!
-            </span>
-            <li class="nav-item">
-                <a class="nav-link" href="/registration">
-                    Registration
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/login">
-                    Login
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div th:if="${username != null}">
-        <ul class="navbar-nav">
-            <span class="navbar-text" th:text="'Signed in '+${username}">
-                Hi, User
-            </span>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">Log out</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<div th:replace="header.html :: header">
+    Header
+</div>
 <div class="container">
     <div class="py-5 text-center h1 jumbotron">
         Checkout
@@ -153,7 +127,8 @@
                             <div class="row my-3">
                                 <div class="col">
                                     <hr class="h4">
-                                    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Continue to payment"/>
+                                    <input class="btn btn-primary btn-lg btn-block" type="submit"
+                                           value="Continue to payment"/>
                                 </div>
                             </div>
                         </form>
