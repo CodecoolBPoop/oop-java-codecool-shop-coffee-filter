@@ -12,8 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
 
 @WebServlet(urlPatterns = {"/registration"})
 public class RegistrationController extends HttpServlet {
@@ -32,17 +32,58 @@ public class RegistrationController extends HttpServlet {
         String password = req.getParameter("password");
         String email = req.getParameter("email");
 
-        boolean emailIsValid = isValidEmailAddress(email);
+        boolean usernameIsValid = isValidUsername(username);
         boolean passwordIsValid = isValidPassword(password);
+        boolean emailIsValid = isValidEmailAddress(email);
 
         UserDaoSQL uds = UserDaoSQL.getInstance();
-        if (uds.checkNameAndEmail(username, email) && emailIsValid && passwordIsValid) {
+
+        if (uds.checkIsExists(username, email) && usernameIsValid && passwordIsValid  && emailIsValid) {
             uds.add(username, password, email);
             resp.sendRedirect("/");
         } else {
             resp.sendRedirect("/invalid_registration");
         }
 
+    }
+
+    private boolean isValidUsername(String username) {
+        boolean valid = true;
+        if (username.length() < 4 || username.length() > 20) {
+            valid = false;
+        }
+
+        String [] prohibitedUsernames = {"admin", "superuser"};
+        if (Arrays.asList(prohibitedUsernames).contains(username)) {
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private boolean isValidPassword(String password) {
+        boolean valid = true;
+
+        if (password.length() < 8 || password.length() > 15) {
+            valid = false;
+        }
+
+        String upperCaseChars = "(.*[A-Z].*)";
+        if (!password.matches(upperCaseChars )) {
+            valid = false;
+        }
+
+        String lowerCaseChars = "(.*[a-z].*)";
+        if (!password.matches(lowerCaseChars )) {
+            valid = false;
+        }
+
+        String numbers = "(.*[0-9].*)";
+        if (!password.matches(numbers )) {
+            valid = false;
+        }
+
+        return valid;
     }
 
     private boolean isValidEmailAddress(String email) {
@@ -54,29 +95,5 @@ public class RegistrationController extends HttpServlet {
             result = false;
         }
         return result;
-    }
-
-    private boolean isValidPassword(String password) {
-        boolean valid = true;
-        // check password length
-        if (password.length() < 8 || password.length() > 15) {
-            valid = false;
-        }
-        // check password includes the upper case element
-        String upperCaseChars = "(.*[A-Z].*)";
-        if (!password.matches(upperCaseChars )) {
-            valid = false;
-        }
-        // check password includes the small case element
-        String lowerCaseChars = "(.*[a-z].*)";
-        if (!password.matches(lowerCaseChars )) {
-            valid = false;
-        }
-        // check password includes the number
-        String numbers = "(.*[0-9].*)";
-        if (!password.matches(numbers )) {
-            valid = false;
-        }
-        return valid;
     }
 }

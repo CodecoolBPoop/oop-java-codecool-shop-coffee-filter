@@ -41,7 +41,7 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
     }
 
     @Override
-    public boolean checkNameAndEmail(String name, String email) {
+    public boolean checkIsExists(String name, String email) {
         boolean valid = true;
         String sql = "SELECT user_name, email FROM users";
         try (Connection conn = getDbConnection(); PreparedStatement pstatement = conn.prepareStatement(sql)) {
