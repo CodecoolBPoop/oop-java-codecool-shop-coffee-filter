@@ -5,6 +5,8 @@ import com.codecool.shop.dao.implementation.UserDaoSQL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,17 +32,51 @@ public class RegistrationController extends HttpServlet {
         String password = req.getParameter("password");
         String email = req.getParameter("email");
 
+        boolean emailIsValid = isValidEmailAddress(email);
+        boolean passwordIsValid = isValidPassword(password);
+
         UserDaoSQL uds = UserDaoSQL.getInstance();
-        if (uds.checkNameAndEmail(username, email)) {
+        if (uds.checkNameAndEmail(username, email) && emailIsValid && passwordIsValid) {
             uds.add(username, password, email);
-
-            HttpSession session = req.getSession();
-            session.setAttribute("username", username);
-
             resp.sendRedirect("/");
         } else {
             resp.sendRedirect("/invalid_registration");
         }
 
+    }
+
+    private boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddress = new InternetAddress(email);
+            emailAddress.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
+    }
+
+    private boolean isValidPassword(String password) {
+        boolean valid = true;
+        // check password length
+        if (password.length() < 8 || password.length() > 15) {
+            valid = false;
+        }
+        // check password includes the upper case element
+        String upperCaseChars = "(.*[A-Z].*)";
+        if (!password.matches(upperCaseChars )) {
+            valid = false;
+        }
+        // check password includes the small case element
+        String lowerCaseChars = "(.*[a-z].*)";
+        if (!password.matches(lowerCaseChars )) {
+            valid = false;
+        }
+        // check password includes the number
+        String numbers = "(.*[0-9].*)";
+        if (!password.matches(numbers )) {
+            valid = false;
+        }
+        return valid;
     }
 }
