@@ -28,6 +28,9 @@ public class RegistrationController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
+        WebContext context = new WebContext(req, resp, req.getServletContext());
+
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String email = req.getParameter("email");
@@ -41,10 +44,16 @@ public class RegistrationController extends HttpServlet {
         if (uds.checkIsExists(username, email) && usernameIsValid && passwordIsValid  && emailIsValid) {
             uds.add(username, password, email);
             resp.sendRedirect("/");
-        } else {
-            resp.sendRedirect("/invalid_registration");
+        } else if (!usernameIsValid) {
+            context.setVariable("invalidUsername", "Invalid user name!");
+            engine.process("session/registration.html", context, resp.getWriter());
+        } else if (!passwordIsValid) {
+            context.setVariable("invalidPassword", "Invalid password");
+            engine.process("session/registration.html", context, resp.getWriter());
+        } else if (!emailIsValid) {
+            context.setVariable("invalidEmail", "This e-mail is not exists!");
+            engine.process("session/registration.html", context, resp.getWriter());
         }
-
     }
 
     private boolean isValidUsername(String username) {
@@ -52,37 +61,30 @@ public class RegistrationController extends HttpServlet {
         if (username.length() < 4 || username.length() > 20) {
             valid = false;
         }
-
         String [] prohibitedUsernames = {"admin", "superuser"};
         if (Arrays.asList(prohibitedUsernames).contains(username)) {
             valid = false;
         }
-
         return valid;
     }
 
     private boolean isValidPassword(String password) {
         boolean valid = true;
-
-        if (password.length() < 8 || password.length() > 15) {
+        if (password.length() < 8 || password.length() > 20) {
             valid = false;
         }
-
         String upperCaseChars = "(.*[A-Z].*)";
         if (!password.matches(upperCaseChars )) {
             valid = false;
         }
-
         String lowerCaseChars = "(.*[a-z].*)";
         if (!password.matches(lowerCaseChars )) {
             valid = false;
         }
-
         String numbers = "(.*[0-9].*)";
         if (!password.matches(numbers )) {
             valid = false;
         }
-
         return valid;
     }
 
