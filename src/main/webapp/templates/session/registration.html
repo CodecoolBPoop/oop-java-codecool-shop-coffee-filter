@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Registration Coffee Filter</title>
@@ -18,18 +18,27 @@
         <h4 align="center">Standard data</h4>
         <br>
 
+        <div th:if="${invalidUsername != null}" th:text="${invalidUsername}">
+            Invalid user name!
+        </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
             <input id="username" type="text" class="form-control" name="username" placeholder="User name">
         </div>
         <br>
 
+        <div th:if="${invalidPassword != null}" th:text="${invalidPassword}">
+            Invalid password!
+        </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
             <input id="password" type="password" class="form-control" name="password" placeholder="Password">
         </div>
         <br>
 
+        <div th:if="${invalidEmail != null}" th:text="${invalidEmail}">
+            Invalid password!
+        </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
             <input id="email" type="email" class="form-control" name="email" placeholder="E-mail">
