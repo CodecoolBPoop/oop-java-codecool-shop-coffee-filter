@@ -27,6 +27,9 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
+        WebContext context = new WebContext(req, resp, req.getServletContext());
+
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
@@ -36,7 +39,8 @@ public class LoginController extends HttpServlet {
             session.setAttribute("username", username);
             resp.sendRedirect("/");
         } else {
-            resp.sendRedirect("/invalid_login");
+            context.setVariable("wrongLogin", "Wrong user name or password!");
+            engine.process("session/login.html", context, resp.getWriter());
         }
     }
 }

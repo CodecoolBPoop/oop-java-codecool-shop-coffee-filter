@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login Coffee Filter</title>
@@ -26,6 +26,9 @@
             <input id="password" type="password" class="form-control" name="password" placeholder="Password">
         </div>
         <br>
+        <div th:if="${wrongLogin != null}" th:text="${wrongLogin}">
+            Wrong login
+        </div>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </div>
