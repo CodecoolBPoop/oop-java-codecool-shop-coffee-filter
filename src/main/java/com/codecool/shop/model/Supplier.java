@@ -6,8 +6,8 @@ import java.util.List;
 public class Supplier extends BaseModel {
     private List<Product> products;
 
-    public Supplier(String name, String description) {
-        super(name);
+    public Supplier(int id, String name, String description) {
+        super(id, name, description);
         this.products = new ArrayList<>();
     }
 
@@ -20,7 +20,8 @@ public class Supplier extends BaseModel {
     }
 
     public void addProduct(Product product) {
-        this.products.add(product);
+        System.out.println("Supplier ADD PRODUCT CALLED");
+//        this.products.add(product);
     }
 
     public String toString() {
@@ -31,5 +32,22 @@ public class Supplier extends BaseModel {
                 this.name,
                 this.description
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final Supplier s = (Supplier) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    public String getSupplierName() {
+        return this.name;
     }
 }

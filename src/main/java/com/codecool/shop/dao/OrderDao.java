@@ -2,12 +2,14 @@ package com.codecool.shop.dao;
 
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
+import org.json.JSONObject;
 
 import java.util.List;
 
+
 public interface OrderDao {
 
-    void add(int userId, Order order);
+    void add(Product product, int userId);
 
     Order find(int id);
 
@@ -15,11 +17,13 @@ public interface OrderDao {
 
     List<Order> getAll();
 
-    void addNewItemToOrder(Product product, int orderId);
+    void addNewItemToOrder(Product product, int userId);
 
-    void addNewItemToOrder(Product product, Order order);
-
-    void removeItemFromOrder(Product product, int orderId);
+    void removeItemFromOrder(Product product, int userId);
 
     Order getLatestUnfinishedOrderByUser(int userId);
+
+    JSONObject getLastShoppingCartByUser(int userId);
+
+    int getLatestUnfinishedOrderIdByUser(int userId);
 }

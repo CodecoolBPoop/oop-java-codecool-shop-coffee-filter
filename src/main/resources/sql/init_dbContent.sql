@@ -9,6 +9,9 @@ INSERT INTO public.product_category (name, description, department) VALUES ('Acc
 
 INSERT INTO public.currencies (currency) VALUES ('USD');
 
+INSERT INTO public.countries (name) VALUES ('Hungary');
+INSERT INTO public.countries (name) VALUES ('United States');
+
 INSERT INTO public.products (name, description, price, currency, supplier_id, product_category_id) VALUES ('Nespresso Krups XN740B CitiZ', 'Kapsule coffee machine.', '120', '1', '1', '1');
 INSERT INTO public.products (name, description, price, currency, supplier_id, product_category_id) VALUES ('KeepCup Tall', 'Ideal for take away coffee', '10', '1', '2', '2');
 INSERT INTO public.products (name, description, price, currency, supplier_id, product_category_id) VALUES ('KeepCup Medium', 'Ideal for take away coffee', '8', '1', '2', '2');

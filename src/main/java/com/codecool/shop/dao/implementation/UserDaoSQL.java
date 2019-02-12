@@ -2,6 +2,7 @@ package com.codecool.shop.dao.implementation;
 
 import com.codecool.shop.dao.DataBaseConnect;
 import com.codecool.shop.dao.UserDao;
+import com.codecool.shop.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -90,5 +91,55 @@ public class UserDaoSQL extends DataBaseConnect implements UserDao {
             e.printStackTrace();
         }
         return valid;
+    }
+
+    @Override
+    public int getUserIdByUsername(String username) {
+        String sql = "SELECT id FROM users WHERE user_name = ?";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setString(1, username);
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                }
+            }
+        }
+        catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public User getUserById(int id) {
+        String sql = "SELECT id, user_name, email FROM users WHERE id = ?";
+        try (Connection connection = getDbConnection(); PreparedStatement pstatement = connection.prepareStatement(sql)) {
+            pstatement.setInt(1, id);
+            try (ResultSet resultSet = pstatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int userID = resultSet.getInt("id");
+                    String userName = resultSet.getString("user_name");
+                    String email = resultSet.getString("email");
+
+                    return new User(userID, userName, email);
+                }
+            }
+        }
+        catch (SQLException e) {
+            System.err.println("Failed to insert into table due to incorrect SQL String!");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

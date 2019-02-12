@@ -7,8 +7,8 @@ public class ProductCategory extends BaseModel {
     private String department;
     private List<Product> products;
 
-    public ProductCategory(String name, String description, String department) {
-        super(name, description);
+    public ProductCategory(int id, String name, String description, String department) {
+        super(id, name, description);
         setDepartment(department);
     }
 
@@ -29,7 +29,8 @@ public class ProductCategory extends BaseModel {
     }
 
     public void addProduct(Product product) {
-        this.products.add(product);
+//        this.products.add(product);
+        System.out.println("PRODUCT CATEGORY == ADD PRODUCT CALLED");
     }
 
     public String toString() {
@@ -42,5 +43,18 @@ public class ProductCategory extends BaseModel {
                 this.name,
                 this.department,
                 this.description);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final ProductCategory s = (ProductCategory) o;
+        if (this.getId() != s.getId()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

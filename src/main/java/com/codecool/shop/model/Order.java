@@ -1,21 +1,31 @@
 package com.codecool.shop.model;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Order {
 
     private int id;
     private int userId;
-    private LocalDate date;
+    private LocalDateTime orderDate;
+    private LocalDateTime latestUpdate;
+    private String statusSQL;
+    private int deliveryAddressId;
     private Status status;
-    private float amountToPay = 0;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
 
     public Order(int userId, Product product) {
         this.userId = userId;
         status = Status.NEW;
         addProductToCart(product);
+    }
+
+    public Order(int userId) {
+        this.userId = userId;
     }
 
     public void addProductToCart(Product product) {
@@ -28,8 +38,6 @@ public class Order {
             lineItem = new LineItem(product);
         }
         shoppingCart.put(productId, lineItem);
-        date = LocalDate.now();
-        amountToPay += product.getDefaultPrice();
     }
 
     public int getNumberOfItemsInCart() {
@@ -50,9 +58,7 @@ public class Order {
             } else {
                 shoppingCart.put(productId, lineItem);
             }
-            amountToPay -= product.getDefaultPrice();
         }
-        date = LocalDate.now();
     }
 
     public int getId() {
@@ -64,7 +70,13 @@ public class Order {
     }
 
     public float getAmountToPay() {
-        return amountToPay;
+        List<Float> sums = shoppingCart.entrySet().stream().map(x -> x.getValue().getQuantity() * x.getValue().getPrice()).collect(Collectors.toList());
+        float amount = 0;
+        for (Float sum : sums
+             ) {
+            amount += sum;
+        }
+        return amount;
     }
 
     public int getUserId() {
@@ -79,12 +91,28 @@ public class Order {
         return shoppingCart;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public void addToCArt(int productId, int quantity, float price, String name) {
+        LineItem item = new LineItem(quantity, price, name, productId);
+        shoppingCart.put(productId, item);
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public void setLatestUpdate(LocalDateTime latestUpdate) {
+        this.latestUpdate = latestUpdate;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-        date = LocalDate.now();
+    }
+
+    public int getDeliveryAddressId() {
+        return deliveryAddressId;
+    }
+
+    public void setDeliveryAddressId(int deliveryAddressId) {
+        this.deliveryAddressId = deliveryAddressId;
     }
 }

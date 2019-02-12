@@ -28,17 +28,39 @@
     <!-- End of Bootstrap components -->
 </head>
 <body class="bg-light">
-
+<div th:replace="header.html :: header">
+    Header
+</div>
 <div class="container">
-    <div class="py-5 text-center">
-        <h2>Payment</h2>
-        <div>
-            <div class="d-inline">Total amount (USD):</div>
-            <div class="d-inline" th:text="${amountToPay}"></div>
+    <div class="row">
+        <div class="col col-sm-12">
+            <div class="py-5 text-center">
+                <div class="h2">
+                    Payment
+                </div>
+                <div>
+                    <div class="d-inline">Total amount (USD):</div>
+                    <div class="d-inline" th:text="${amountToPay}"></div>
+                </div>
+            </div>
 
+            <div class="container">
+                <div class="d-inline">Name:</div>
+                <div class="d-inline" th:text="${name}">First Name, Last Name</div>
+            </div>
+            <div class="container">
+                <div class="d-inline">E-mail:</div>
+                <div class="d-inline" th:text="${email}">email@domain.com</div>
+            </div>
+            <div class="container">
+                <div class="d-inline">Address:</div>
+                <div class="d-inline" th:text="${address1}">Country, City, ZIP-Code</div>
+                <div class="d-inline" th:text="${address2}">Street, nr., etc.</div>
+            </div>
         </div>
     </div>
-
+</div>
+<div class="container">
     <div class="row">
         <div class="d-block col-md-3">
             <div class="custom-control custom-radio">
@@ -71,12 +93,13 @@
             <input type="text" class="form-control" id="cc-cvv" placeholder="CVV" required>
         </div>
     </div>
-    <div class="container">
+</div>
+<div class="container">
     <div class="container">
         <div class="col-4">
-            <button id="payment-button" class="btn btn-primary btn-lg btn-block" type="submit">Finish payment</button>
+            <button id="payment-button" class="btn btn-primary btn-lg btn-block" type="submit">Finish payment
+            </button>
         </div>
-    </div>
     </div>
 </div>
 

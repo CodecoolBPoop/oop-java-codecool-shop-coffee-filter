@@ -6,9 +6,8 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.config.TemplateEngineUtil;
-import com.codecool.shop.model.Order;
-import com.codecool.shop.model.Product;
-import org.omg.CORBA.INTERNAL;
+import com.codecool.shop.model.*;
+import com.codecool.shop.dao.implementation.SupplierDaoSQL;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -27,111 +26,119 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/"})
 public class ProductController extends HttpServlet {
-    private boolean isCategorySet = false;
-    private boolean isSupplierSet = false;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
         HttpSession session = req.getSession(false);
 
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
-        SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
-        Map mainPageFilters = new HashMap<>();
-
-        //Filters
-        String category = req.getParameter("category");
-        String supplier = req.getParameter("supplier");
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
+        SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
         int userId = 1;
 
+        //Filters
+        Map mainPageFilters = new HashMap<>();
+        String category = req.getParameter("category");
+        String supplier = req.getParameter("supplier");
+        List<ProductCategory> categories = new ArrayList<>();
+        List<Supplier> suppliers = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+
+        //Drop Down Filter settings
         if (!(category == null || Integer.parseInt(category) == 0)) {
-            isCategorySet = true;
             mainPageFilters.put("filteredCategory", category);
+            categories.add(productCategoryDataStore.find(Integer.parseInt(category)));
         } else {
-            isCategorySet = false;
+            categories.clear();
+            categories = productCategoryDataStore.getAll();
         }
 
         if (!(supplier == null || Integer.parseInt(supplier) == 0)) {
-            isSupplierSet = true;
             mainPageFilters.put("filteredSupplier", supplier);
+            suppliers.add(supplierDataStore.find(Integer.parseInt(supplier)));
         } else {
-            isSupplierSet = false;
+            suppliers.clear();
+            suppliers = supplierDataStore.getAll();
         }
 
-        setAllProductVisible(productDataStore);
-        setProductVisibilityBasedOnCategoryFilter(productDataStore, category);
-        setProductVisibilityBasedOnSupplierFilter(productDataStore, supplier);
+        //Filter for Products
+        if (!(category == null || Integer.parseInt(category) == 0)) {
+            if (!(supplier == null || Integer.parseInt(supplier) == 0)) {
+                products = productDataStore.getBy(Integer.parseInt(supplier), Integer.parseInt(category));
+                categories.clear();
+                suppliers.clear();
+                categories.add(productCategoryDataStore.find(Integer.parseInt(category)));
+                suppliers.add(supplierDataStore.find(Integer.parseInt(supplier)));
+            } else {
+                suppliers.clear();
+                products = productDataStore.getByProductCategory(Integer.parseInt(category));
+                for (Product product : products) {
+                    int supplierID = product.getSupplier().getId();
+                    Supplier s = supplierDataStore.find(supplierID);
+                    if (suppliers.contains(s)) {
+                        continue;
+                    } else {
+                        suppliers.add(s);
+                    }
+                }
+            }
+        } else if (!(supplier == null || Integer.parseInt(supplier) == 0)) {
+            categories.clear();
+            products = productDataStore.getBySupplier(Integer.parseInt(supplier));
+            for (Product product : products) {
+                int productCategoryId = product.getProductCategory().getId();
+                ProductCategory pc = productCategoryDataStore.find(productCategoryId);
+                if (categories.contains(pc)) {
+                    continue;
+                }
+                categories.add(pc);
+            }
+        } else {
+            suppliers = supplierDataStore.getAll();
+            categories = productCategoryDataStore.getAll();
+            products = productDataStore.getAll();
+        }
 
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
         context.setVariable("mainPageFilters", mainPageFilters);
-//        context.setVariables(params);
 
+        System.out.println(categories);
+        System.out.println(suppliers);
         Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
         if (latestOrder != null) {
-            float amountToPay = latestOrder.getAmountToPay();
-            context.setVariable("cart", latestOrder.getShoppingCart());
-            context.setVariable("amountToPay", amountToPay);
-            context.setVariable("order", latestOrder);
+            Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
+            if (cart != null) {
+                float amountToPay = latestOrder.getAmountToPay();
+                context.setVariable("cart", cart);
+                context.setVariable("amountToPay", amountToPay);
+                context.setVariable("order", latestOrder);
+            }
         }
         context.setVariable("recipient", "World");
-        context.setVariable("categories", productCategoryDataStore.getAll());
-        context.setVariable("suppliers", supplierDataStore.getAll());
-        context.setVariable("products", productDataStore.getAll());
+        context.setVariable("categories", categories);
+        context.setVariable("suppliers", suppliers);
+        context.setVariable("products", products);
         if (session != null) {
             context.setVariable("username", session.getAttribute("username"));
+            context.setVariable("email", session.getAttribute("email"));
         }
         engine.process("product/index.html", context, resp.getWriter());
 
-//        Map params = new HashMap<>();
-//        params.put("category", productCategoryDataStore.find(1));
-//        params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
-//        context.setVariables(params);
     }
-
-    private void setAllProductVisible(ProductDao productDataStore) {
-        for (int i = 0; i < productDataStore.getAll().size(); i++) {
-            Product product = productDataStore.getAll().get(i);
-            product.setVisibility(true);
-        }
-    }
-
-    private void setProductVisibilityBasedOnCategoryFilter(ProductDao productDataStore, String category) {
-        for (int i = 0; i < productDataStore.getAll().size(); i++) {
-            Product product = productDataStore.getAll().get(i);
-            if (isCategorySet) {
-                if (product.getProductCategory().getId() != Integer.parseInt(category)) {
-                    product.setVisibility(false);
-                }
-            }
-        }
-    }
-
-    private void setProductVisibilityBasedOnSupplierFilter(ProductDao productDataStore, String supplier) {
-        for (int i = 0; i < productDataStore.getAll().size(); i++) {
-            Product product = productDataStore.getAll().get(i);
-            if (isSupplierSet) {
-                if (product.getSupplier().getId() != Integer.parseInt(supplier)) {
-                    product.setVisibility(false);
-                }
-            }
-        }
-    }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int boughtItemId = Integer.parseInt(req.getParameter("boughtItem"));
         int userId = 1;
-        OrderDao orderDataStore = OrderDaoMem.getInstance();
-        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
-        ProductDao productDataStore = ProductDaoMem.getInstance();
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
+        ProductDao productDataStore = ProductDaoSQL.getInstance();
 
         Product product = productDataStore.find(boughtItemId);
         System.out.println("bought: " + product.getName());
-        orderDataStore.addNewItemToOrder(product, latestOrder);
+        orderDataStore.addNewItemToOrder(product, userId);
 
         resp.sendRedirect("/");
     }
