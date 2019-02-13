@@ -120,10 +120,6 @@ CREATE TABLE orders (
   user_id SMALLINT NOT NULL,
   delivery_address SMALLINT);
 
-CREATE TABLE user_orders (
-  user_id SMALLINT NOT NULL,
-  order_id SMALLINT NOT NULL);
-
 CREATE TABLE order_products (
   order_id SMALLINT NOT NULL,
   product_id SMALLINT NOT NULL,
@@ -150,8 +146,6 @@ ALTER TABLE ONLY products ADD CONSTRAINT fk3_products FOREIGN KEY (currency) REF
 ALTER TABLE ONLY orders ADD CONSTRAINT fk4_orders FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE ONLY orders ADD CONSTRAINT fk5_orders FOREIGN KEY (status) REFERENCES statuses(id);
 ALTER TABLE ONLY orders ADD CONSTRAINT fk6_orders FOREIGN KEY (delivery_address) REFERENCES delivery_addresses(id);
-ALTER TABLE ONLY user_orders ADD CONSTRAINT fk7_user_orders FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE ONLY user_orders ADD CONSTRAINT fk8_user_orders FOREIGN KEY (order_id) REFERENCES orders(id);
 ALTER TABLE ONLY delivery_addresses ADD CONSTRAINT fk9_delivery_addresses FOREIGN KEY (country) REFERENCES countries(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk10_order_products FOREIGN KEY (order_id) REFERENCES orders(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk11_order_products FOREIGN KEY (product_id) REFERENCES products(id);
