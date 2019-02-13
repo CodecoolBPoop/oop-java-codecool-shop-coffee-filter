@@ -52,6 +52,24 @@ public class AddressHandlerSQL extends DataBaseConnect implements AddressHandler
             System.err.println("Error: JDBC Driver load fail");
             e.printStackTrace();
         }
+        updateUserAddressConnection(orderId);
+    }
+
+    private void updateUserAddressConnection(int orderId){
+        String query = "INSERT INTO user_address VALUES ((SELECT user_id FROM orders WHERE id = ?), (SELECT delivery_address FROM orders WHERE id = ?))";
+
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ) {
+            preparedStatement.setInt(1, orderId);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        }
     }
 
     @Override
