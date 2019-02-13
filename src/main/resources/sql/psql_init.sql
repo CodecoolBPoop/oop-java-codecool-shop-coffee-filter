@@ -126,6 +126,10 @@ CREATE TABLE order_products (
   quantity SMALLINT NOT NULL DEFAULT '1',
   price DECIMAL NOT NULL);
 
+CREATE TABLE user_address (
+  user_id SMALLINT NOT NULL,
+  address_id SMALLINT NOT NULL);
+
 ALTER TABLE suppliers ADD CONSTRAINT pk1_suppliers PRIMARY KEY (id);
 ALTER TABLE product_category ADD CONSTRAINT pk2_product_categories PRIMARY KEY (id);
 ALTER TABLE currencies ADD CONSTRAINT pk3_currencies PRIMARY KEY (id);
@@ -147,6 +151,8 @@ ALTER TABLE ONLY user_orders ADD CONSTRAINT fk8_user_orders FOREIGN KEY (order_i
 ALTER TABLE ONLY delivery_addresses ADD CONSTRAINT fk9_delivery_addresses FOREIGN KEY (country) REFERENCES countries(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk10_order_products FOREIGN KEY (order_id) REFERENCES orders(id);
 ALTER TABLE ONLY order_products ADD CONSTRAINT fk11_order_products FOREIGN KEY (product_id) REFERENCES products(id);
+ALTER TABLE ONLY user_address ADD CONSTRAINT fk12_user_address FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE ONLY user_address ADD CONSTRAINT fk13_user_address FOREIGN KEY (address_id) REFERENCES delivery_addresses(id);
 
 INSERT INTO statuses (status) VALUES ('new');
 INSERT INTO statuses (status) VALUES ('checked');
