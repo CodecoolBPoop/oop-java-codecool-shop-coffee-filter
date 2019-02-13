@@ -30,13 +30,14 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
 
         ProductDao productDataStore = ProductDaoSQL.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        int userId = 1;
+        Object userIdObject = session.getAttribute("userId");
+        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
 
         //Filters
         Map mainPageFilters = new HashMap<>();
@@ -105,25 +106,33 @@ public class ProductController extends HttpServlet {
         WebContext context = new WebContext(req, resp, req.getServletContext());
         context.setVariable("mainPageFilters", mainPageFilters);
 
-        System.out.println(categories);
-        System.out.println(suppliers);
-        Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(1);
-        if (latestOrder != null) {
-            Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
-            if (cart != null) {
-                float amountToPay = latestOrder.getAmountToPay();
-                context.setVariable("cart", cart);
-                context.setVariable("amountToPay", amountToPay);
-                context.setVariable("order", latestOrder);
+        // cart content
+        if (userId != 0) {
+            Order latestOrder = orderDataStore.getLatestUnfinishedOrderByUser(userId);
+            if (latestOrder != null) {
+                Map<Integer, LineItem> cart = latestOrder.getShoppingCart();
+                if (cart != null) {
+                    float amountToPay = latestOrder.getAmountToPay();
+                    context.setVariable("cart", cart);
+                    context.setVariable("amountToPay", amountToPay);
+                    context.setVariable("order", latestOrder);
+                }
+            }
+        } else {
+            Order temporaryOrder = (Order) session.getAttribute("temporaryOrder");
+            if (temporaryOrder != null) {
+                context.setVariable("cart", temporaryOrder.getShoppingCart());
+                context.setVariable("amountToPay", temporaryOrder.getAmountToPay());
+                context.setVariable("order", temporaryOrder);
             }
         }
         context.setVariable("recipient", "World");
         context.setVariable("categories", categories);
         context.setVariable("suppliers", suppliers);
         context.setVariable("products", products);
-        if (session != null) {
-            context.setVariable("username", session.getAttribute("username"));
-            context.setVariable("email", session.getAttribute("email"));
+        Object username = session.getAttribute("username");
+        if (username != null) {
+            context.setVariable("username", username);
         }
         engine.process("product/index.html", context, resp.getWriter());
 
@@ -131,14 +140,27 @@ public class ProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Object userIdObject = session.getAttribute("userId");
+        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
         int boughtItemId = Integer.parseInt(req.getParameter("boughtItem"));
-        int userId = 1;
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
         ProductDao productDataStore = ProductDaoSQL.getInstance();
 
         Product product = productDataStore.find(boughtItemId);
         System.out.println("bought: " + product.getName());
-        orderDataStore.addNewItemToOrder(product, userId);
+
+        if (userId == 0) {
+            Order temporaryOrder = (Order) session.getAttribute("temporaryOrder");
+            if (temporaryOrder == null) {
+                temporaryOrder = new Order(0, product);
+            } else {
+                temporaryOrder.addProductToCart(product);
+            }
+            session.setAttribute("temporaryOrder", temporaryOrder);
+        } else {
+            orderDataStore.addNewItemToOrder(product, userId);
+        }
 
         resp.sendRedirect("/");
     }

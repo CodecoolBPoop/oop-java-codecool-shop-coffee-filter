@@ -24,6 +24,7 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // todo: check if userId in session, if not: redirect to registration or login
         // Session
         HttpSession session = req.getSession(false);
 

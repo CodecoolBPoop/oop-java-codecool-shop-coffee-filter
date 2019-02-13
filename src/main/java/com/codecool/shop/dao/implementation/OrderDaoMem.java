@@ -91,7 +91,7 @@ public class OrderDaoMem implements OrderDao {
     }
 
     @Override
-    public JSONObject getLastShoppingCartByUser(int userId) {
+    public JSONObject getLastShoppingCartByUserAsJSON(int userId) {
 
         Order order = getLatestUnfinishedOrderByUser(userId);
         Map<Integer, LineItem> cart = order.getShoppingCart();

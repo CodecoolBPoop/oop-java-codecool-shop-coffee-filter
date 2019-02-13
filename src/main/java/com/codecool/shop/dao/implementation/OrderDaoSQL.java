@@ -6,15 +6,12 @@ import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Status;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
@@ -263,21 +260,17 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     }
 
     @Override
-    public JSONObject getLastShoppingCartByUser(int userId) {
+    public JSONObject getLastShoppingCartByUserAsJSON(int userId) {
         Order order = getLatestUnfinishedOrderByUser(userId);
-        JSONObject cartAsJSON = new JSONObject();
         if (order != null) {
-            Map<Integer, LineItem> cart = order.getShoppingCart();
-            List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
-            JSONArray cartItemsAsJSON = new JSONArray(cartItems);
-            cartAsJSON.put("items", cartItemsAsJSON);
-            cartAsJSON.put("amount", order.getAmountToPay());
-            cartAsJSON.put("itemNumber", order.getNumberOfItemsInCart());
-        } else {
-            cartAsJSON.put("items", "");
+            return order.getCartAsJSON();
         }
-        return cartAsJSON;
+        JSONObject emptyJSON = new JSONObject();
+        emptyJSON.put("items", "");
+        return emptyJSON;
     }
+
+
 
     @Override
     public int getLatestUnfinishedOrderIdByUser(int userId) {

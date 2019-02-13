@@ -1,9 +1,13 @@
 package com.codecool.shop.model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -13,7 +17,6 @@ public class Order {
     private int userId;
     private LocalDateTime orderDate;
     private LocalDateTime latestUpdate;
-    private String statusSQL;
     private int deliveryAddressId;
     private Status status;
     private HashMap<Integer, LineItem> shoppingCart = new HashMap<>();
@@ -114,5 +117,31 @@ public class Order {
 
     public void setDeliveryAddressId(int deliveryAddressId) {
         this.deliveryAddressId = deliveryAddressId;
+    }
+
+    public JSONObject getCartAsJSON() {
+        JSONObject cartAsJSON = new JSONObject();
+        if (shoppingCart != null) {
+            Map<Integer, LineItem> cart = getShoppingCart();
+            List<JSONObject> cartItems = cart.entrySet().stream().map(x -> x.getValue().toJSON()).collect(Collectors.toList());
+            JSONArray cartItemsAsJSON = new JSONArray(cartItems);
+            cartAsJSON.put("items", cartItemsAsJSON);
+            cartAsJSON.put("amount", getAmountToPay());
+            cartAsJSON.put("itemNumber", getNumberOfItemsInCart());
+        } else {
+            cartAsJSON.put("items", "");
+        }
+        return cartAsJSON;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Order{");
+        sb.append("id=").append(id);
+        sb.append(", userId=").append(userId);
+        sb.append(", status=").append(status);
+        sb.append(", shoppingCart=").append(shoppingCart);
+        sb.append('}');
+        return sb.toString();
     }
 }

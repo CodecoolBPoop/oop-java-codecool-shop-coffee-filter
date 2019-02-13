@@ -1,21 +1,12 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.dao.OrderDao;
-import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.*;
-import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.config.TemplateEngineUtil;
-import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
-import org.json.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omg.CORBA.INTERNAL;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -23,22 +14,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/cart"})
 public class CartController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
         ProductDao productDataStore = ProductDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        int userId = 1;
+        Object userIdObject = session.getAttribute("userId");
+        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
 
         StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = req.getReader()) {
@@ -59,20 +48,37 @@ public class CartController extends HttpServlet {
             resp.sendError(412, "Invalid data\nError parsing JSON request string");
         }
 
-        if (null != action || productId != 0) {
+        if (null != action && productId != 0) {
             Product product = productDataStore.find(productId);
             if (product != null) {
                 int status = 201;
-                if (action.equals("add")) {
-                    orderDataStore.addNewItemToOrder(product, userId);
-                    resp.setStatus(status);
+                JSONObject cartAsJSON = new JSONObject();
+                if (userId == 0) {
+                    Order temporaryOrder = (Order) session.getAttribute("temporaryOrder");
+                    if (action.equals("add")) {
+                        temporaryOrder.addProductToCart(product);
+                        System.out.println(temporaryOrder.toString());
+                        resp.setStatus(status);
 
+                    } else {
+                        temporaryOrder.removeProductFromCart(product);
+                        System.out.println(temporaryOrder.toString());
+                        status = 200;
+                    }
+                    cartAsJSON = temporaryOrder.getCartAsJSON();
+                } else if (userId > 0) {
+                    if (action.equals("add")) {
+                        orderDataStore.addNewItemToOrder(product, userId);
+                        resp.setStatus(status);
+                    } else {
+                        orderDataStore.removeItemFromOrder(product, userId);
+                        status = 200;
+                    }
+                    cartAsJSON = orderDataStore.getLastShoppingCartByUserAsJSON(userId);
                 } else {
-                    orderDataStore.removeItemFromOrder(product, userId);
-                    status = 200;
+                    resp.sendError(412, "Invalid data\nNo such user");
                 }
                 resp.setStatus(status);
-                JSONObject cartAsJSON = orderDataStore.getLastShoppingCartByUser(userId);
                 resp.setContentType("application/json;charset=UTF-8");
                 ServletOutputStream out = resp.getOutputStream();
                 out.print(cartAsJSON.toString());
