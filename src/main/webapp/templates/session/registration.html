@@ -15,11 +15,11 @@
 
 <div class="container">
     <form action="/registration" method="post">
-        <h4 align="center">Standard data</h4>
+        <h4 align="center">Please fill in the below fields:</h4>
         <br>
 
         <div th:if="${invalidUsername != null}" th:text="${invalidUsername}">
-            Invalid user name!
+            Username must be between 4 and 20 characters long!
         </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -28,7 +28,7 @@
         <br>
 
         <div th:if="${invalidPassword != null}" th:text="${invalidPassword}">
-            Invalid password!
+            Password must be at least 8 characters, and must contain lower and uppercase letter(s), and number(s)!
         </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
@@ -37,7 +37,7 @@
         <br>
 
         <div th:if="${invalidEmail != null}" th:text="${invalidEmail}">
-            Invalid password!
+            Please enter a valid e-mail address!
         </div>
         <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>

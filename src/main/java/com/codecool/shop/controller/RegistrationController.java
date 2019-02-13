@@ -45,13 +45,13 @@ public class RegistrationController extends HttpServlet {
             uds.add(username, password, email);
             resp.sendRedirect("/");
         } else if (!usernameIsValid) {
-            context.setVariable("invalidUsername", "Invalid user name!");
+            context.setVariable("invalidUsername", "Username must be between 4 and 20 characters long!");
             engine.process("session/registration.html", context, resp.getWriter());
         } else if (!passwordIsValid) {
-            context.setVariable("invalidPassword", "Invalid password");
+            context.setVariable("invalidPassword", "Password must be at least 8 characters, and must contain lower and uppercase letter(s), and number(s)!");
             engine.process("session/registration.html", context, resp.getWriter());
         } else if (!emailIsValid) {
-            context.setVariable("invalidEmail", "This e-mail is not exists!");
+            context.setVariable("invalidEmail", "Please enter a valid e-mail address!");
             engine.process("session/registration.html", context, resp.getWriter());
         }
     }
