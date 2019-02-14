@@ -62,7 +62,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
                 if (resultSet.next()) {
                     Order order = new Order(id);
                     order.setId(resultSet.getInt("id"));
-                    addCartItems(order);
+                    addCartItemsToOrderInstance(order);
                     return order;
                 }
             } catch (SQLException e) {
@@ -186,7 +186,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
                     LocalDateTime orderDate = resultSet.getTimestamp("order_date").toLocalDateTime();
                     order.setOrderDate(orderDate);
                     LocalDateTime latestUpdate = resultSet.getTimestamp("latest_update").toLocalDateTime();
-                    addCartItems(order);
+                    addCartItemsToOrderInstance(order);
                     order.setLatestUpdate(latestUpdate);
                     int status = resultSet.getInt("status");
                     order.setStatus(Status.getStatusByIntValue(status));
@@ -206,7 +206,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
         return null;
     }
 
-    private void addCartItems(Order order) {
+    private void addCartItemsToOrderInstance(Order order) {
         String query = "SELECT order_products.*, products.name FROM order_products JOIN products ON id = product_id WHERE order_id = ?";
         try (Connection connection = getDbConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)

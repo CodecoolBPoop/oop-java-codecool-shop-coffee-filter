@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +44,7 @@ public class ProductController extends HttpServlet {
         String supplier = req.getParameter("supplier");
         List<ProductCategory> categories = new ArrayList<>();
         List<Supplier> suppliers = new ArrayList<>();
-        List<Product> products = new ArrayList<>();
+        List<Product> products;
 
         //Drop Down Filter settings
         if (!(category == null || Integer.parseInt(category) == 0)) {
@@ -78,9 +77,7 @@ public class ProductController extends HttpServlet {
                 for (Product product : products) {
                     int supplierID = product.getSupplier().getId();
                     Supplier s = supplierDataStore.find(supplierID);
-                    if (suppliers.contains(s)) {
-                        continue;
-                    } else {
+                    if (!suppliers.contains(s)) {
                         suppliers.add(s);
                     }
                 }
@@ -161,8 +158,6 @@ public class ProductController extends HttpServlet {
         } else {
             orderDataStore.addNewItemToOrder(product, userId);
         }
-
         resp.sendRedirect("/");
     }
-
 }
