@@ -47,11 +47,11 @@
             <p class="sub-title">All things coffee</p>
         </div>
     </div>
-    <button type="button" id="cart-modal-button" class="btn btn-light btn-md float-right" data-toggle="modal"
-            data-target="#myModal">Cart
+    <a id="cart-modal-button" class="float-right" data-toggle="modal"
+            data-target="#myModal"><img border="0" src="/static/img/coffeebag.png" width="100" height="100">
         <span id="itemNumber" class="badge badge-secondary badge-pill"
               th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
-    </button>
+    </a>
 </div>
 <div class="container fluid">
     <div class="container">
