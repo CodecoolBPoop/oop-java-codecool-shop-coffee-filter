@@ -39,7 +39,6 @@ public class LoginController extends HttpServlet {
 
         UserDaoSQL uds = UserDaoSQL.getInstance();
         if (uds.checkNameAndPassword(username, password)) {
-            // todo: if items in session, add to user's cart - if came from checkout, throw back to checkout (put checkout to session?)
             HttpSession session = req.getSession();
             int userId = uds.getUserIdByUsername(username);
             session.setAttribute("username", username);
