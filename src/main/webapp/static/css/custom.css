@@ -69,11 +69,12 @@
 }
 
 
-.jumbotron-title {
+.jumbotron-title p {
     font-style: oblique;
     font-weight: bold;
     font-size: 4em;
-    color: #eeeeee;
+    color: #bd9d85;
+    font-family: 'Gloria Hallelujah', cursive;
 }
 
 .footer{
@@ -82,7 +83,7 @@
     bottom: 0;
     width: 100%;}
 
-.sub-title{
+p.sub-title{
     font-size: 35px;
 }
 
@@ -93,11 +94,13 @@
 
 body {
     background: #bd9d85;
+    font-family: 'Raleway', sans-serif !important;
 }
 
 .btn-dark {
     background-color: #4e312d;
     border: #4e312d;
+    color: #bd9d85;
 }
 
 .btn-dark:hover, .btn-dark:active, .btn-dark:focus {
@@ -116,11 +119,7 @@ body {
 }
 
 nav.navbar {
-    background: #4e312d;
-}
-
-a {
-
+    background: #2c1f16;
 }
 
 .nav-link {
@@ -130,4 +129,11 @@ a {
 
 .nav-link:hover {
     color: #ffffff;
+}
+
+.plus-button.btn-sm, .negative-button.btn-sm {
+    font-weight: bold;
+    font-size: xx-large;
+    line-height: 1.2;
+    padding: 0;
 }

@@ -23,7 +23,9 @@ public class RegistrationController extends HttpServlet {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
         String jumbotronText = "Register";
+        String registration = "hide";
         context.setVariable("jumbotronText", jumbotronText);
+        context.setVariable("registration", registration);
         engine.process("session/registration.html", context, resp.getWriter());
     }
 

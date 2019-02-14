@@ -24,7 +24,9 @@ public class LoginController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
+        String login = "hide";
         String jumbotronText = "Login";
+        context.setVariable("login", login);
         context.setVariable("jumbotronText", jumbotronText);
         engine.process("session/login.html", context, resp.getWriter());
     }

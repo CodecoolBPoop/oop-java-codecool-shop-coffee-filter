@@ -26,10 +26,11 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- End of Bootstrap components -->
+    <link href="https://fonts.googleapis.com/css?family=Coiny|Gloria+Hallelujah|Hanalei+Fill|Pacifico|Permanent+Marker|Raleway" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
     <link rel="icon" type="image/png" href="/static/img/coffeebean.ico">
 </head>
-<body class="bg-light">
+<body>
 <div th:replace="header.html :: header">
     Header
 </div>
@@ -39,22 +40,22 @@
 <div class="container">
     <div class="row">
         <div class="col col-sm-12">
-            <div class="py-5 text-center">
+            <div class="text-center">
                 <div>
-                    <div class="d-inline">Total amount (USD):</div>
-                    <div class="d-inline" th:text="${amountToPay}"></div>
+                    <h3 class="d-inline">Total amount (USD):</h3>
+                    <h3 class="d-inline" th:text="${amountToPay}"></h3>
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container pb-3">
                 <div class="d-inline">Name:</div>
                 <div class="d-inline" th:text="${name}">First Name, Last Name</div>
             </div>
-            <div class="container">
+            <div class="container pb-3">
                 <div class="d-inline">E-mail:</div>
                 <div class="d-inline" th:text="${email}">email@domain.com</div>
             </div>
-            <div class="container">
+            <div class="container pb-3">
                 <div class="d-inline">Address:</div>
                 <div class="d-inline" th:text="${address1}">Country, City, ZIP-Code</div>
                 <div class="d-inline" th:text="${address2}">Street, nr., etc.</div>
@@ -96,12 +97,10 @@
         </div>
     </div>
 </div>
-<div class="container">
-    <div class="container">
-        <div class="col-4">
-            <button id="payment-button" class="btn btn-dark btn-lg btn-block" type="submit">Finish payment
-            </button>
-        </div>
+<div class="container pb-3">
+    <div class="col-4 payment-btn px-0">
+        <button id="payment-button" class="btn btn-dark btn-lg btn-block" type="submit">Finish payment
+        </button>
     </div>
 </div>
 
