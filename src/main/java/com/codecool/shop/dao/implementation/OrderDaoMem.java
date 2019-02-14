@@ -111,4 +111,10 @@ public class OrderDaoMem implements OrderDao {
         }
         return 0;
     }
+
+    @Override
+    public void addTemporaryCartToUserOrder(Order temporaryOrder, int userId) {
+        Order order = getLatestUnfinishedOrderByUser(userId);
+        order.setShoppingCart(temporaryOrder.getShoppingCart());
+    }
 }

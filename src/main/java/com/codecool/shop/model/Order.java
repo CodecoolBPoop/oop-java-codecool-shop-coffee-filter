@@ -144,4 +144,8 @@ public class Order {
         sb.append('}');
         return sb.toString();
     }
+
+    public void setShoppingCart(HashMap<Integer, LineItem> shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
 }

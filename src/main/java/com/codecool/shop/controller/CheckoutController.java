@@ -26,10 +26,17 @@ public class CheckoutController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // todo: check if userId in session, if not: redirect to registration or login
         // Session
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
+        Integer userIdInSession = (Integer) session.getAttribute("userId");
+        int userId = userIdInSession != null ? userIdInSession : 0;
+
+        if (userId == 0) {
+            session.setAttribute("redirectTo", Redirect.CHECKOUT);
+            resp.sendRedirect("/login");
+        }
 
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        Order order = orderDataStore.getLatestUnfinishedOrderByUser(1);
+        Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
         HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
         float amountToPay = order.getAmountToPay();
 
@@ -39,14 +46,14 @@ public class CheckoutController extends HttpServlet {
         context.setVariable("cart", order);
         context.setVariable("shoppingcart", shoppingCart);
         context.setVariable("amountToPay", amountToPay);
-        if (session != null) {
-            context.setVariable("username", session.getAttribute("username"));
-            context.setVariable("email", session.getAttribute("email"));
+        String username = (String) session.getAttribute("username");
+
+        if (username != null) {
+            context.setVariable("username", username);
         }
 
         engine.process("checkout/checkout.html", context, resp.getWriter());
     }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

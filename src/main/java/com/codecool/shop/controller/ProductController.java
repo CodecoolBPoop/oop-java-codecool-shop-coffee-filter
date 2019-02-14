@@ -36,8 +36,8 @@ public class ProductController extends HttpServlet {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoSQL.getInstance();
         SupplierDao supplierDataStore = SupplierDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        Object userIdObject = session.getAttribute("userId");
-        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
+        Integer userIdInSession = (Integer) session.getAttribute("userId");
+        int userId = userIdInSession != null ? userIdInSession : 0;
 
         //Filters
         Map mainPageFilters = new HashMap<>();
@@ -141,8 +141,8 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Object userIdObject = session.getAttribute("userId");
-        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
+        Integer userIdInSession = (Integer) session.getAttribute("userId");
+        int userId = userIdInSession != null ? userIdInSession : 0;
         int boughtItemId = Integer.parseInt(req.getParameter("boughtItem"));
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
         ProductDao productDataStore = ProductDaoSQL.getInstance();

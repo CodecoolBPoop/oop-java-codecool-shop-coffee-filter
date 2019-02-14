@@ -26,8 +26,8 @@ public class CartController extends HttpServlet {
         HttpSession session = req.getSession(false);
         ProductDao productDataStore = ProductDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        Object userIdObject = session.getAttribute("userId");
-        int userId = userIdObject != null ? Integer.valueOf(userIdObject.toString()) : 0;
+        Integer userIdInSession = (Integer) session.getAttribute("userId");
+        int userId = userIdInSession != null ? userIdInSession : 0;
 
         StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = req.getReader()) {
@@ -87,6 +87,5 @@ public class CartController extends HttpServlet {
             }
         }
     }
-
 }
 

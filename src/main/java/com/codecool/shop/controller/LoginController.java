@@ -2,7 +2,10 @@ package com.codecool.shop.controller;
 
 
 import com.codecool.shop.config.TemplateEngineUtil;
+import com.codecool.shop.dao.OrderDao;
+import com.codecool.shop.dao.implementation.OrderDaoSQL;
 import com.codecool.shop.dao.implementation.UserDaoSQL;
+import com.codecool.shop.model.Order;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -29,6 +32,7 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
+        OrderDao orderDataStore = OrderDaoSQL.getInstance();
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
@@ -40,6 +44,16 @@ public class LoginController extends HttpServlet {
             int userId = uds.getUserIdByUsername(username);
             session.setAttribute("username", username);
             session.setAttribute("userId", userId);
+            Order temporaryOrder = (Order) session.getAttribute("temporaryOrder");
+
+            if (temporaryOrder != null) {
+                orderDataStore.addTemporaryCartToUserOrder(temporaryOrder, userId);
+                session.removeAttribute("temporaryOrder");
+            }
+
+            if (Redirect.CHECKOUT.equals(session.getAttribute("redirectTo"))) {
+                resp.sendRedirect("/checkout");
+            }
             resp.sendRedirect("/");
         } else {
             context.setVariable("wrongLogin", "Wrong user name or password!");

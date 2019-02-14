@@ -26,4 +26,6 @@ public interface OrderDao {
     JSONObject getLastShoppingCartByUserAsJSON(int userId);
 
     int getLatestUnfinishedOrderIdByUser(int userId);
+
+    void addTemporaryCartToUserOrder(Order temporaryOrder, int userId);
 }

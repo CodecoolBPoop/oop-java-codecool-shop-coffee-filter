@@ -12,6 +12,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
@@ -35,7 +36,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
                 "INSERT INTO order_products (order_id, product_id, price) VALUES ((SELECT id FROM o), ?, ?)";
 
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, product.getId());
@@ -54,7 +55,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     public Order find(int id) {
         String query = "SELECT * FROM orders WHERE id = ?";
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -80,18 +81,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     public void remove(int id) {
         String query = "DELETE FROM order_products WHERE order_id = ?; " +
                 "DELETE FROM orders WHERE id = ?";
-        try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)
-        ) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.setInt(2, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error: JDBC Driver load fail");
-            e.printStackTrace();
-        }
+        executeUpdateTwoIntsInStatement(query, id, id);
     }
 
     @Override
@@ -118,11 +108,15 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
 
     private void increaseQuantityOfItemInOrder(Order order, int productId) {
         String query = "UPDATE order_products SET quantity = quantity + 1 WHERE order_id = ? AND product_id = ?";
+        executeUpdateTwoIntsInStatement(query, order.getId(), productId);
+    }
+
+    private void executeUpdateTwoIntsInStatement(String query, int int1, int int2) {
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setInt(1, order.getId());
-            preparedStatement.setInt(2, productId);
+            preparedStatement.setInt(1, int1);
+            preparedStatement.setInt(2, int2);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,7 +131,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
         String query = "INSERT INTO order_products (order_id, product_id, price) VALUES (?, ?, ?)";
 
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, order.getId());
             preparedStatement.setInt(2, productId);
@@ -166,46 +160,23 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
                 remove(orderId);
             }
         }
-
     }
 
     private void decreaseQuantityOfItemInOrder(Order order, int productId) {
         String query = "UPDATE order_products SET quantity = quantity - 1 WHERE order_id = ? AND product_id = ?";
-        try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ) {
-            preparedStatement.setInt(1, order.getId());
-            preparedStatement.setInt(2, productId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error: JDBC Driver load fail");
-            e.printStackTrace();
-        }
+        executeUpdateTwoIntsInStatement(query, order.getId(), productId);
     }
 
     private void removeItemTypeFromOrder(int orderId, int productId) {
         String query = "DELETE FROM order_products WHERE product_id = ? AND order_id = ?";
-        try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ) {
-            preparedStatement.setInt(1, productId);
-            preparedStatement.setInt(2, orderId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.err.println("Error: JDBC Driver load fail");
-            e.printStackTrace();
-        }
+        executeUpdateTwoIntsInStatement(query, productId, orderId);
     }
 
     @Override
     public Order getLatestUnfinishedOrderByUser(int userId) {
         String query = "SELECT * FROM orders WHERE user_id = ? AND status IN (1, 2)";
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, userId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -238,7 +209,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     private void addCartItems(Order order) {
         String query = "SELECT order_products.*, products.name FROM order_products JOIN products ON id = product_id WHERE order_id = ?";
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, order.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -276,7 +247,7 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
     public int getLatestUnfinishedOrderIdByUser(int userId) {
         String query = "SELECT id FROM orders WHERE user_id = ? AND status IN (1, 2)";
         try (Connection connection = getDbConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             preparedStatement.setInt(1, userId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -293,5 +264,55 @@ public class OrderDaoSQL extends DataBaseConnect implements OrderDao {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public void addTemporaryCartToUserOrder(Order temporaryOrder, int userId) {
+        if (temporaryOrder.getShoppingCart() != null) {
+            Order latestActiveOrder = getLatestUnfinishedOrderByUser(userId);
+            if (latestActiveOrder != null) {
+                remove(latestActiveOrder.getId());
+            }
+            String query = "INSERT INTO orders (user_id) VALUES (?) RETURNING *";
+            try (Connection connection = getDbConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(query)
+            ) {
+                preparedStatement.setInt(1, userId);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int orderId = resultSet.getInt("id");
+                        addItemsToOrderProducts(temporaryOrder, orderId);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: JDBC Driver load fail");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addItemsToOrderProducts(Order temporaryOrder, int orderId) {
+        String query = "INSERT INTO order_products VALUES (?, ?, ?, ?)";
+        try (Connection connection = getDbConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            for (Map.Entry<Integer, LineItem> entry : temporaryOrder.getShoppingCart().entrySet()) {
+                preparedStatement.setInt(1, orderId);
+                preparedStatement.setInt(2, entry.getKey());
+                preparedStatement.setInt(3, entry.getValue().getQuantity());
+                preparedStatement.setFloat(4, entry.getValue().getPrice());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: JDBC Driver load fail");
+            e.printStackTrace();
+        }
     }
 }
