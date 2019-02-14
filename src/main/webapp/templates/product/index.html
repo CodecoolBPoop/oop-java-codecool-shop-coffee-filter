@@ -31,7 +31,7 @@
     <!-- End of Bootstrap components -->
 
     <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
+    <link rel="icon" type="image/png" href="/static/img/coffeebean.ico">
 
     <script src="/static/js/modal/ShoppingCart.js" defer></script>
 </head>
@@ -39,14 +39,14 @@
 <div th:replace="header.html :: header">
     Header
 </div>
-<div class="jumbotron text-center">
+<div class="jumbotron text-center h-50">
     <div class="jumbotron-wrapper">
         <div class="jumbotron-title">
             <p>Coffee Webshop</p>
-            <p class="sub-title">.... all things coffee ....</p>
+            <p class="sub-title">All things coffee</p>
         </div>
     </div>
-    <button type="button" id="cart-modal-button" class="btn btn-info btn-md float-right" data-toggle="modal"
+    <button type="button" id="cart-modal-button" class="btn btn-light btn-md float-right" data-toggle="modal"
             data-target="#myModal">Cart
         <span id="itemNumber" class="badge badge-secondary badge-pill"
               th:text="${cart != null} ? ${order.getNumberOfItemsInCart()} : 0">0</span>
@@ -143,10 +143,10 @@
             </div>
         </form>
         <div id="products" class="row">
-            <div class="col col-sm-12 col-md-6 col-lg-4"
+            <div class="col col-sm-12 col-md-6 col-lg-4 product-col"
                  th:each="prod,iterStat : ${products}" th:if="${prod.getVisibility()}">
-                <form method="POST">
-                    <div class="card">
+                <form method="POST" class="h-100">
+                    <div class="card h-100">
                         <img class="" src="http://placehold.it/400x250/000/fff"
                              th:attr="src='/static/img/product_' + ${prod.id} + '.jpg'" alt=""/>
                         <div class="card-header">
@@ -158,7 +158,7 @@
                                 <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
                             </div>
                             <div class="card-text">
-                                <button class="btn btn-success" type="submit">Add to cart</button>
+                                <button class="btn btn-dark" type="submit">Add to cart</button>
                             </div>
                         </div>
                         <div class="card-footer">

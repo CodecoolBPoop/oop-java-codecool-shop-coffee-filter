@@ -24,7 +24,8 @@ public class LoginController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
-
+        String jumbotronText = "Login";
+        context.setVariable("jumbotronText", jumbotronText);
         engine.process("session/login.html", context, resp.getWriter());
     }
 
@@ -39,21 +40,24 @@ public class LoginController extends HttpServlet {
 
         UserDaoSQL uds = UserDaoSQL.getInstance();
         if (uds.checkNameAndPassword(username, password)) {
-            HttpSession session = req.getSession();
             int userId = uds.getUserIdByUsername(username);
-            session.setAttribute("username", username);
-            session.setAttribute("userId", userId);
-            Order temporaryOrder = (Order) session.getAttribute("temporaryOrder");
-
-            if (temporaryOrder != null) {
-                orderDataStore.addTemporaryCartToUserOrder(temporaryOrder, userId);
-                session.removeAttribute("temporaryOrder");
+            String redirectTo = "/";
+            HttpSession oldSession = req.getSession(false);
+            if (oldSession != null) {
+                Order temporaryOrder = (Order) oldSession.getAttribute("temporaryOrder");
+                if (temporaryOrder != null) {
+                    orderDataStore.addTemporaryCartToUserOrder(temporaryOrder, userId);
+                    oldSession.removeAttribute("temporaryOrder");
+                }
+                if (Redirect.CHECKOUT.equals(oldSession.getAttribute("redirectTo"))) {
+                    redirectTo = "/checkout";
+                }
+                oldSession.invalidate();
             }
-
-            if (Redirect.CHECKOUT.equals(session.getAttribute("redirectTo"))) {
-                resp.sendRedirect("/checkout");
-            }
-            resp.sendRedirect("/");
+            HttpSession newSession = req.getSession();
+            newSession.setAttribute("username", username);
+            newSession.setAttribute("userId", userId);
+            resp.sendRedirect(redirectTo);
         } else {
             context.setVariable("wrongLogin", "Wrong user name or password!");
             engine.process("session/login.html", context, resp.getWriter());

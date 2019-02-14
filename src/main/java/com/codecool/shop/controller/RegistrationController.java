@@ -22,7 +22,8 @@ public class RegistrationController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
         WebContext context = new WebContext(req, resp, req.getServletContext());
-
+        String jumbotronText = "Register";
+        context.setVariable("jumbotronText", jumbotronText);
         engine.process("session/registration.html", context, resp.getWriter());
     }
 

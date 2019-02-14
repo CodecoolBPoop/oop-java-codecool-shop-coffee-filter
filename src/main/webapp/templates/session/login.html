@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
+    <link rel="icon" type="image/png" href="/static/img/coffeebean.ico">
 </head>
 <body>
 
-<h3 align="center">Login</h3>
+<div th:replace="jumbotron.html :: jumbotron">
+    Jumbotron
+</div>
 
 <div class="container">
     <form action="/login" method="post">
@@ -29,7 +33,7 @@
         <div th:if="${wrongLogin != null}" th:text="${wrongLogin}">
             Wrong login
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-dark">Login</button>
     </form>
 </div>
 </body>

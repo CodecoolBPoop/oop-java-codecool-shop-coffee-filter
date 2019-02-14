@@ -32,26 +32,28 @@ public class CheckoutController extends HttpServlet {
         if (userId == 0) {
             session.setAttribute("redirectTo", Redirect.CHECKOUT);
             resp.sendRedirect("/login");
+        } else {
+            OrderDao orderDataStore = OrderDaoSQL.getInstance();
+            Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
+            HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
+            float amountToPay = order.getAmountToPay();
+
+            TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
+            WebContext context = new WebContext(req, resp, req.getServletContext());
+
+            context.setVariable("cart", order);
+            context.setVariable("shoppingcart", shoppingCart);
+            context.setVariable("amountToPay", amountToPay);
+            String jumbotronText = "Checkout";
+            context.setVariable("jumbotronText", jumbotronText);
+            String username = (String) session.getAttribute("username");
+
+            if (username != null) {
+                context.setVariable("username", username);
+            }
+
+            engine.process("checkout/checkout.html", context, resp.getWriter());
         }
-
-        OrderDao orderDataStore = OrderDaoSQL.getInstance();
-        Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
-        HashMap<Integer, LineItem> shoppingCart = order.getShoppingCart();
-        float amountToPay = order.getAmountToPay();
-
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
-        WebContext context = new WebContext(req, resp, req.getServletContext());
-
-        context.setVariable("cart", order);
-        context.setVariable("shoppingcart", shoppingCart);
-        context.setVariable("amountToPay", amountToPay);
-        String username = (String) session.getAttribute("username");
-
-        if (username != null) {
-            context.setVariable("username", username);
-        }
-
-        engine.process("checkout/checkout.html", context, resp.getWriter());
     }
 
     @Override

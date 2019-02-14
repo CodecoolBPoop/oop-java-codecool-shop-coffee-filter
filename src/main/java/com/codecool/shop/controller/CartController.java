@@ -23,7 +23,7 @@ public class CartController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
         ProductDao productDataStore = ProductDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
         Integer userIdInSession = (Integer) session.getAttribute("userId");

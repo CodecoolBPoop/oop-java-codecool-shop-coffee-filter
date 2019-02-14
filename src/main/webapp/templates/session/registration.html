@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/custom.css"/>
+    <link rel="icon" type="image/png" href="/static/img/coffeebean.ico">
 </head>
 <body>
 
-<h2 align="center">Registration</h2> <br>
+<div th:replace="jumbotron.html :: jumbotron">
+    Jumbotron
+</div>
 
 <div class="container">
     <form action="/registration" method="post">
@@ -44,7 +48,7 @@
             <input id="email" type="email" class="form-control" name="email" placeholder="E-mail">
         </div>
         <br>
-        <button type="submit" class="btn btn-primary">Registration</button>
+        <button type="submit" class="btn btn-dark">Registration</button>
     </form>
 </div>
 

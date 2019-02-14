@@ -27,47 +27,51 @@ public class PaymentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Session
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
 
         AddressHandler addressDataStore = AddressHandlerSQL.getInstance();
         UserDao userDataStore = UserDaoSQL.getInstance();
         OrderDao orderDataStore = OrderDaoSQL.getInstance();
 
+        Integer userIdInSession = (Integer) session.getAttribute("userId");
+        int userId = userIdInSession != null ? userIdInSession : 0;
 
-        int userId = Integer.valueOf(session.getAttribute("userId").toString());
-        User user = userDataStore.getUserById(userId);
+        if (userId == 0) {
+            resp.sendRedirect("/login");
+        } else {
+            User user = userDataStore.getUserById(userId);
 
-        Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
-        int deliveryAddressId = order.getDeliveryAddressId();
+            Order order = orderDataStore.getLatestUnfinishedOrderByUser(userId);
+            int deliveryAddressId = order.getDeliveryAddressId();
 
-        Address address = addressDataStore.getAddressById(deliveryAddressId);
+            Address address = addressDataStore.getAddressById(deliveryAddressId);
 
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
-        WebContext context = new WebContext(req, resp, req.getServletContext());
+            TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(req.getServletContext());
+            WebContext context = new WebContext(req, resp, req.getServletContext());
 
-        float amountToPay = order.getAmountToPay();
-        String name = address.getFirstName() + " " + address.getLastName();
-        // todo: use string builder, check if state, storey, door are not null and format accordingly
-        String addressLine1 = address.getCountry() + " "
-                + address.getPostalCode() + ", "
-                + address.getState();
-        String addressLine2 = address.getCity() + " "
-                + address.getStreet() + " "
-                + address.getHouseNumber() + " "
-                + address.getStorey() + " "
-                + address.getDoor();
+            float amountToPay = order.getAmountToPay();
+            String name = address.getFirstName() + " " + address.getLastName();
+            // todo: use string builder, check if state, storey, door are not null and format accordingly
+            String addressLine1 = address.getCountry() + " "
+                    + address.getPostalCode() + ", "
+                    + address.getState();
+            String addressLine2 = address.getCity() + " "
+                    + address.getStreet() + " "
+                    + address.getHouseNumber() + " "
+                    + address.getStorey() + " "
+                    + address.getDoor();
 
-        context.setVariable("amountToPay", amountToPay);
-        context.setVariable("email", userId);
-        context.setVariable("name", name);
-        context.setVariable("address1", addressLine1);
-        context.setVariable("address2", addressLine2);
-        if (session != null) {
+            context.setVariable("amountToPay", amountToPay);
+            context.setVariable("email", userId);
+            context.setVariable("name", name);
+            context.setVariable("address1", addressLine1);
+            context.setVariable("address2", addressLine2);
+            String jumbotronText = "Payment";
+            context.setVariable("jumbotronText", jumbotronText);
             context.setVariable("username", session.getAttribute("username"));
             context.setVariable("email", user.getEmail());
+
+            engine.process("payment/payment.html", context, resp.getWriter());
         }
-
-        engine.process("payment/payment.html", context, resp.getWriter());
-
     }
 }
